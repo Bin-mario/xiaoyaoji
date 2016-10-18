@@ -14,11 +14,9 @@
                             <img class="user-logo" v-if="item.avatar" v-bind:src="item.avatar">
                             <img class="user-logo" v-else src="../../assets/img/defaultlogo.jpg">
                         </div>
+                        <div class="col-sm-2"> {{item.name}}</div>
                         <div class="col-sm-2"> {{item.nickname}}</div>
-                        <div class="col-sm-3"> {{item.email}}</div>                    
-                        <div class="col-sm-2"> 
-                            <label> <input type="checkbox" v-model="item.editable" v-on:click="changeEditStatus(item)" /> 可编辑</label>
-                        </div>
+                        <div class="col-sm-3"> {{item.email}}</div>
                         <div class="col-sm-1">
                             <input type="button" class="btn btn-danger" v-on:click="remove(item)" value="移除">
                         </div>
@@ -84,7 +82,6 @@
     import '../../src/vue.ex.js';
     import utils from '../../src/utils.js'
     var data = {
-        
         status:{
             loading:false
         },
@@ -105,7 +102,6 @@
                 data.showList = false;
             }
             data.fileAccess = rs.data.fileAccess;
-            
         });
     }
     export default {
@@ -137,11 +133,6 @@
             return data;
         },
         methods: {
-            changeEditStatus: function(item) {
-                let editable = (item.editable)?'YES':'NO';
-                utils.post('/project/' + this.id + '/pu/' + item.id + '/' + editable + '.json');
-            },
-           
             remove: function (item) {
                 utils.delete('/project/' + this.id + '/pu/' + item.id + '.json', function () {
                     toastr.success('移除成功');
