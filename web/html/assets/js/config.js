@@ -5,7 +5,7 @@ toastr.options.preventDuplicates=true;
 window._xyj_={
     history:false,
     version:'1.6',
-    api:'//www.xiaoyaoji.com.cn',
+    api:'',
     //api:'//localhost:9999',
     ws:''
 };
