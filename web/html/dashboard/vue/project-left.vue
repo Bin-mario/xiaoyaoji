@@ -112,7 +112,7 @@
             }
 
         },null,function(rs){
-            if (location.href.indexOf('/project/demo') != -1)
+            if (location.href.indexOf('/project/demo') != -1 || location.href.indexOf('/share/') != -1)
                 return true;
             return false;
         });
