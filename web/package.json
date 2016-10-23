@@ -9,7 +9,7 @@
     "dist-server": "webpack-dev-server --content-base dist --progress --colors"
   },
   "author": "zhoujingjie",
-  "license": "TODO",
+  "license": "GPLv3",
   "devDependencies": {
     "babel-core": "^6.10.4",
     "babel-loader": "^6.2.4",

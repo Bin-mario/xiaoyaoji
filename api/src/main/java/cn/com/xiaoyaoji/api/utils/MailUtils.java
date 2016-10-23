@@ -1,10 +1,12 @@
 package cn.com.xiaoyaoji.api.utils;
 
-import cn.com.xiaoyaoji.api.ex._HashMap;
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.log4j.Logger;
+
+import cn.com.xiaoyaoji.api.ex._HashMap;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * @author: zhoujingjie

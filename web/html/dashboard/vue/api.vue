@@ -1,6 +1,7 @@
 <template>
     <template v-if="!status.loading">
-        <div class="api-modules-tab ta-c">
+        <!-- module start -->
+        <div class="api-modules-tab ta-c" v-if="project.editable=='YES'">
             <a class="api-module api-module-item" v-bind:class="{'active':editing}" v-on:click="editing=true">编辑模式</a>
             <a class="api-module api-module-item" v-bind:class="{'active':!editing}" v-on:click="editing=false">浏览模式</a>
         </div>
@@ -11,13 +12,25 @@
                         class="api-module fl api-module-item"
                         v-bind:class="{'active':currentModule.id == item.id}">
                         <span v-on:click="moduleClick(item)">{{item.name}}</span>
-                        <i class="icon-close iconfont" v-on:click="moduleDelete(item)" v-show="editing"></i>
-                        <i class="icon-bianji iconfont" v-on:click="moduleEdit(item)" v-show="editing"></i>
+                        <i class="icon-angeldownblock iconfont" v-on:click.stop="flag.moduleActionId= item.id" v-show="editing"></i>
+                        <div class="api-item-actions" v-show="flag.moduleActionId == item.id && editing">
+                            <div v-on:click="moduleEdit(item)"><i class="iconfont icon-bianji"></i> 编辑</div>
+                            <div v-on:click="moduleDelete(item)"><i class="iconfont icon-move"></i> 删除</div>
+                        </div>
+                       <!-- <i class="icon-bianji iconfont" v-on:click="moduleEdit(item)" v-show="editing"></i>
+                        <i class="icon-close iconfont" v-on:click="moduleDelete(item)" v-show="editing"></i>-->
                     </li>
                     <li class="api-module fl api-module-plus" v-on:click="moduleNew" v-show="editing">
                         <i class="icon-tianjia iconfont"></i></li>
-                    <li class="fr api-module" onclick="window.open('http://www.xiaoyaoji.com.cn/help.html')"><i class="iconfont icon-question"></i></li>
+                    <li class="fr api-module"><i class="iconfont icon-chick" style="cursor: default"></i></li>
+                    <li class="fr api-module"><i class="iconfont icon-menu"></i></li>
                     <li class="fr api-module api-env" v-show="currentEnv" v-on:click.stop="envClick($event)">{{currentEnv.name}} <i class="iconfont icon-angeldownblock"></i></li>
+                    <li class="fr api-module">
+                        <div class="api-module-search">
+                            <input type="text" class="text" v-on:keyup.enter="search" v-model="flag.searchInput">
+                            <i class="iconfont icon-search" v-on:click="search"></i>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -25,7 +38,7 @@
             <ul class="api-env-items">
                 <li v-for="item in envs" v-bind:class="{'active':item.t==currentEnv.t}" v-on:click="currentEnv=item" v-on:mouseover="envOver(item,$event)">{{item.name}}</li>
                 <li class="line"></li>
-                <li v-on:click="createEnv" v-on:mouseover="status.showEnvValues=false" class="api-env-create">添加环境</li>
+                <li v-on:click="createEnv" v-on:mouseover="status.showEnvValues=false" v-if="project.editable=='YES'" class="api-env-create">添加环境</li>
             </ul>
             <div class="api-env-content" id="api-env-content" v-show="status.showEnvValues">
                 <div class="div-table">
@@ -46,9 +59,74 @@
                 </div>
             </div>
         </div>
+        <div class="api-menus" id="api-menus">
+            <div class="api-sanjiaoxings">
+                <!--<div class="api-sanxiaoxing"></div>-->
+                <i class="iconfont icon-sanjiaoxing"></i>
+            </div>
+            <ul class="cb">
+                <li v-if="editable">
+                    <a v-on:click="getShares">
+                        <p><i class="iconfont icon-relation"></i></p>
+                        <p>分享</p>
+                    </a>
+                </li>
+                <li v-if="editable">
+                    <a v-link="'/project/'+id+'/members'">
+                        <p><i class="iconfont icon-user"></i></p>
+                        <p>成员管理</p>
+                    </a>
+                </li>
+                <li v-if="editable">
+                    <a v-link="'/project/'+id+'/settings'">
+                        <p><i class="iconfont icon-setting"></i></p>
+                        <p>项目设置</p>
+                    </a>
+                </li>
+                <li>
+                    <a v-link="'/project/'+id+'/quit'" >
+                        <p><i class="iconfont icon-quit"></i></p>
+                        <p>退出项目</p>
+                    </a>
+                </li>
+                <li v-if="editable">
+                    <a v-link="'/project/'+id+'/transfer'">
+                        <p><i class="iconfont icon-transfer"></i></p>
+                        <p>项目转让</p>
+                    </a>
+                </li>
+                <li v-if="editable">
+                    <a v-link="'/project/'+id+'/release'">
+                        <p><i class="iconfont icon-delete"></i></p>
+                        <p>删除项目</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.xiaoyaoji.com.cn/help.html" target="_blank">
+                        <p><i class="iconfont icon-question"></i></p>
+                        <p>帮助</p>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <datalist id="headerlist">
+            <option v-for="item in flag.headers" value="{{item}}">
+        </datalist>
+        <datalist id="requestlist">
+            <option v-for="item in flag.requests" value="{{item}}">
+        </datalist>
+        <datalist id="responselist">
+            <option v-for="item in flag.responses" value="{{item}}">
+        </datalist>
+        <!-- module end -->
+
+        <div v-show="modules.length>0">
+        <!-- editing start -->
         <div v-show="editing">
             <div id="api-edit-box" class="apis">
                 <div class="cb api-container">
+                    <!-- api left start -->
                     <div class="fl apis-left">
                         <div class="cb api-fn-actions">
                             <div class="fl" v-on:click="folderNew"><i class="icon-tianjia iconfont"></i> 添加分类</div>
@@ -56,14 +134,21 @@
                         </div>
                         <ul class="apis-nav" id="api-edit-nav">
                             <li>
-                                <div class="api-name api-description cb" v-bind:class="{'active':showGuide}"
-                                     v-on:click="apiDescClick">
+                                <div class="api-name api-description cb" v-bind:class="{'active':show=='doc'}"
+                                     v-on:click="show='doc'">
                                     <span>文档说明</span>
                                     <span class="fr api-actions">
                                         <i class="iconfont icon-list" v-on:click.stop="collapse=!collapse"></i>
                                     </span>
                                 </div>
                             </li>
+                            <li>
+                                <div class="api-name api-description cb" v-bind:class="{'active':show=='module'}"
+                                     v-on:click="show='module'">
+                                    <span>模块全局参数</span>
+                                </div>
+                            </li>
+
                             <template v-if="!currentModule.folders">
                                 {{currentModule.folders = []}}
                             </template>
@@ -79,7 +164,7 @@
                                     <li v-for="api in item.children">
                                         <div class="api-name cb" v-on:click="apiClick(api,item)"
                                              v-bind:class="{'active':currentApi.id == api.id}">
-                                            <span>{{api.name}}</span>
+                                            <span v-bind:class="{'deprecated':api.status=='DEPRECATED'}">{{api.name}}</span>
                                             <div class="fr">
                                                 <i v-on:click.stop="flag.actionId=api.id" class="icon-angeldownblock iconfont"></i>
                                             </div>
@@ -98,73 +183,147 @@
                                     <div v-on:click="folderDelete(item,$event)"><i class="iconfont icon-move"></i> 删除</div>
                                 </div>
                             </li>
-                            <!--<li v-on:click="folderNew">
-                                <div class="api-name api-folder-new"><i class="icon-tianjia iconfont"></i> 创建分类</div>
-                            </li>-->
                         </ul>
                     </div>
+                    <!-- api left end -->
+                    <!-- api content start -->
                     <div class="api-content fl">
-                        <div id="api-edit-description" class="api-doc-desc" v-bind:class="{'hide':!showGuide}">
+                        <div id="api-edit-description" class="api-doc-desc" v-bind:class="{'hide':show!='doc'}">
                             <div id="editorBox"></div>
-
                             <div class="api-btn-save ta-c">
                                 <button class="btn btn-orange" v-on:click="updateProject">保存修改</button>
                             </div>
                         </div>
-                        <div id="api-edit-details" v-bind:class="{'hide':showGuide}">
+                        <div v-bind:class="{'hide':show!='module'}" class="form">
+                            <p class="api-details-title">全局请求头</p>
+                            <div class="div-table editing">
+                                <ul class="div-table-header div-table-line cb">
+                                    <li class="col-sm-1">操作</li>
+                                    <li class="col-sm-3">参数名称</li>
+                                    <li class="col-sm-2">是否必须</li>
+                                    <li class="col-sm-4">描述</li>
+                                    <li class="col-sm-2">默认值</li>
+                                </ul>
+                                <request-headers-vue
+                                        v-bind:request-headers.sync="currentModule.requestHeaders"
+                                        v-bind:editing="editing"></request-headers-vue>
+                            </div>
+                            <div class="item">
+                                <button class="btn btn-default btn-sm" v-on:click="currentModule.requestHeaders.push({children:[],require:'true'})">
+                                    <i class="iconfont icon-tianjia"></i>添加参数
+                                </button>
+                                <button class="btn btn-default btn-sm" v-on:click="import2GHeaders">
+                                    <i class="iconfont icon-importexport"></i>导入json
+                                </button>
+                            </div>
+
+                            <p class="api-details-title">全局请求头</p>
+                            <div class="div-table editing">
+                                <ul class="div-table-header div-table-line cb">
+                                    <li class="col-sm-1">操作</li>
+                                    <li class="col-sm-3">参数名称</li>
+                                    <li class="col-sm-2">是否必须</li>
+                                    <li class="col-sm-2">类型</li>
+                                    <li class="col-sm-2">描述</li>
+                                    <li class="col-sm-2">默认值</li>
+                                </ul>
+                                <request-args-vue v-bind:request-args="currentModule.requestArgs"
+                                                  v-bind:editing="editing"></request-args-vue>
+                            </div>
+                            <div class="item">
+                                <button class="btn btn-default btn-sm" v-on:click="currentModule.requestArgs.push({type:'string',children:[],require:'true'})">
+                                    <i class="iconfont icon-tianjia"></i>添加参数
+                                </button>
+                                <button class="btn btn-default btn-sm" v-on:click="import2GRequestArgs">
+                                    <i class="iconfont icon-importexport"></i>导入json
+                                </button>
+                            </div>
+
+                            <div class="api-btn-save ta-c">
+                                <button class="btn btn-orange" v-on:click="moduleUpdateCommonParams">保存修改</button>
+                            </div>
+                        </div>
+                        <div id="api-edit-details" v-bind:class="{'hide':show!='api'}">
                             <div id="api-edit-content" class="form">
                                 <p class="api-details-title">基本信息</p>
                                 <div class="item api-chose-list">
                                     <div>
-                                        <select v-model="currentApi.folderId">
-                                            <option value="{{item.id}}" v-for="item in currentModule.folders">{{item.name}}</option>
-                                        </select>
+                                        <span>分类</span>
+                                        <div class="div-select">
+                                            <select v-model="currentApi.folderId">
+                                                <option value="{{item.id}}" v-for="item in currentModule.folders">{{item.name}}</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div>
-                                    <select v-model="currentApi.protocol">
-                                        <option value="HTTP">HTTP</option>
-                                        <option value="WEBSOCKET">WEBSOCKET</option>
-                                    </select>
+                                        <span>协议</span>
+                                        <div class="div-select">
+                                            <select v-model="currentApi.protocol">
+                                                <option value="HTTP">HTTP</option>
+                                                <option value="WEBSOCKET">WEBSOCKET</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <template v-if="currentApi.protocol=='HTTP'">
-                                       <div><select v-model="currentApi.requestMethod">
-                                            <option value="GET">GET</option>
-                                            <option value="POST">POST</option>
-                                            <option value="PUT">PUT</option>
-                                            <option value="DELETE">DELETE</option>
-                                            <option value="PATCH">PATCH</option>
-                                            <option value="COPY">COPY</option>
-                                            <option value="OPTIONS">OPTIONS</option>
-                                        </select>
+                                       <div>
+                                           <span>请求方法</span>
+                                           <div class="div-select">
+                                               <select v-model="currentApi.requestMethod">
+                                                    <option value="GET">GET</option>
+                                                    <option value="POST">POST</option>
+                                                    <option value="PUT">PUT</option>
+                                                    <option value="DELETE">DELETE</option>
+                                                    <option value="PATCH">PATCH</option>
+                                                    <option value="COPY">COPY</option>
+                                                    <option value="OPTIONS">OPTIONS</option>
+                                                </select>
+                                           </div>
                                        </div>
                                         <div>
-                                        <select v-model="currentApi.dataType">
-                                            <option value="X-WWW-FORM-URLENCODED">X-WWW-FORM-URLENCODED</option>
-                                            <template v-if="currentApi.requestMethod == 'POST'">
-                                                <option value="FORM-DATA">FORM-DATA</option>
-                                                <option value="RAW">RAW</option>
-                                                <option value="BINARY">BINARY</option>
-                                                <option value="XML">XML</option>
-                                            </template>
-                                        </select>
+                                            <span>请求数据类型</span>
+                                            <div class="div-select">
+                                                <select v-model="currentApi.dataType">
+                                                    <option value="X-WWW-FORM-URLENCODED">X-WWW-FORM-URLENCODED</option>
+                                                    <template v-if="currentApi.requestMethod == 'POST'">
+                                                        <option value="FORM-DATA">FORM-DATA</option>
+                                                        <option value="JSON">JSON</option>
+                                                        <option value="RAW">RAW</option>
+                                                        <option value="BINARY">BINARY</option>
+                                                        <option value="XML">XML</option>
+                                                    </template>
+                                                </select>
+                                            </div>
                                         </div>
                                         <div>
-                                        <select v-model="currentApi.contentType">
-                                            <option value="JSON">JSON</option>
-                                            <option value="JSONP">JSONP</option>
-                                            <option value="TEXT">TEXT</option>
-                                            <option value="XML">XML</option>
-                                            <option value="HTML">HTML</option>
-                                            <option value="IMAGE">IMAGE</option>
-                                            <option value="BINARY">BINARY</option>
-                                        </select>
+                                            <span>响应类型</span>
+                                            <div class="div-select">
+                                                <select v-model="currentApi.contentType">
+                                                    <option value="JSON">JSON</option>
+                                                    <option value="JSONP">JSONP</option>
+                                                    <option value="TEXT">TEXT</option>
+                                                    <option value="XML">XML</option>
+                                                    <option value="HTML">HTML</option>
+                                                    <option value="IMAGE">IMAGE</option>
+                                                    <option value="BINARY">BINARY</option>
+                                                </select>
+                                            </div>
                                         </div>
+                                        <div>
+                                            <span>状态</span>
+                                            <div class="div-select">
+                                                <select v-model="currentApi.status">
+                                                    <option value="ENABLE">启用</option>
+                                                    <option value="DEPRECATED">已废弃</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
                                     </template>
                                 </div>
                                 <div class="item">
                                     <div class="col-sm-1 label">接口名称</div>
                                     <div class="col-sm-11">
-                                        <input type="text" class="text" maxlength="20" placeholder="请输入接口名称"
+                                        <input type="text" class="text" maxlength="30" placeholder="请输入接口名称"
                                                v-model="currentApi.name" value="{{currentApi.name}}">
                                     </div>
                                 </div>
@@ -181,86 +340,6 @@
                                         </template>
                                     </div>
                                 </div>
-                               <!-- <div class="item">
-                                    <div class="col-sm-1 label">请求类型</div>
-                                    <div class="col-sm-11 full-text">
-                                        <input type="radio" id="rt-http" value="HTTP" v-model="currentApi.protocol">
-                                        <label for="rt-http">HTTP</label>
-                                        <input type="radio" id="rt-ws" value="WEBSOCKET" v-model="currentApi.protocol">
-                                        <label for="rt-ws">WEBSOCKET</label>
-                                    </div>
-                                </div>
-                                <div v-show="currentApi.protocol=='HTTP'">
-                                    <div class="item">
-                                        <div class="col-sm-1 label">请求方法</div>
-                                        <div class="col-sm-11 full-text">
-                                            <input type="radio" id="rm-GET" value="GET"
-                                                   v-model="currentApi.requestMethod">
-                                            <label for="rm-GET">GET</label>
-                                            <input type="radio" id="rm-POST" value="POST"
-                                                   v-model="currentApi.requestMethod">
-                                            <label for="rm-POST">POST</label>
-                                            <input type="radio" id="rm-PUT" value="PUT"
-                                                   v-model="currentApi.requestMethod">
-                                            <label for="rm-PUT">PUT</label>
-                                            <input type="radio" id="rm-DELETE" value="DELETE"
-                                                   v-model="currentApi.requestMethod">
-                                            <label for="rm-DELETE">DELETE</label>
-                                        </div>
-                                    </div>
-                                    <div class="item">
-                                        <div class="col-sm-1 label">请求数据类型</div>
-                                        <div class="col-sm-11 full-text">
-                                        <span>
-                                            <input type="radio" id="dt-X" value="X-WWW-FORM-URLENCODED"
-                                                   v-model="currentApi.dataType">
-                                            <label for="dt-X">X-WWW-FORM-URLENCODED</label>
-                                        </span>
-                                            <template
-                                                    v-if="currentApi.requestMethod!='GET' && currentApi.requestMethod != 'DELETE'">
-                                                <input type="radio" id="dt-DF" value="FORM-DATA"
-                                                       v-model="currentApi.dataType">
-                                                <label for="dt-DF">FORM-DATA</label>
-                                                <input type="radio" id="dt-RAW" value="RAW"
-                                                       v-model="currentApi.dataType">
-                                                <label for="dt-RAW">RAW</label>
-                                                <input type="radio" id="dt-BINARY" value="BINARY"
-                                                       v-model="currentApi.dataType">
-                                                <label for="dt-BINARY">BINARY</label>
-                                                <label><input type="radio" value="XML"
-                                                              v-model="currentApi.dataType"> XML</label>
-                                            </template>
-                                        </div>
-                                    </div>
-
-                                    <div class="item">
-                                        <div class="col-sm-1 label">响应数据类型</div>
-                                        <div class="col-sm-11 full-text">
-                                            <input type="radio" id="ct-JSON" value="JSON"
-                                                   v-model="currentApi.contentType">
-                                            <label for="ct-JSON">JSON</label>
-                                            <input type="radio" id="ct-JSONP" value="JSONP"
-                                                   v-model="currentApi.contentType">
-                                            <label for="ct-JSONP">JSONP</label>
-                                            <input type="radio" id="ct-TEXT" value="TEXT"
-                                                   v-model="currentApi.contentType">
-                                            <label for="ct-TEXT">TEXT</label>
-                                            <input type="radio" id="ct-XML" value="XML"
-                                                   v-model="currentApi.contentType">
-                                            <label for="ct-XML">XML</label>
-                                            <input type="radio" id="ct-HTML" value="HTML"
-                                                   v-model="currentApi.contentType">
-                                            <label for="ct-HTML">HTML</label>
-                                            <input type="radio" id="ct-IMAGE" value="IMAGE"
-                                                   v-model="currentApi.contentType">
-                                            <label for="ct-IMAGE">IMAGE</label>
-                                            <input type="radio" id="ct-BINARY" value="BINARY"
-                                                   v-model="currentApi.contentType">
-                                            <label for="ct-BINARY">BINARY</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                -->
                                 <div class="item">
                                     <div class="col-sm-1 label">接口描述</div>
                                     <div class="col-sm-11">
@@ -297,15 +376,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <datalist id="headerlist">
-                                    <option v-for="item in flag.headers" value="{{item}}">
-                                </datalist>
-                                <datalist id="requestlist">
-                                    <option v-for="item in flag.requests" value="{{item}}">
-                                </datalist>
-                                <datalist id="responselist">
-                                    <option v-for="item in flag.responses" value="{{item}}">
-                                </datalist>
+
 
 
                                 <!-- 请求参数 -->
@@ -361,138 +432,29 @@
                                       placeholder="请添加一些示例数据">{{currentApi.example}}</textarea>
                                 </template>
                             </div>
-                            <!--<div class="item">
-                                <button class="btn btn-primary" v-on:click="apiSave">保存修改</button>
-                            </div>-->
                             <div class="api-btn-save ta-c">
                                 <button class="btn btn-orange" v-on:click="apiSave">保存修改</button>
                             </div>
                         </div>
                     </div>
+                    <!-- api content end -->
                 </div>
             </div>
-            <div class="modal" v-cloak v-if="status.folderModal">
-                <div class="modal-header">
-                    <i class="iconfont icon-close modal-close" v-on:click="status.folderModal=false"></i>
-                </div>
-                <div class="modal-content">
-                    <div class="modal-layout1 form">
-                        <validator name="ff">
-                            <p class="title">{{!folderName?'创建':'编辑'}}分类</p>
-                            <input type="text" class="k1 text" id="folderName" value="{{folderName}}" maxlength="20"
-                                   initial="off"
-                                   v-model="folderName"
-                                   v-validate:folder-name="{maxlength:20}"
-                                   v-bind:autofocus="status.folderModal"
-                                   tabindex="1" placeholder="请输入文件夹名称">
-                            <div class="tip" v-if="$ff.folderName.invalid">{{$ff.errors[0].message}}</div>
-                        </validator>
-                        <div class="ta-c actions">
-                            <button class="btn btn-default-box middle" tabindex="3"
-                                    v-on:click="status.folderModal=false">取消
-                            </button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <button class="btn btn-primary middle" v-on:click="folderSave" tabindex="2">确定</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal" v-cloak v-if="status.moduleModal">
-                <div class="modal-header">
-                    <i class="iconfont icon-close modal-close" v-on:click="status.moduleModal=false"></i>
-                </div>
-                <div class="modal-content">
-                    <div class="modal-layout1 form">
-                        <validator name="mf">
-                            <p class="title">{{!moduleName?'创建':'编辑'}}模块</p>
-                            <input type="text" maxlength="20" id="moduleName" class="k1 text" v-model="moduleName"
-                                   value="{{moduleName}}"
-                                   initial="off"
-                                   v-validate:module-name="{maxlength:20}"
-                                   v-bind:autofocus="status.folderModal"
-                                   tabindex="1" placeholder="请输入模块名称">
-                            <div class="tip" v-if="$mf.moduleName.invalid">{{$mf.errors[0].message}}</div>
-                            <div class="ta-c actions">
-                                <button class="btn btn-default-box middle" tabindex="3"
-                                        v-on:click="status.moduleModal=false">
-                                    取消
-                                </button>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button class="btn btn-primary middle" v-on:click="moduleSave" tabindex="2">确定</button>
-                            </div>
-                        </validator>
-                    </div>
-                </div>
-            </div>
-            <div class="modal" v-cloak v-if="status.importModal">
-                <div class="modal-header">
-                    <i class="iconfont icon-close modal-close" v-on:click="status.importModal=false"></i>
-                </div>
-                <div class="modal-content">
-                    <div class="modal-layout1 form" style="width: 500px">
-                        <validator name="if">
-                            <p class="title">导入JSON</p>
-                        <textarea rows="15" class="k1 text" v-model="importValue" initial="off"
-                                  v-bind:autofocus="status.importModal"
-                                  tabindex="1" placeholder="请粘贴导入的数据"></textarea>
-                            <div class="ta-c actions">
-                                <button class="btn btn-default-box middle" tabindex="3"
-                                        v-on:click="status.importModal=false">
-                                    取消
-                                </button>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button class="btn btn-primary middle" v-on:click="importOk" tabindex="2">确定</button>
-                            </div>
-                        </validator>
-                    </div>
-                </div>
-            </div>
-            <div class="modal" v-cloak v-if="status.moveCopyModal">
-                    <div class="modal-header">
-                        <i class="iconfont icon-close modal-close" v-on:click="status.moveCopyModal=false"></i>
-                    </div>
-                    <div class="modal-content">
-                        <div class="modal-layout1 form" style="width: 500px">
-                                <p class="title">{{flag.move?'移动':'复制'}}{{flag.moveCopyName}}</p>
-                                <div class="item">
-                                    <div class="label col-sm-2">选择模块</div>
-                                    <div class="col-sm-10 full-text">
-                                        <select class="text" v-model="flag.moveCopySelectModuleId">
-                                            <option v-for="item in modules" v-bind:value="item.id">{{item.name}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="item" v-for="m in modules" v-if="flag.moveCopySelectModuleId==m.id && flag.moveCopyName=='接口'">
-                                    <div class="label col-sm-2">选择分类</div>
-                                    <div class="col-sm-10 full-text">
-                                        <select class="text" v-model="flag.moveCopySelectFolderId">
-                                            <option v-for="item in m.folders" v-bind:value="item.id">{{item.name}}</option>
-                                        </select>
-                                    </div>
-                                </div>
 
-                                <div class="ta-c actions">
-                                    <button class="btn btn-default-box middle" tabindex="3"
-                                            v-on:click="status.moveCopyModal=false">
-                                        取消
-                                    </button>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <button class="btn btn-primary middle" v-on:click="copyMoveOk" tabindex="2">确定</button>
-                                </div>
-                        </div>
-                    </div>
-                </div>
 
         </div>
+        <!-- editing end -->
+
+        <!-- view start -->
         <div v-show="!editing">
             <template v-if="!error.projectNotExists">
                 <div class="apis">
                     <div v-if="currentModule.folders && currentModule.folders.length>0" class="cb api-container">
                         <div class="fl apis-left">
-                            <ul class="apis-nav">
+                            <ul class="apis-nav api-folder-list">
                                 <li>
-                                    <div class="api-name api-description" v-bind:class="{'active':showGuide}"
-                                         v-on:click="apiDescClick">
+                                    <div class="api-name api-description" v-bind:class="{'active':show=='doc'}"
+                                         v-on:click="show='doc'">
                                         <span>文档说明</span>
                                         <span class="fr api-actions">
                                         <i class="iconfont icon-list" v-on:click.stop="collapse=!collapse"></i>
@@ -502,15 +464,16 @@
                                 <template v-if="!currentModule.folders">
                                     {{currentModule.folders = []}}
                                 </template>
-                                <li v-for="item in currentModule.folders">
+                                <li v-for="item in currentModule.folders" class="cb">
+                                    <!--<span class="fr handle">::</span>-->
                                     <div class="api-name api-folder" v-bind:class="{'open':!collapse}" v-on:click="folderClick">
                                         <span>{{item.name}}</span>
                                     </div>
                                     <ul class="apis-nav apis-nav-sub" v-bind:class="{'hide':collapse}">
-                                        <li v-for="api in item.children" v-on:click="showGuide=false">
+                                        <li v-for="api in item.children" v-on:click="show='api'">
                                             <div class="api-name" v-bind:class="{'active':currentApi.id == api.id}"
                                                  v-on:click="apiClick(api,item)">
-                                                <span>{{api.name}}</span>
+                                                <span v-bind:class="{'deprecated':api.status=='DEPRECATED'}">{{api.name}}</span>
                                             </div>
                                         </li>
                                     </ul>
@@ -518,32 +481,15 @@
                             </ul>
                         </div>
                         <div class="api-content fl">
-                            <div class="cb">
-                                <h2 class="fl">文档说明</h2>
-                                <span class="api-update-time fr">更新时间: <span id="api-update-time">{{currentModule.lastUpdateTime}}</span></span>
-                            </div>
-                            <div id="api-doc-desc" class="api-doc-desc" v-show="showGuide">
+                            <span class="api-update-time">更新时间: <span id="api-update-time">{{currentModule.lastUpdateTime}}</span></span>
+                            <div id="api-doc-desc" class="api-doc-desc" v-show="show=='doc'">
                                 <div id="view-box" v-show="project.details"></div>
                                 <div v-show="!project.details" class="ta-c api-error-tip">
                                     <i class="iconfont icon-info"></i>
                                     <p>项目还未书写文档说明。</p>
-                                    <!--<div class="cb ta-c api-quick-create">
-                                        <a class="fl">
-                                            <i class="iconfont icon-tianjia"></i>
-                                            <p>添加接口</p>
-                                        </a>
-                                        <a class="fl">
-                                            <i class="iconfont icon-tianjia"></i>
-                                            <p>添加分类</p>
-                                        </a>
-                                        <a class="fl">
-                                            <i class="iconfont icon-tianjia"></i>
-                                            <p>添加模块</p>
-                                        </a>
-                                    </div>-->
                                 </div>
                             </div>
-                            <div id="api-details" class="api-details" v-show="!showGuide">
+                            <div id="api-details" class="api-details" v-show="show=='api'">
                                 <p class="api-details-title">基本信息</p>
                                 <div class="api-base-info api-edit-box">
                                     <p v-if="currentApi.protocol">请求类型: {{currentApi.protocol}}</p>
@@ -553,12 +499,28 @@
                                         <p v-if="currentApi.dataType">数据类型: {{currentApi.dataType}}</p>
                                         <p v-if="currentApi.contentType">响应类型: {{currentApi.contentType}}</p>
                                     </template>
+                                    <p v-if="currentApi.status">接口状态: {{currentApi.status=='DEPRECATED'?'已废弃':'启用'}}</p>
                                 </div>
                                 <template v-if="currentApi.description">
                                     <p class="api-details-title">接口描述</p>
-                                    <div>{{currentApi.description}}</div>
+                                    <pre>{{currentApi.description}}</pre>
                                 </template>
-                                <template v-if="currentApi.requestHeaders  && currentApi.requestHeaders.length>0">
+                                <template v-if="(currentModule.requestHeaders&&currentModule.requestHeaders.length>0)">
+                                    <p class="api-details-title">全局请求头</p>
+                                    <div class="div-table">
+                                        <ul class="div-table-header div-table-line cb">
+                                            <li class="col-sm-2">参数名称</li>
+                                            <li class="col-sm-1">是否必须</li>
+                                            <li class="col-sm-7">描述</li>
+                                            <li class="col-sm-2">默认值</li>
+                                        </ul>
+                                        <request-headers-vue
+                                                v-bind:request-headers.sync="currentModule.requestHeaders"
+                                                v-bind:editing="editing"></request-headers-vue>
+                                    </div>
+                                </template>
+
+                                <template v-if="(currentApi.requestHeaders  && currentApi.requestHeaders.length>0)">
                                     <p class="api-details-title">请求头</p>
                                     <div class="div-table">
                                         <ul class="div-table-header div-table-line cb">
@@ -572,7 +534,24 @@
                                                 v-bind:editing="editing"></request-headers-vue>
                                     </div>
                                 </template>
-                                <template v-if="currentApi.requestArgs  && currentApi.requestArgs.length>0">
+
+                                <template v-if="(currentModule.requestArgs && currentModule.requestArgs.length>0)">
+                                    <p class="api-details-title">全局请求参数</p>
+                                    <div class="div-table">
+                                        <ul class="div-table-header div-table-line cb">
+                                            <li class="col-sm-2">参数名称</li>
+                                            <li class="col-sm-1">是否必须</li>
+                                            <li class="col-sm-1">类型</li>
+                                            <li class="col-sm-6">描述</li>
+                                            <li class="col-sm-2">默认值</li>
+                                        </ul>
+                                        <request-args-vue
+                                                v-bind:request-args.sync="currentModule.requestArgs"
+                                                v-bind:editing="editing"></request-args-vue>
+                                    </div>
+                                </template>
+
+                                <template v-if=" (currentApi.requestArgs  && currentApi.requestArgs.length>0)">
                                     <p class="api-details-title">请求参数</p>
                                     <div class="div-table">
                                         <ul class="div-table-header div-table-line cb">
@@ -610,9 +589,36 @@
                                 </template>
                                 <p class="api-details-title">演示</p>
                                 <template v-if="!currentApi.protocol || currentApi.protocol == 'HTTP'">
-                                    <template v-if="currentApi.requestHeaders && currentApi.requestHeaders.length>0">
+                                    <div class="form">
+                                        <div class="item">
+                                            <div class="col-sm-2 label second">请求地址</div>
+                                            <div class="col-sm-8">
+                                                <input type="hidden" value="{{requestURL}}">
+                                                <input type="text" class="text" id="requestURL">
+                                            </div>
+                                            <div class="col-sm-2" style="text-align: right">
+                                                <div class="xyj-dropdown">
+                                                    <span class="api-view-env xyj-dropdown-toggle">{{currentEnv.name}}  <i class="iconfont icon-angeldownblock"></i></span>
+                                                    <ul class="xyj-dropdown-list api-view-env-items">
+                                                        <li v-for="item in envs" v-bind:class="{'active':item.t==currentEnv.t}"
+                                                            v-on:click="currentEnv=item"
+                                                            v-on:mouseover="envOver(item,$event)">{{item.name}}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template v-if="(currentModule.requestHeaders && currentModule.requestHeaders.length>0) || (currentApi.requestHeaders && currentApi.requestHeaders.length>0)">
                                         <form class="api-test form" id="header-form">
                                             <p class="api-details-title second">请求头</p>
+                                            <div class="item" v-for="item in currentModule.requestHeaders">
+                                                <div class="col-sm-2 label">{{item.name}}</div>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="{{item.name}}"
+                                                           value="{{item.testValue || item.defaultValue}}"
+                                                           placeholder="{{item.description}}" class="text">
+                                                </div>
+                                            </div>
                                             <div class="item" v-for="item in currentApi.requestHeaders">
                                                 <div class="col-sm-2 label">{{item.name}}</div>
                                                 <div class="col-sm-8">
@@ -625,23 +631,7 @@
                                     </template>
 
                                     <div class="form">
-                                        <div class="item">
-                                            <div class="col-sm-2 label second">请求地址</div>
-                                            <div class="col-sm-8">
-                                                <input type="text" style="width: 500px" class="text" value="{{requestURL}}" id="requestURL">
-                                            </div>
-                                            <div class="col-sm-2" style="text-align: right">
-                                                <div class="xyj-dropdown">
-                                                    <span class="api-view-env xyj-dropdown-toggle">{{currentEnv.name}}  <i class="iconfont icon-angeldownblock"></i></span>
-                                                    <ul class="xyj-dropdown-list api-view-env-items">
-                                                        <li v-for="item in envs" v-bind:class="{'active':item.t==currentEnv.t}"
-                                                            v-on:click="currentEnv=item"
-                                                            v-on:mouseover="envOver(item,$event)">{{item.name}}</li>
-                                                        <li v-on:click="createEnv" class="api-env-create">添加环境</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
+
                                     <template v-if="currentApi.urlArgs && currentApi.urlArgs.length>0">
                                         <p class="api-details-title second">地址参数</p>
                                         <div class="item" v-for="item in currentApi.urlArgs">
@@ -655,17 +645,31 @@
                                     </template>
                                     </div>
                                     <form class="form" id="args-form" v-on:submit.prevent>
-
-
-                                        <template v-if="currentApi.requestArgs && currentApi.requestArgs.length>0">
+                                        <template v-if="(currentModule.requestArgs && currentModule.requestArgs.length>0) || (currentApi.requestArgs && currentApi.requestArgs.length>0)">
                                             <div class="cb">
                                                 <div>
-                                                    <p class="api-details-title second">Body</p>
-
-                                                    <template v-if="currentApi.dataType=='XML'">
-                                                        <textarea rows="10" class="text api-details-xml">{{xmlpreview}}</textarea>
+                                                    <template v-if="currentApi.dataType=='XML' || currentApi.dataType =='JSON'">
+                                                        <div class="item">
+                                                            <div class="col-sm-2 label">Body</div>
+                                                            <div class="col-sm-8">
+                                                                <pre id="ace-editor-box"></pre>
+                                                            </div>
+                                                        </div>
                                                     </template>
                                                     <template v-else>
+                                                        <p class="api-details-title second">请求参数</p>
+                                                        <div class="item"  v-for="item in currentModule.requestArgs">
+                                                            <div class="col-sm-2 label">{{item.name}}</div>
+                                                            <div class="col-sm-8" v-bind:class="{'full-text':item.type=='file'}">
+                                                                <input data-type="{{item.type}}"
+                                                                       type="{{item.type=='file'?'file':'text'}}"
+                                                                       name="{{item.name}}"
+                                                                       class="api-request-args-item"
+                                                                       value="{{item.testValue || item.defaultValue}}"
+                                                                       placeholder="{{item.description}}"
+                                                                       v-bind:class="{'text':item.type!='file'}">
+                                                            </div>
+                                                        </div>
                                                         <div class="item"  v-for="item in currentApi.requestArgs">
                                                             <div class="col-sm-2 label">{{item.name}}</div>
                                                             <div class="col-sm-8" v-bind:class="{'full-text':item.type=='file'}">
@@ -726,7 +730,7 @@
                                     </div>
                                     <div v-show="currentApi.result" class="api-result-box">
                                         <i v-show="!!currentApi.result && (flag.resultActive=='content')" id="api-result-copy" class="iconfont icon-copy"></i>
-                                        <i v-show="!!currentApi.result && (flag.resultActive=='content')" class="iconfont icon-openwindow" v-on:click="openNewWindow"></i>
+                                        <i v-show="!!currentApi.result && currentApi.contentType=='HTML' && (flag.resultActive=='content')" class="iconfont icon-openwindow" v-on:click="openNewWindow"></i>
                                         <i v-show="!!currentApi.result && (flag.resultActive=='headers')" id="api-result-header-copy" class="iconfont icon-copy"></i>
                                         <div id="api-result">
                                             <pre v-show="flag.resultActive=='content'" id="api-result-content">{{{currentApi.result}}}</pre>
@@ -822,8 +826,9 @@
                 </div>
             </template>
         </div>
+        <!-- view end -->
 
-
+        <!-- environment start -->
         <div class="modal env-modal" v-cloak v-if="status.envModal">
             <div class="modal-header">
                 <i class="iconfont icon-close modal-close" v-on:click="status.envModal=false"></i>
@@ -864,16 +869,208 @@
                 </div>
             </div>
         </div>
+        <!-- environment end -->
+        </div>
+        <div v-else>
+            <div class="ta-c api-error-tip">
+                <i class="iconfont icon-cloud"></i>
+                <p style="font-size: 24px">模块列表为空,请先创建模块</p>
+            </div>
+        </div>
 
+        <!-- modal list start -->
+        <div class="modal" v-cloak v-if="status.folderModal">
+            <div class="modal-header">
+                <i class="iconfont icon-close modal-close" v-on:click="status.folderModal=false"></i>
+            </div>
+            <div class="modal-content">
+                <div class="modal-layout1 form">
+                    <validator name="ff">
+                        <p class="title">{{!folderName?'创建':'编辑'}}分类</p>
+                        <input type="text" class="k1 text" id="folderName" value="{{folderName}}" maxlength="20"
+                               initial="off"
+                               v-model="folderName"
+                               v-validate:folder-name="{maxlength:20}"
+                               v-bind:autofocus="status.folderModal"
+                               tabindex="1" placeholder="请输入文件夹名称">
+                        <div class="tip" v-if="$ff.folderName.invalid">{{$ff.errors[0].message}}</div>
+                    </validator>
+                    <div class="ta-c actions">
+                        <button class="btn btn-default-box middle" tabindex="3"
+                                v-on:click="status.folderModal=false">取消
+                        </button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button class="btn btn-primary middle" v-on:click="folderSave" tabindex="2">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" v-cloak v-if="status.moduleModal">
+            <div class="modal-header">
+                <i class="iconfont icon-close modal-close" v-on:click="status.moduleModal=false"></i>
+            </div>
+            <div class="modal-content">
+                <div class="modal-layout1 form">
+                    <validator name="mf">
+                        <p class="title">{{!moduleName?'创建':'编辑'}}模块</p>
+                        <input type="text" maxlength="20" id="moduleName" class="k1 text" v-model="moduleName"
+                               value="{{moduleName}}"
+                               initial="off"
+                               v-validate:module-name="{maxlength:20}"
+                               v-bind:autofocus="status.folderModal"
+                               tabindex="1" placeholder="请输入模块名称">
+                        <div class="tip" v-if="$mf.moduleName.invalid">{{$mf.errors[0].message}}</div>
+                        <div class="ta-c actions">
+                            <button class="btn btn-default-box middle" tabindex="3"
+                                    v-on:click="status.moduleModal=false">
+                                取消
+                            </button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-primary middle" v-on:click="moduleSave" tabindex="2">确定</button>
+                        </div>
+                    </validator>
+                </div>
+            </div>
+        </div>
+        <div class="modal" v-cloak v-if="status.importModal">
+            <div class="modal-header">
+                <i class="iconfont icon-close modal-close" v-on:click="status.importModal=false"></i>
+            </div>
+            <div class="modal-content">
+                <div class="modal-layout1 form" style="width: 500px">
+                    <validator name="if">
+                        <p class="title">导入JSON</p>
+                        <textarea rows="15" class="k1 text" v-model="importValue" initial="off"
+                                  v-bind:autofocus="status.importModal"
+                                  tabindex="1" placeholder="请粘贴导入的数据"></textarea>
+                        <div class="ta-c actions">
+                            <button class="btn btn-default-box middle" tabindex="3"
+                                    v-on:click="status.importModal=false">
+                                取消
+                            </button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-primary middle" v-on:click="importOk" tabindex="2">确定</button>
+                        </div>
+                    </validator>
+                </div>
+            </div>
+        </div>
+        <div class="modal" v-cloak v-if="status.moveCopyModal">
+            <div class="modal-header">
+                <i class="iconfont icon-close modal-close" v-on:click="status.moveCopyModal=false"></i>
+            </div>
+            <div class="modal-content">
+                <div class="modal-layout1 form" style="width: 500px">
+                    <p class="title">{{flag.move?'移动':'复制'}}{{flag.moveCopyName}}</p>
+                    <div class="item">
+                        <div class="label col-sm-2">选择模块</div>
+                        <div class="col-sm-10 full-text">
+                            <select class="text" v-model="flag.moveCopySelectModuleId">
+                                <option v-for="item in modules" v-bind:value="item.id">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="item" v-for="m in modules" v-if="flag.moveCopySelectModuleId==m.id && flag.moveCopyName=='接口'">
+                        <div class="label col-sm-2">选择分类</div>
+                        <div class="col-sm-10 full-text">
+                            <select class="text" v-model="flag.moveCopySelectFolderId">
+                                <option v-for="item in m.folders" v-bind:value="item.id">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="ta-c actions">
+                        <button class="btn btn-default-box middle" tabindex="3"
+                                v-on:click="status.moveCopyModal=false">
+                            取消
+                        </button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button class="btn btn-primary middle" v-on:click="copyMoveOk" tabindex="2">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" v-cloak v-if="status.shareModal">
+            <div class="modal-header">
+                <i class="iconfont icon-close modal-close" v-on:click="status.shareModal=false"></i>
+            </div>
+            <div class="modal-content api-share">
+                <div class="modal-layout-box form" v-show="!status.shareCreateModal">
+                    <p class="title">分享列表</p>
+                    <ul>
+                        <li class="api-share-item" v-for="item in shares">
+                            <div class="cb">
+                                <a class="fl api-share-title" target="_blank" v-link="'/share/'+item.id">[{{item.username}}] {{item.name}}</a>
+                                <div class="fr">
+                                    <i class="iconfont icon-lock" v-on:click="shareItemClockClick"></i>
+                                    <i class="iconfont icon-close" v-on:click="deleteShare(item)"></i>
+                                </div>
+                                <input type="text" placeholder="空则表示不用密码" v-on:blur="shareItemPasswordBlur(item,$event)" data-value="{{item.password}}" class="text api-share-pwd-box" value="{{item.password}}">
+                            </div>
+                            <div class="cb">
+                                <span v-if="item.shareAll == 'YES'">所有模块</span>
+                                <span v-else>
+                                    <span v-for="m in item.shareModules">{{m.name}},</span>
+                                </span>
+                                <span class="fr">{{item.createTime}}</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <br/>
+                    <button class="btn btn-primary middle" v-on:click="status.shareCreateModal=true">创建新分享</button>
+                </div>
+                <div class="modal-layout-box form " v-show="status.shareCreateModal">
+                    <form onsubmit="return false;" id="share-form" >
+                        <p class="title">创建新的分享</p>
+                        <div class="item">
+                            <div class="col-sm-2 label">整个项目</div>
+                            <div class="col-sm-10 full-text">
+                                <input type="checkbox" v-model="flag.shareAll">
+                            </div>
+                        </div>
+                        <div class="item" v-if="!flag.shareAll">
+                            <div class="col-sm-2 label">勾选模块</div>
+                            <div class="col-sm-10 full-text">
+                                <label v-for="item in modules" class="api-share-cm-label">
+                                    <input type="checkbox" name="moduleId" value="{{item.id}}"> {{item.name}}</label>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="col-sm-2 label">名称</div>
+                            <div class="col-sm-10">
+                                <input type="text" name="name" maxlength="20" class="text" placeholder="请输入分享的名称">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="col-sm-2 label">阅读密码</div>
+                            <div class="col-sm-10">
+                                <input type="text" name="password" maxlength="10" class="text" placeholder="请输入阅读密码">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="col-sm-2 label"></div>
+                            <div class="col-sm-10">
+                                <button class="btn btn-default-box middle" tabindex="3"
+                                        v-on:click="status.shareCreateModal=false">返回
+                                </button>
+                                <button class="btn btn-primary middle" v-on:click="shareCreate" tabindex="2">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- modal list end -->
     </template>
 
+    <!-- loading start -->
     <template v-if="status.loading">
         <div class="spinner">
             <div class="double-bounce1"></div>
             <div class="double-bounce2"></div>
         </div>
     </template>
-
+    <!-- loading end -->
 </template>
 
 

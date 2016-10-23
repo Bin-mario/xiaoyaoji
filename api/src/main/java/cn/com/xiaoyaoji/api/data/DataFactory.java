@@ -19,6 +19,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.lang3.*;
 import org.apache.log4j.Logger;
 
@@ -353,13 +354,13 @@ public class DataFactory implements Data {
         return process(new Handler<List<Project>>() {
             @Override
             public List<Project> handle(Connection connection, QueryRunner qr) throws SQLException {
-                StringBuilder sql = new StringBuilder("select DISTINCT p.*,u.nickname userName from ").append(TableNames.PROJECT)
+                StringBuilder sql = new StringBuilder("select DISTINCT p.*,u.nickname userName,pu.editable,pu.commonlyUsed from ").append(TableNames.PROJECT)
                         .append(" p left join user u on u.id = p.userId ")
                         .append(" left join project_user pu on pu.projectId = p.id ")
-                        .append("  where (p.userId=? or pu.userId=?) and p.status='VALID'")
+                        .append("  where ( pu.userId=?) and p.status='VALID'")
                         .append(" order by createTime asc")
                         ;
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Project.class),userId,userId);
+                return qr.query(connection,sql.toString(),new BeanListHandler<>(Project.class),userId);
             }
         });
     }
@@ -369,7 +370,7 @@ public class DataFactory implements Data {
         return process(new Handler<List<User>>() {
             @Override
             public List<User> handle(Connection connection, QueryRunner qr) throws SQLException {
-                StringBuilder sql = new StringBuilder("select u.id,u.nickname,u.avatar,email from user u left join project_user pu on pu.userId=u.id where pu.projectId=?");
+                StringBuilder sql = new StringBuilder("select u.id,u.nickname,u.avatar,u.email,pu.editable from user u left join project_user pu on pu.userId=u.id where pu.projectId=?");
                 return qr.query(connection,sql.toString(),new BeanListHandler<>(User.class),projectId);
             }
         });
@@ -380,7 +381,7 @@ public class DataFactory implements Data {
         return process(new Handler<List<User>>() {
             @Override
             public List<User> handle(Connection connection, QueryRunner qr) throws SQLException {
-                StringBuilder sql = new StringBuilder("select u.id,u.nickname,avatar,email from "+TableNames.USER+" u \n" +
+                StringBuilder sql = new StringBuilder("select u.id,u.nickname,avatar,u.email from "+TableNames.USER+" u \n" +
                         "where u.id in (\n" +
                         "\tselect userId from "+TableNames.PROJECT_USER+" where projectId in (\n" +
                         "\t\tselect projectId from "+TableNames.PROJECT_USER+" where userId=?\n" +
@@ -592,7 +593,7 @@ public class DataFactory implements Data {
         return process(new Handler<Boolean>() {
             @Override
             public Boolean handle(Connection connection, QueryRunner qr) throws SQLException {
-                String sql = new StringBuilder("select count(id) from ").append(TableNames.PROJECT_USER).append(" where userId=? and projectId=?").toString();
+                String sql = new StringBuilder("select count(id) from ").append(TableNames.PROJECT_USER).append(" where userId=? and projectId=? and editable='YES'").toString();
                 return qr.query(connection,sql,new IntegerResultHandler(),userId,projectId)>0;
             }
         });
@@ -706,6 +707,7 @@ public class DataFactory implements Data {
                 pu.setCreateTime(new Date());
                 pu.setProjectId(project.getId());
                 pu.setStatus(ProjectUser.Status.ACCEPTED);
+                pu.setEditable(project.getEditable());
                 sb = SqlUtils.generateInsertSQL(pu);
                 rs += qr.update(connection,sb.getSql(),sb.getParams());
                 return rs;
@@ -749,6 +751,124 @@ public class DataFactory implements Data {
             @Override
             public String handle(Connection connection, QueryRunner qr) throws SQLException {
                 return qr.query(connection,"select name from "+TableNames.INTERFACES+" where id = ?",new StringResultHandler(),interfaceId);
+            }
+        });
+    }
+
+    @Override
+    public String getProjectEditable(final String projectId, final String userId) {
+        return process(new Handler<String>() {
+            @Override
+            public String handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.query(connection,"select editable from "+SqlUtils.getTableName(ProjectUser.class)+" where projectId=? and userId=? limit 1",new StringResultHandler(),projectId,userId);
+            }
+        });
+    }
+
+    @Override
+    public int updateProjectUserEditable(final String projectId, final String userId, final String editable) {
+        return process(new Handler<Integer>() {
+            @Override
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                String sql = "update "+SqlUtils.getTableName(ProjectUser.class)+" set editable=? where projectId = ? and userId = ?";
+                return qr.update(connection,sql,editable,projectId,userId);
+            }
+        });
+    }
+
+    @Override
+    public int updateCommonlyUsedProject(final String projectId, final String userId, final String isCommonlyUsed) {
+        return process(new Handler<Integer>() {
+            @Override
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                String sql = "update "+SqlUtils.getTableName(ProjectUser.class)+" set commonlyUsed=? where projectId = ? and userId = ?";
+                return qr.update(connection,sql,isCommonlyUsed,projectId,userId);
+            }
+        });
+    }
+
+    @Override
+    public List<Module> getModules(final String[] moduleIdsArray) {
+        return process(new Handler<List<Module>>() {
+            @Override
+            public List<Module> handle(Connection connection, QueryRunner qr) throws SQLException {
+                StringBuilder sql = new StringBuilder();
+                sql.append("select * from ")
+                        .append(TableNames.MODULES)
+                        .append(" where id in (");
+                for(String moduleId: moduleIdsArray) {
+                    sql.append("?,");
+                }
+                sql = sql.delete(sql.length()-1,sql.length());
+                sql.append(") order by createTime asc");
+                return qr.query(connection,sql.toString(),new BeanListHandler<>(Module.class),moduleIdsArray);
+            }
+        });
+    }
+
+    @Override
+    public List<InterfaceFolder> getFoldersByModuleIds(final String[] moduleIds) {
+        return process(new Handler<List<InterfaceFolder>>() {
+            @Override
+            public List<InterfaceFolder> handle(Connection connection, QueryRunner qr) throws SQLException {
+                StringBuilder sql = new StringBuilder();
+                sql.append("select * from ").append(TableNames.INTERFACE_FOLDER);
+                sql.append(" where moduleId in (");
+                for(String moduleId: moduleIds) {
+                    sql.append("?,");
+                }
+                sql = sql.delete(sql.length()-1,sql.length());
+                sql.append(") order by createTime asc");
+                return qr.query(connection,sql.toString(),new BeanListHandler<>(InterfaceFolder.class),moduleIds);
+            }
+        });
+    }
+
+    @Override
+    public List<Interface> getInterfacesByModuleIds(final String[] moduleIds) {
+        return process(new Handler<List<Interface>>() {
+            @Override
+            public List<Interface> handle(Connection connection, QueryRunner qr) throws SQLException {
+                StringBuilder sql = new StringBuilder("select * from ")
+                        .append(TableNames.INTERFACES)
+                        .append(" where moduleId in (");
+                for(String moduleId: moduleIds) {
+                    sql.append("?,");
+                }
+                sql = sql.delete(sql.length()-1,sql.length());
+                sql.append(" )order by createtime asc");
+                return qr.query(connection,sql.toString(),new BeanListHandler<>(Interface.class),moduleIds);
+            }
+        });
+    }
+
+    @Override
+    public List<Share> getSharesByProjectId(final String projectId) {
+        return process(new Handler<List<Share>>() {
+            @Override
+            public List<Share> handle(Connection connection, QueryRunner qr) throws SQLException {
+                StringBuilder sql = new StringBuilder();
+                sql.append("select s.*,u.nickname username from share s\n");
+                sql.append("left join user u on u.id = s.userid\n");
+                sql.append("where s.projectId = ?");
+                return qr.query(connection,sql.toString(),new BeanListHandler<>(Share.class),projectId);
+            }
+        });
+    }
+
+    @Override
+    public List<Map<String,Object>> getModuleNameIdsInIds(final String[] moduleIdsArray) {
+        return process(new Handler<List<Map<String,Object>>>() {
+            @Override
+            public List<Map<String,Object>> handle(Connection connection, QueryRunner qr) throws SQLException {
+                StringBuilder sql = new StringBuilder();
+                sql.append("select id,name from module where id in (");
+                for(String moduleId : moduleIdsArray){
+                    sql.append("?,");
+                }
+                sql = sql.delete(sql.length()-1,sql.length());
+                sql.append(") order by createTime asc ");
+                return qr.query(connection,sql.toString(),new MapListHandler(),moduleIdsArray);
             }
         });
     }

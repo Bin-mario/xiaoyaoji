@@ -29,4 +29,7 @@ public interface TableNames {
     String PROJECT_USER=SqlUtils.getTableName(ProjectUser.class);
     //
     String FIND_PASSWORD =SqlUtils.getTableName(FindPassword.class);
+
+    String SHARE =SqlUtils.getTableName(Share.class);
+
 }

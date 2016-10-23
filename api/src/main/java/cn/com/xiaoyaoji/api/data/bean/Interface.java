@@ -34,6 +34,21 @@ public class Interface {
     private Date lastUpdateTime;
     private String dataType;
     private String protocol;
+    private String status;
+
+    public interface Status{
+        //启用
+        String ENABLE = "ENABLE";
+        //已废弃
+        String DEPRECATED="DEPRECATED";
+    }
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getId() {
         return id;

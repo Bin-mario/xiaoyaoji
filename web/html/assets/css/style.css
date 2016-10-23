@@ -1,4 +1,4 @@
-@import "//at.alicdn.com/t/font_1474898243_9090984.css";
+@import "//at.alicdn.com/t/font_1477205286_5599656.css";
 @import "button.css";
 @import "../toastr/toastr.min.css";
 @import "../pace/pace.min.css";
@@ -37,6 +37,9 @@ body{
 
 article, aside, footer, header, main, nav, section,code {
     display: block;
+}
+pre, xmp, plaintext, listing{
+    font:13px/1.5 consolas,'Microsoft Yahei',tahoma,sans-serif;
 }
 code{
     background: #E7E7E7;
@@ -91,6 +94,7 @@ input,textarea{
     font-size: 14px;
     border: 1px solid #C3C3C3;
     box-sizing: border-box;
+    font-family: consolas,'Microsoft Yahei',tahoma,sans-serif
 }
 .text.k1,.btn.k1{
     padding: 10px;
@@ -152,6 +156,22 @@ body.modal-open{
 .modal-layout2{
     width: 350px;
     margin: 100px auto;
+}
+.modal-layout3{
+    width: 500px;
+    margin: 100px auto;
+}
+.modal-layout-box{
+    width: 500px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 2px 2px 5px #ccc;
+    margin: 100px auto;
+    padding: 15px;
+}
+.modal-layout-box .title{
+    padding: 0!important;
+    font-weight: bold;
+    margin: 10px 0;
 }
 .env-modal{
 
@@ -223,8 +243,9 @@ body.modal-open{
     width: 100%;
 }
 .div-table-header li{
-    background-color: #ccc;
+    background-color: #fff;
     padding: 8px 10px;
+    border-top:1px solid #ccc!important
 }
 .div-table-line li{
     padding: 4px 0 4px 10px;
@@ -926,6 +947,48 @@ section{
     border-radius: 4px;
     margin-right: 5px;
 }
+.api-menus{
+    position: absolute;
+    z-index: 15;
+    width: 250px;
+    background-color: #fff;
+    border:1px solid #e5e5e5;
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    right: 15px;
+    top: 100px;
+    display: none;
+}
+.api-menus ul{
+    padding: 15px;
+}
+.api-menus li{
+    float: left;
+    width: 33%;
+    text-align: center;
+}
+.api-menus li a{
+    padding: 10px 10px 1px 10px;
+    font-size: 12px;
+    display: block;
+}
+.api-menus li i{
+    font-size: 30px;
+    color: #716f6f;
+}
+.api-menus a:hover i{
+    color: #00B290;
+}
+.api-sanjiaoxings{
+    position: absolute;
+    right: 20px;
+    top: -22px;
+}
+.api-menus .icon-sanjiaoxing{
+    font-size: 25px;
+    color: #fff;
+    text-shadow: 0 -1px 1px #ccc;
+}
+
 .api-fn-actions{
     padding-left: 3px;
     margin-bottom: 10px;
@@ -949,12 +1012,18 @@ section{
 .api-chose-list{
     padding-left: 20px!important;
 }
-.api-chose-list>div{
-    border: 1px solid #e0e0e0;
+.api-chose-list div{
     display: inline-block;
+}
+.api-chose-list div.div-select{
+    border: 1px solid #e0e0e0;
     border-radius: 2px;
 }
-.api-chose-list>div:hover{
+#ace-editor-box{
+    min-height: 250px;
+}
+
+.api-chose-list div.div-select:hover{
     background-color: #e6e6e6;
     border-color: #adadad;
 }
@@ -1002,6 +1071,7 @@ section{
     padding: 0 8px;
     line-height: 50px;
     height: 50px;
+    position: relative;
 }
 .api-module i{
     margin:0;
@@ -1019,17 +1089,17 @@ section{
     width: 14px;
     height:14px;
 }
-.api-module:hover{
-    color:#fff;
-}
 .api-module.active{
     border-bottom-color: #fff;
+}
+.api-module.active span{
     color: #fff;
 }
 .api-module span{
     cursor: pointer;
     display: inline-block;
     min-width: 20px;
+    color: #fff;
 }
 .db-api-error{
     padding:20px;
@@ -1046,10 +1116,42 @@ section{
 .api-view-env-items li{
     cursor: pointer;
 }
+.api-share{
+
+}
+.api-share .api-share-item{
+    position: relative;
+    padding: 10px 0;
+}
+.api-share .api-share-title{
+    color: #00B290;
+    text-decoration: underline;
+}
+.api-share .api-share-pwd-box{
+    position: absolute;
+    width: 150px;
+    right: 0;
+    top: 0;
+    display: none;
+}
+.api-share .api-share-cm-label{
+    margin-right: 5px;
+}
 .apis{
 }
 .apis li{
     position: relative;
+}
+.apis li.sortable-placeholder{
+    background-color: #ddecf4;
+    display: block;
+    width: 100%;
+    height: 34px;
+}
+.apis li .handle{
+    position: absolute;
+    top: 5px;
+    right: 0;
 }
 .api-container{
     background: #fff;
@@ -1111,10 +1213,16 @@ section{
 .apis-nav-sub .api-name{
     padding-left: 35px;
 }
+.apis-nav-sub .api-name span.deprecated{
+    text-decoration: line-through;
+}
 .apis-nav-sub .api-name span{
     /*padding: 10px 0;*/
     min-width:20px;
     display: inline-block;
+}
+.api-module-item .api-item-actions{
+    right: 11px;
 }
 .api-item-actions{
     position: absolute;
@@ -1124,6 +1232,8 @@ section{
     z-index: 2;
     right: 0;
     top: 35px;
+    color: #4e4e4e;
+    min-width: 70px;
 }
 .api-item-actions div{
     line-height: 20px;
@@ -1157,11 +1267,31 @@ section{
     right: 0;
     top:0;
 }
+.api-module-search{
+    position: relative;
+}
+.api-module-search:hover .text{
+    border-color: #fff;
+}
+.api-module-search .text{
+    font-size: 12px;
+    color: #fff;
+    background-color: transparent;
+    border-color: transparent;
+    width: 150px;
+}
+.api-module-search i{
+    position: absolute;
+    right: 5px;
+    top: 0;
+}
+
 
 .api-content{
     padding: 0 20px;
     min-height: 400px;
     width: 945px;
+    position: relative;
 }
 
 @media (min-width:1800px) {
@@ -1182,19 +1312,25 @@ section{
     font-size: 24px;
     margin-left:0;
 }
+.editormd-html-preview, .editormd-preview-container{
+    padding: 5px!important;
+}
 .api-content .api-update-time{
     color: #666;
-    margin-top: 5px;
     white-space:nowrap;
+    top:5px;
+    right: 0px;
+    position: absolute;
+    z-index: 1;
 }
 .api-details{
     position: relative;
     padding-top: 1px;
 }
 .api-details-title{
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
-    margin:15px 0 8px 0;
+    margin:10px 0 8px 0;
 }
 .api-details-title.second{
     font-size: 13px;
@@ -1528,16 +1664,31 @@ body.profile .dbl-userinfo{
 .db-search-box input{
     border-color: #E5E5E5;
 }
-.db-left .db-item{padding-left: 26px;margin-bottom: 10px;}
+.db-left .db-item{
+    display: -webkit-flex;
+    display: flex;
+    padding-left: 26px;
+    margin-bottom: 10px;}
 
-.db-left .db-item a{
-    display: block;
+.db-left .db-item a{ 
+    -webkit-flex: 3;
+    flex: 3;   
     height: 40px;
-    width: 100%;
+    width: 50%;
     line-height: 40px;
+}
+.db-left .db-item .shoucang{
+    -webkit-flex: 1;
+    flex: 1;
+    display: none;
+    text-align: center;
 }
 .db-left .db-item.active{
     background-color: #fff;
+}
+.db-left .db-item:hover .shoucang{
+    display: block;
+    color: #00b290;
 }
 .db-left .db-item i{
     margin-right: 10px;

@@ -249,4 +249,43 @@ public class ServiceFactory {
         return DataFactory.instance().getInterfaceName(interfaceId);
     }
 
+    public String getProjectEditable(String projectId, String userId) {
+        return DataFactory.instance().getProjectEditable(projectId,userId);
+    }
+
+    public int updateProjectUserEditable(String projectId, String userId, String editable) {
+        return DataFactory.instance().updateProjectUserEditable(projectId,userId,editable);
+    }
+
+    public int updateCommonlyUsedProject(String projectId, String userId, String isCommonlyUsed) {
+        return DataFactory.instance().updateCommonlyUsedProject(projectId,userId,isCommonlyUsed);
+    }
+
+    public Share getShare(String id) {
+        return DataFactory.instance().getById(Share.class,id);
+    }
+
+    public List<Module> getModules(String[] moduleIds) {
+        return ResultUtils.list(DataFactory.instance().getModules(moduleIds));
+    }
+
+    public List<InterfaceFolder> getFoldersByModuleIds(String[] moduleIds) {
+        return ResultUtils.list(DataFactory.instance().getFoldersByModuleIds(moduleIds));
+    }
+
+    public List<Interface> getInterfacesByModuleIds(String[] moduleIds) {
+        return ResultUtils.list(DataFactory.instance().getInterfacesByModuleIds(moduleIds));
+    }
+
+    public List<Share> getSharesByProjectId(String projectId) {
+        List<Share> shares =  ResultUtils.list(DataFactory.instance().getSharesByProjectId(projectId));
+        if(shares.size()>0){
+            for(Share s:shares){
+                if(!Share.ShareAll.YES.equals(s.getShareAll())){
+                    s.setShareModules(ResultUtils.list(DataFactory.instance().getModuleNameIdsInIds(s.getModuleIdsArray())));
+                }
+            }
+        }
+        return shares;
+    }
 }

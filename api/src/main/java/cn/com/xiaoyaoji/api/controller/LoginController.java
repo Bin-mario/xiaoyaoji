@@ -43,6 +43,7 @@ public class LoginController {
         // AssertUtils.isTrue(User.Type.ADMIN.equals(user.getType()),"无权访问");
         String token = MemoryUtils.token();
         MemoryUtils.putUser(token, user);
+        parameter.getRequest().getSession().setAttribute("user",user);
         return new _HashMap<>().add("token", token).add("user", user);
     }
 

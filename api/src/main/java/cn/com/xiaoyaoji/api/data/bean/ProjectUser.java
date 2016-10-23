@@ -15,11 +15,30 @@ public class ProjectUser {
     private String userId;
     private Date createTime;
     private String status;
+    private String editable;
+    private String commonlyUsed;
 
     public interface Status{
         String PENDING="PENDING";
         String ACCEPTED="ACCEPTED";
         String REFUSED="REFUSED";
+    }
+
+    public interface Editable {
+        String YES="YES";
+        String NO="NO";
+    }
+    public interface CommonlyUsed{
+        String YES="YES";
+        String NO="NO";
+    }
+
+    public String getEditable() {
+        return editable;
+    }
+
+    public void setEditable(String editable) {
+        this.editable = editable;
     }
 
     public String getId() {
@@ -60,5 +79,13 @@ public class ProjectUser {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCommonlyUsed() {
+        return commonlyUsed;
+    }
+
+    public void setCommonlyUsed(String commonlyUsed) {
+        this.commonlyUsed = commonlyUsed;
     }
 }

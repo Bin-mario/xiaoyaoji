@@ -8,7 +8,7 @@
     <listener>
         <listener-class>cn.com.xiaoyaoji.api.listener.ContextListener</listener-class>
     </listener>
-
+    <!--
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.css</url-pattern>
@@ -25,6 +25,7 @@
         <url-pattern>*.crx</url-pattern>
         <url-pattern>*.font</url-pattern>
     </servlet-mapping>
+    -->
 
 
     <servlet>

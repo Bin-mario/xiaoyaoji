@@ -27,6 +27,8 @@ public class User implements Serializable {
     private boolean bindWeibo;
     @Ignore
     private boolean bindGithub;
+    @Ignore
+    private String editable;
 
     public interface Type{
         String USER="USER";
@@ -126,5 +128,13 @@ public class User implements Serializable {
 
     public void setBindGithub(boolean bindGithub) {
         this.bindGithub = bindGithub;
+    }
+
+    public String getEditable() {
+        return editable;
+    }
+
+    public void setEditable(String editable) {
+        this.editable = editable;
     }
 }

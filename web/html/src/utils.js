@@ -1,10 +1,10 @@
 import "./vue.ex";
 var utils = {
     config: {
-        root: window.root,
-        ctx: window.ctx,
+        root: (window._xyj_.api || '' )+'/api',
+        ctx: '',
         vue:false,
-        websocket:window._xyj_.ws,
+        websocket:(window._xyj_.ws || ('ws://'+location.host)),
         version:window._xyj_.version
     },
     push: function (data, item) {
@@ -40,8 +40,8 @@ var utils = {
         if (data === undefined)
             return data;
         if (data.constructor.name == 'String') {
-            //data = data.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":');
-            data=data.replace(/:\s*"([^"]*)"/g, function(match, p1) {
+            //有bug,暂时去掉
+            /*data=data.replace(/:\s*"([^"]*)"/g, function(match, p1) {
                 return ': "' + p1.replace(/:/g, '@colon@') + '"';
             })
                 .replace(/:\s*'([^']*)'/g, function(match, p1) {
@@ -50,7 +50,7 @@ var utils = {
                 .replace(/(['"])?([a-z0-9A-Z_]+)(['"])?\s*:/g, '"$2": ')
                 .replace(/@colon@/g, ':')
             ;
-            data = data.replace(/\s/g, '');
+            data = data.replace(/\s/g, '');*/
             return JSON.parse(data);
         }
         return data;
@@ -76,10 +76,10 @@ var utils = {
             expired:expired
         });
     },
-    post: function (url, params, success, error) {
+    post: function (url, data, success, error) {
         this.ajax({
             url: url,
-            data: params,
+            data: data,
             type: 'post',
             dataType: 'json',
             success: success,
@@ -169,7 +169,7 @@ var utils = {
                 localStorage.clear();
                 localStorage.setItem('user',JSON.stringify(rs.data.user));
                 localStorage.setItem('token',rs.data.token);
-                location.href=utils.config.ctx+'/dashboard';
+                location.href=utils.config.ctx+'/dashboard/';
             });
         },
         success:function(token,user,href){
@@ -178,9 +178,15 @@ var utils = {
             if(href){
                 location.href=href;
             }else{
-                location.href=utils.config.ctx+'/dashboard';
+                location.href=utils.config.ctx+'/dashboard/';
             }
         }
+    },
+    copy:function(source){
+        return $.extend(true,{},source);
+    },
+    copyArray:function(source){
+        return $.extend(true,[],source);
     }
 };
 $._ajax_ = function(params){
@@ -208,7 +214,7 @@ $._ajax_ = function(params){
             if(expired && expired(rs)){
                 return true;
             }
-            if (location.href.indexOf('/project/demo') != -1){
+            if (location.href.indexOf('/project/demo') != -1 ){
                 toastr.error('请登陆后尝试');
                 return true;
             }

@@ -20,7 +20,7 @@ new Vue({
                 utils.token(rs.data.token);
                 utils.user(rs.data.user);
                 toastr.success('注册成功!');
-                location.href=utils.config.ctx+'/dashboard';
+                location.href=utils.config.ctx+'/dashboard/';
             });
             _czc.push(['_trackEvent', '注册', '账户密码']);
         }

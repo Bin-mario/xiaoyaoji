@@ -30,6 +30,13 @@ public class Project {
     private String environments;
     //详细说明
     private String details;
+    //是否可编辑
+    @Ignore
+    private String editable;
+    //是否常用项目
+    @Ignore
+    private String commonlyUsed;
+
 
     public interface Status{
         String VALID="VALID";
@@ -144,5 +151,22 @@ public class Project {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+
+    public String getEditable() {
+        return editable;
+    }
+
+    public void setEditable(String editable) {
+        this.editable = editable;
+    }
+
+    public String getCommonlyUsed() {
+        return commonlyUsed;
+    }
+
+    public void setCommonlyUsed(String commonlyUsed) {
+        this.commonlyUsed = commonlyUsed;
     }
 }

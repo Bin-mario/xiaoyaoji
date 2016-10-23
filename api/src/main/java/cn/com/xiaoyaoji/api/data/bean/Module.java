@@ -22,6 +22,10 @@ public class Module {
     private Date lastUpdateTime;
     private Date createTime;
     private String projectId;
+    //请求头
+    private String requestHeaders;
+    //请求参数
+    private String requestArgs;
 
     @Ignore
     private List<InterfaceFolder> folders=new ArrayList<>();
@@ -80,6 +84,22 @@ public class Module {
 
     public void setFolders(List<InterfaceFolder> folders) {
         this.folders = folders;
+    }
+
+    public String getRequestHeaders() {
+        return requestHeaders;
+    }
+
+    public void setRequestHeaders(String requestHeaders) {
+        this.requestHeaders = requestHeaders;
+    }
+
+    public String getRequestArgs() {
+        return requestArgs;
+    }
+
+    public void setRequestArgs(String requestArgs) {
+        this.requestArgs = requestArgs;
     }
 
 }

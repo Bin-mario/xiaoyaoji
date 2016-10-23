@@ -18,18 +18,21 @@ ResponseArgsVue.props = ['responseArgs', 'editing'];
 //this is nothing
 var gdata = {
     status: {
-        folderModal: false,
-        moduleModal: false,
-        importModal: false,
-        envModal: false,
-        loading: true,
-        apiLoading: false,
-        moveCopyModal: false,
-        moveCopyId: '' ,
-        showEnvs:false,
-        showEnvValues:false
+        folderModal: false, //文件夹新增编辑模态
+        moduleModal: false, //模块新增编辑模态
+        importModal: false, //导入json模态
+        shareModal:false,    //分享模态
+        shareCreateModal:false,
+        envModal: false,    //环境变量编辑模态
+        loading: true,      //loading
+        apiLoading: false,  //api价值
+        moveCopyModal: false,//复制移动模态
+        moveCopyId: '' ,     //复制移动id
+        showEnvs:false,      //环境变量显示状态
+        showEnvValues:false,
+        showModuleGlobal:false
     },
-    ws: {
+    ws: { //websocket操作
         instance: null,
         connected: false,
         message: '',
@@ -45,9 +48,10 @@ var gdata = {
             }
         }
     },
-    flag: {
+    flag: { //临时变量标识对象
         import: null,
-        actionId: null,
+        actionId: null,//api下拉
+        moduleActionId:'',//module 下拉
         move: null,
         moveCopyName: null,
         moveCopySelectModuleId: null,
@@ -60,30 +64,38 @@ var gdata = {
         tab:'body',
         headers:["User-Agent","Accept","Accept-Charset","Accept-Encoding","Accept-Language","Accept-Datetime","Authorization","Cache-Control","Connection","Cookie","Content-Length","Content-MD5","Content-Type"],
         requests:["name","id","password","email","createtime","datetime","createTime","dateTime","user","code","status","type","msg","message","time","image","file","token","accesstoken","access_token","province","city","area","description","remark","logo"],
-        responses:["name","id","password","email","createtime","datetime","createTime","dateTime","user","code","status","type","msg","message","error","errorMsg","test","fileAccess","image","require","token","accesstoken","accessToken","access_token","province","city","area","remark","description","logo"]
+        responses:["name","id","password","email","createtime","datetime","createTime","dateTime","user","code","status","type","msg","message","error","errorMsg","test","fileAccess","image","require","token","accesstoken","accessToken","access_token","province","city","area","remark","description","logo"],
+        searchInput:'',
+        shareAll:false,
+        needPassword:false,
+        password:''
     },
-    error: {
+    error:{ //错误标识
         projectNotExists: false,
         noModule: false,
         noInterface: false
     },
-    envs:null,
-    importValue: null,
-    editing: false,
-    folderName: '',
-    moduleName: '',
-    showGuide: true,
-    modules: [],
-    project: {},
-    currentApi: {result: null},
-    currentModule: {},
-    currentFolder: null,
-    currentEnv: null,
-    id: '',
-    extVer: false,
-    collapse: false,
-    results: {}
+    share:true,
+    envs:null, //环境变量
+    importValue: null,  //导入的json值
+    editing: false,     //编辑状态
+    folderName: '',     //文件夹名称
+    moduleName: '',     //模块名称
+    show:'doc',
+    modules: [],        //当前项目的所有模块数据
+    tempModules:[],     //用于搜索
+    project: {},        //当前项目数据
+    currentApi: {result: null},//当前api对象
+    currentModule: {},  //当前模块对象
+    currentFolder: null,  //当前文件夹数据
+    currentEnv: null,   //当前环境变量数据
+    id: '',             //当前项目id
+    extVer: false,      //浏览器扩展版本
+    collapse: false,    //文件夹折叠状态
+    results: {},         //所有结果临时数据
+    shares:null
 };
+//页面全局变量
 var page = {
     x2js:new X2JS(),
     listener:{
@@ -97,8 +109,13 @@ var page = {
             xhrComplete(gdata, e);
         }
     },
+    pushMessage:function(data){
+        var detail = {createTime:new Date().toLocaleString(),content:data};
+        document.dispatchEvent(new CustomEvent('project.message',{detail:detail}));
+    },
     updateInterface:function(id){
         utils.get('/interface/'+id+'.json',{},function(rs){
+            page.pushMessage('修改接口：'+rs.data.interface.name);
             let isBreak;
             gdata.modules.forEach(function(m){
                 m.folders.forEach(function(f){
@@ -127,6 +144,7 @@ var page = {
     },
     createInterface:function(newInterfaceId,folderId){
         utils.get('/interface/'+newInterfaceId+'.json',{},function(rs){
+            page.pushMessage('新增接口：'+rs.data.interface.name);
             gdata.modules.forEach(function(m){
                 let isBreak;
                 m.folders.forEach(function(item,i){
@@ -154,10 +172,11 @@ var page = {
                         return true;
                     }
                 });
-                if(index!=0){
+                if(index){
                     if(gdata.currentApi.id == index.id){
-                        gdata.showGuide = true;
+                        gdata.show = 'doc';
                     }
+                    page.pushMessage('删除接口：'+index.name);
                     f.children.$remove(index);
                     return true;
                 }
@@ -169,6 +188,7 @@ var page = {
     },
     createFolder:function(newfolderId,moduleId){
         utils.get('/interfacefolder/'+newfolderId+'.json',{},function(rs){
+            page.pushMessage('新增分类：'+rs.data.folder.name);
             gdata.modules.forEach(function(item){
                 if(item.id == moduleId){
                     item.folders.push(rs.data.folder);
@@ -179,6 +199,7 @@ var page = {
     },
     updateFolder:function(id){
         utils.get('/interfacefolder/'+id+'.json',{},function(rs){
+            page.pushMessage('更新分类：'+rs.data.folder.name);
             gdata.modules.forEach(function(m){
                 let isBreak;
                 m.folders.forEach(function(item,index){
@@ -207,21 +228,24 @@ var page = {
             });
             if(folder!=null){
                 if(gdata.currentApi.folderId == folder.id){
-                    gdata.showGuide = true;
+                    gdata.show = 'doc';
                 }
                 m.folders.$remove(folder);
+                page.pushMessage('删除分类：'+folder.name);
                 return true;
             }
         });
     },
     createModule:function(moduleId){
         utils.get('/module/'+moduleId+'.json',{},function(rs){
+            page.pushMessage('新增模块：'+rs.data.module.name);
             gdata.modules.push(rs.data.module);
         });
 
     },
     updateModule:function(moduleId){
         utils.get('/module/'+moduleId+'.json',{},function(rs){
+            page.pushMessage('更新模块：'+rs.data.module.name);
             gdata.modules.forEach(function(item,index){
                 if(item.id == moduleId){
                     rs.data.module.folders = item.folders;
@@ -243,11 +267,12 @@ var page = {
             if(gdata.currentModule.id == module.id){
                 if (gdata.modules.length > 0) {
                     gdata.currentModule = gdata.modules[0];
-                    gdata.showGuide = true;
+                    gdata.show = 'doc';
                 } else {
                     gdata.error.noModule = true;
                 }
             }
+            page.pushMessage('删除模块：'+module.name);
             gdata.modules.$remove(module);
         }
     },
@@ -255,12 +280,12 @@ var page = {
         instance:null,
         num:0,
         init:function(){
-            var ws = new WebSocket(utils.config.websocket+'/message');
+            var ws = new WebSocket(utils.config.websocket+'/api/message');
             this.instance = ws;
             var self = this;
             function reconnect(){
                 if(self.num<3){
-                    ws = new WebSocket(utils.config.websocket+'/message');
+                    ws = new WebSocket(utils.config.websocket+'/api/message');
                     console.log('reconnect');
                 }
             }
@@ -331,8 +356,140 @@ var page = {
                 this.instance = null;
             }
         }
-    }
+    },
+    defaultView:function(self){
+        self.show = 'doc';
+    },
+    initModules:function(module){
+        if(!module.requestArgs){
+            module.requestArgs = [];
+        }
+        if(!module.requestHeaders){
+            module.requestHeaders = [];
+        }
+        if(!module.folders){
+            module.folders=[];
+        }
+        module.requestArgs = utils.toJSON(module.requestArgs);
+        module.requestHeaders = utils.toJSON(module.requestHeaders);
+    },
+    reget:function(self) {
+        if (!self) {
+            self = gdata;
+        }
+        self.status.loading = true;
+        self.error.projectNotExists = false;
+        self.error.noModule = false;
+        self.error.noInterface = false;
+        self.currentApi = {result: null};
+        let data = {},url='/project/' +self.id + '.json';
+    utils.get(url, data, function (rs) {
+        if (rs.code == 0) {
+            if (!rs.data.project) {
+                self.error.projectNotExists = true;
+                return;
+            }
+            var modules = rs.data.modules;
+            modules.forEach(function(d){
+                page.initModules(d);
+            });
+            self.project = rs.data.project;
+            if(self.project.environments){
+                self.envs = utils.toJSON(self.project.environments);
+                if(!self.envs){
+                    self.envs=[];
+                }
+                if(!Array.isArray(self.envs)){
+                    self.envs=[];
+                }
+                var envId = localStorage.getItem(self.id+'_env');
+                if(envId){
+                    let temp;
+                    self.envs.forEach(function(item){
+                        if(item.id == envId){
+                            temp = item;
+                            return true;
+                        }
+                    });
+                    if(!temp){
+                        temp = self.envs[0];
+                    }
+
+                    self.currentEnv = temp;
+                }else{
+                    self.currentEnv = self.envs[0];
+                }
+                if(!self.currentEnv){
+                    self.currentEnv = {name:'环境切换',vars:[]};
+                }
+                if(!self.currentEnv.vars){
+                    self.currentEnv.vars =[];
+                }
+            }else{
+                self.envs=[];
+                self.currentEnv = {name:'环境切换',vars:[]};
+            }
+            self.project = Object.assign({}, self.project, self.project);
+            gdata.modules = rs.data.modules;
+            gdata.tempModules = rs.data.modules;
+            gdata.currentModule = gdata.modules[0];
+            var isNew = (self.$route.query.n == 'y');
+            if (isNew && self.project.editable=='YES') {
+                self.editing = true;
+                self.show = 'api';
+                self.currentFolder = gdata.modules[0].folders[0];
+                self.currentApi =page.initInterfaceParameters(self.currentFolder.id);
+                initInterface(self, self.currentApi);
+            }
+        }
+        else{
+            toastr.error(rs.errorMsg);
+        }
+    }, function () {
+        self.status.loading = false;
+    });
+},
+    copyMove:function(data, self) {
+        data.targetId = gdata.flag.moveCopyId;
+        gdata.status.moveCopyModal = false;
+        data.projectId = gdata.id;
+        utils.post('/project/' + gdata.id + '/copymove.json', data, function () {
+            toastr.success('操作成功', '', {timeOut: 2000, "positionClass": "toast-top-right"});
+            page.reget(self);
+        });
+    },
+    renderViewBox:function(value) {
+        $('#view-box').html('');
+        setTimeout(function(){
+            editormd.markdownToHTML('view-box', {
+                htmlDecode: "style,script,iframe",  // you can filter tags decode
+                markdown: (value || ''),
+                emoji: false,
+                taskList: false,
+                tex: false,  // 默认不解析
+                flowChart: false,  // 默认不解析
+                sequenceDiagram: false  // 默认不解析
+            });
+        },10)
+    },
+    initInterfaceParameters:function(folderId){
+        return {
+            protocol: localStorage.getItem('form.protocol') || 'HTTP',
+                requestMethod: localStorage.getItem('form.requestMethod') || 'GET',
+            dataType: localStorage.getItem('form.dataType') || 'X-WWW-FORM-URLENCODED',
+            contentType: localStorage.getItem('form.contentType') ||'JSON',
+            requestHeaders: [],
+            requestArgs: [],
+            responseArgs: [],
+            result: '',
+            url:'',
+            folderId:folderId,
+            status:'ENABLE'
+        }
+    }  
 };
+
+//导出数据
 export default{
     components: {
         RequestHeadersVue: RequestHeadersVue,
@@ -347,7 +504,7 @@ export default{
             //初始化
             this.currentFolder=null;
             this.currentModule = {};
-            this.currentApi={result:null}
+            this.currentApi={result:null};
             this.$parent.$data.pageName = '接口列表';
             this.id = transition.to.params.id;
             var self = this;
@@ -359,12 +516,7 @@ export default{
                 }
                 console.log('extVer:' + self.extVer);
             }, 1000);
-
             //
-            $(document).click(function () {
-                self.flag.actionId = null;
-                self.status.showEnvs=false;
-            });
             (function () {
                 var clipboard = new Clipboard('#api-result-copy', {
                     target: function () {
@@ -385,18 +537,57 @@ export default{
                 });
             })();
 
-
+            //
             (function(){
                 $('body').undelegate('.xyj-dropdown-toggle','click').delegate('.xyj-dropdown-toggle','click',function(e){
                     $(this).next().toggle();
                     e.stopPropagation();
-                }).click(function(){
-                    $('.xyj-dropdown-list').hide();
                 });
+
+                $('body').undelegate('.icon-menu','click').delegate('.icon-menu','click',function(e){
+                    let right = document.documentElement.clientWidth - 1485;
+                    if(right<15){
+                        right =15;
+                    }
+                    if(document.documentElement.clientWidth<1255){
+                        right =document.documentElement.clientWidth-1255 + 15;
+                    }
+                    let top = $(this).offset().top+50;
+                    $('#api-menus').css({top:top,right:right}).show();
+                    e.stopPropagation();
+                });
+                $(window).resize(function(){
+                    //修改menu位置
+                    let right = document.documentElement.clientWidth - 1485;
+                    if(right<15){
+                        right =15;
+                    }
+                    if(document.documentElement.clientWidth<1255){
+                        right =document.documentElement.clientWidth-1255 + 15;
+                    }
+                    $('#api-menus').css({right:right});
+                });
+                $(document).click(function(){
+                    $('.xyj-dropdown-list').hide();
+                    $('#api-menus').hide();
+                    self.flag.actionId = null;
+                    self.status.showEnvs=false;
+                    self.flag.moduleActionId = null;
+                });
+
+
 
             })();
             page.task.destroy();
             page.task.init();
+
+            //加载数据
+            this.$parent.projectId = this.id;
+            this.show= 'doc';
+            page.reget(this);
+            if (window._czc) {
+                _czc.push(["_trackPageview", location.pathname + (location.hash), document.referrer]);
+            }
         },
         activate: function (transition) {
             this.$parent.showProject = true;
@@ -419,32 +610,56 @@ export default{
     computed: {
         requestURL: function () {
             let temp = this.currentApi.url;
-            if(!temp){return '';}
-            if(this.currentEnv && this.currentEnv.vars){
-                this.currentEnv.vars.forEach(function(item){
-                    let reg=new RegExp('\\$'+item.name+'\\$','g');
-                     temp = temp.replace(reg,item.value);
-                });
-                if(this.currentApi.urlArgs && this.currentApi.urlArgs.length>0){
-                    this.currentApi.urlArgs.forEach(function(item){
-                        let name = '{'+item.name+'}';
-                        let reg = new RegExp(name,'g');
-                        temp = temp.replace(reg,item.value || name)
+            if(!temp){temp = ''}else{
+                if(this.currentEnv && this.currentEnv.vars){
+                    this.currentEnv.vars.forEach(function(item){
+                        let reg=new RegExp('\\$'+item.name+'\\$','g');
+                         temp = temp.replace(reg,item.value);
                     });
+                    if(this.currentApi.urlArgs && this.currentApi.urlArgs.length>0){
+                        this.currentApi.urlArgs.forEach(function(item){
+                            let name = '{'+item.name+'}';
+                            let reg = new RegExp(name,'g');
+                            temp = temp.replace(reg,item.value || name)
+                        });
+                    }
+                }else{
+                    temp = '';
                 }
-                return temp;
             }
-            return "";
+            $('#requestURL').val(temp);
+            return temp;
         },
-        xmlpreview:function(){
-            let args = utils.toJSON(this.currentApi.requestArgs);
-            let text='<?xml version="1.0" encoding="UTF-8"?>\n<xml>\n';
-            args.forEach(function(item){
-                var name = item.name.replace(/\s/g,'');
-                text += '    <'+name+'>' +' '+'</'+name+'>\n';
-            });
-            text+= '</xml>';
-            return text;
+        requestArgsPreview:function(){
+            var type = this.currentApi.dataType;
+            if(type == 'XML'){
+                //todo 增加全局操作
+                let args = utils.toJSON(this.currentModule.requestArgs);
+                let text='<?xml version="1.0" encoding="UTF-8"?>\n<xml>\n';
+                args.forEach(function(item){
+                    var name = item.name.replace(/\s/g,'');
+                    text += '    <'+name+'>' +(item.defaultValue || '')+'</'+name+'>\n';
+                });
+                args = utils.toJSON(this.currentApi.requestArgs);
+                args.forEach(function(item){
+                    if(item.name){
+                        var name = item.name.replace(/\s/g,'');
+                        text += '    <'+name+'>' +(item.defaultValue || '')+'</'+name+'>\n';
+                    }
+                });
+                text+= '</xml>';
+                return text;
+            }else if(type =='JSON'){
+                var obj = getRequestArgsObject(this.currentApi.requestArgs);
+                if(obj){
+                    return JSON.stringify(obj,null,'\t');
+                }
+                return '{}';
+            }
+            return 'data not support';
+        },
+        editable:function(){
+            return this.project.editable == 'YES';
         }
     },
     watch: {
@@ -492,14 +707,7 @@ export default{
             }
         },
         "id": function (value) {
-            this.$parent.projectId = value;
-            this.showGuide= true;
-            var self = this;
 
-            reget(self);
-            if (window._czc) {
-                _czc.push(["_trackPageview", location.pathname + (location.hash), document.referrer]);
-            }
         },
         "status.loading": function (value) {
             if (!value) {
@@ -509,31 +717,46 @@ export default{
                     window.editor = null;
                 }
                 var value = this.project.details;
-                if (this.editing && this.showGuide && !window.editor) {
+                if (this.editing && this.show=='doc' && !window.editor) {
                     initEditor(this.project.details, this);
                 }
                 if (!this.editing) {
-                    renderViewBox(value);
+                    page.renderViewBox(value);
                 }
             }
         },
         "editing": function (value) {
             if (value) {
-                if (!window.editor && this.showGuide) {
+                if (!window.editor && this.show=='doc') {
                     var desc = this.project.details;
                     initEditor(desc, this);
                 }
             } else {
-                renderViewBox(this.project.details);
+                if(this.show=='doc'){
+                    page.renderViewBox(this.project.details);
+                }else if(this.show == 'api'){
+                    initInterface(this,this.currentApi);
+                }else if(this.show =='module'){
+                    this.show = 'doc';
+                    page.renderViewBox(this.project.details);
+                }
             }
             _czc.push(["_trackEvent", "接口", "切换模式",value+""]);
         },
-        "showGuide": function (value) {
-            if (value && this.editing) {
-                if (!window.editor) {
-                    var desc = this.project.details;
-                    initEditor(desc, this);
+        "show": function (value) {
+            if (value=='doc') {
+                this.currentApi = {result:null};
+                this.ws.destroy();
+                if( this.editing){
+                    if (!window.editor) {
+                        var desc = this.project.details;
+                        initEditor(desc, this);
+                    }
                 }
+            }else if(value =='module'){
+                this.currentApi = {result:null};
+            }else{
+                
             }
         },
         "currentApi.result": function (value) {
@@ -562,17 +785,69 @@ export default{
         return gdata;
     },
     methods: {
+        search:function(){
+            let modules = [];
+            let text= this.flag.searchInput;
+            if(text.trim().length == 0){
+                modules = gdata.tempModules;
+            }else{
+                gdata.tempModules.forEach(function(d){
+                    let folders=[];
+                    d.folders&&d.folders.forEach(function(folder){
+                        let isMatch,children=[];
+                        folder.children && folder.children.forEach(function(api){
+                            if((api.name && api.name.indexOf(text)!=-1)
+                                || (api.url && api.url.indexOf(text)!=-1)
+                                || (api.description && api.description.indexOf(text)!=-1)
+                            ){
+                                isMatch = true;
+                                children.push(api);
+                            }
+                        });
+
+                        //如果文件夹名称匹配，则放入所有API
+                        if(folder.name.indexOf(text)!=-1){
+                            isMatch = true;
+                            children = folder.children;
+                        }
+                        //如果结果匹配,则复制所有数据，不包含children；
+                        if(isMatch){
+                            let temp = $.extend(true,{},folder);
+                            temp.children = children;
+                            folders.push(temp);
+                        }
+                    });
+                    //表示已匹配
+                    if(folders.length>0){
+                        let temp = $.extend(true,{},d);
+                        temp.folders = folders;
+                        modules.push(temp);
+                    }
+                });
+            }
+            gdata.modules = modules;
+            if(modules.length>0){
+                gdata.currentModule = modules[0];
+                if(this.show == 'api'){
+                    gdata.currentFolder = modules[0].folders[0];
+                    gdata.currentApi = modules[0].folders[0].children[0];
+                    initInterface(this,gdata.currentApi);
+                }
+            }else{
+                gdata.currentModule={};
+                gdata.currentApi={result:null};
+                gdata.currentFolder=[];
+            }
+            if(!$('#view-box').html()){
+                page.renderViewBox(this.project.details);
+            }
+            //gdata.show = 'doc';
+        },
         updateProject: function () {
             this.project.details = window.editor.getMarkdown();
             utils.post('/project/'+this.id+'.json',{details:this.project.details},function(){
                 toastr.success('修改成功');
             })
-        },
-        apiDescClick: function () {
-            this.showGuide = true;
-            //this.currentFolder = {children: []};
-            this.currentApi = {};
-            this.ws.destroy();
         },
         envOver:function(data,e){
             this.status.showEnvValues=true;
@@ -729,6 +1004,9 @@ export default{
             _czc.push(["_trackEvent",'接口','修改分类']);
         },
         folderDelete: function (item, event) {
+            if (!confirm('是否确认删除?')) {
+                return false;
+            }
             var self = this;
             utils.delete('/interfacefolder/' + item.id + ".json", function (rs) {
                 self.$data.currentModule.folders.$remove(item);
@@ -739,7 +1017,7 @@ export default{
         folderNewApi: function (item, event) {
             event.stopPropagation();
             this.flag.actionId = null;
-            this.showGuide = false;
+            this.show = 'api';
             if(item == null){
                 if(this.currentFolder){
                     item = this.currentFolder;
@@ -749,20 +1027,11 @@ export default{
             }
             if(!item){
                 toastr.error('请先添加一个分类。');
-                this.showGuide = true;
+                this.show = 'doc';
                 return false;
             }
-            this.currentApi = {
-                protocol: localStorage.getItem('form.protocol') || 'HTTP',
-                requestMethod: localStorage.getItem('form.requestMethod') || 'GET',
-                dataType: localStorage.getItem('form.dataType') || 'X-WWW-FORM-URLENCODED',
-                contentType: localStorage.getItem('form.contentType') ||'JSON',
-                requestHeaders: [],
-                requestArgs: [],
-                responseArgs: [],
-                result: '',
-                folderId:item.id
-            };
+            //设置默认数据
+            this.currentApi =page.initInterfaceParameters(item.id);
             this.currentFolder = item;
             if (document.documentElement.scrollTop > 100) {
                 document.documentElement.scrollTop = 110;
@@ -776,23 +1045,28 @@ export default{
             _czc.push(["_trackEvent",'接口','文件夹点击']);
         },
         apiClick: function (item, folder) {
-            _czc.push(["_trackEvent",'接口','点击',this.currentApi.name,this.currentApi.id]);
+
             this.currentFolder = folder;
-            this.showGuide = false;
+            this.show = 'api';
             this.currentApi = item;
+            this.currentModule.lastUpdateTime = item.lastUpdateTime;
             initInterface(this, item);
 
             if (document.documentElement.scrollTop > 100) {
                 document.documentElement.scrollTop = 110;
             }
+
+            _czc.push(["_trackEvent",'接口','点击',this.currentApi.name,this.currentApi.id]);
         },
         apiDelete: function (item, arr, event) {
-
             event.stopPropagation();
+            if (!confirm('是否确认删除?')) {
+                return false;
+            }
             let self = this;
             utils.delete('/interface/' + item.id + ".json", function (rs) {
                 if(item.id == self.currentApi.id){
-                    defaultView(self);
+                    page.defaultView(self);
                 }
                 arr.$remove(item);
             });
@@ -803,7 +1077,10 @@ export default{
             if (!data.id) {
                 data.moduleId = this.currentModule.id;
                 data.projectId = this.currentModule.projectId;
-                //data.folderId = this.currentFolder.id;
+            }
+            if(!data.folderId ){
+                toastr.error('请选择一个分类');
+                return;
             }
             let temp = $.extend({}, data);
             temp.urlArgs = undefined;
@@ -859,7 +1136,6 @@ export default{
             this.currentApi.url = this.currentApi.url+('$'+name+'$')
         },
         apiSubmit: function () {
-
             var self = this;
             //var url = this.requestURL;
             var url = $('#requestURL').val();
@@ -931,8 +1207,6 @@ export default{
                     new Result().resolve(rs, self.currentApi.contentType);
                     //self.result = rs;
                 }
-
-
             };
             switch (this.currentApi.dataType) {
                 case "FORM-DATA":
@@ -944,10 +1218,21 @@ export default{
                     params.processData = false;
                     params.contentType = 'text/plain';
                     break;
+                case "XML":
+                    params.data = window.aceeditor.getValue();
+                    params.processData = false;
+                    params.contentType = 'text/xml';
+                    break;
+                case "JSON":
+                    params.data = window.aceeditor.getValue();
+                    params.processData = false;
+                    params.contentType = 'application/json';
+                    break;
                 case "BINARY":
                     params.processData = false;
                     params.contentType = 'application/octet-stream';
                     params.data = $('#binaryBody')[0];
+                    break;
                 default:
                     break;
             }
@@ -1015,7 +1300,7 @@ export default{
             utils.delete('/module/' + item.id + '.json');
             if (this.modules.length > 0) {
                 this.currentModule = this.modules[0];
-                this.showGuide = true;
+                this.show = 'doc';
             } else {
                 this.error.noModule = true;
             }
@@ -1039,7 +1324,7 @@ export default{
             this.currentModule = item;
             this.currentApi = {};
             this.currentFolder = null;
-            this.showGuide = true;
+            this.show = 'doc';
             _czc.push(["_trackEvent",'接口','模块点击',item.name,item.id]);
         },
         moduleSave: function () {
@@ -1068,19 +1353,32 @@ export default{
                 var moduleName = this.moduleName;
                 utils.post('/module.json', {projectId: self.id, name: moduleName}, function (rs) {
                     if (rs.code == 0) {
-                        gdata.modules.push({
+                        let temp ={
                             name: moduleName,
-                            projectId: self.currentModule.projectId,
+                            projectId: self.id,
                             id: rs.data,
-                            folders: []
-                        })
+                            folders: [],
+                            requestHeaders:[],
+                            requestArgs:[]
+                        };
+                        gdata.modules.push(temp);
+                        page.initModules(temp);
+                        if(gdata.modules.length == 1){
+                            gdata.currentModule =gdata.modules[0];
+                        }
                     }
                 });
             }
             gdata.status.moduleModal = false;
             this.moduleName = '';
             this.moduleId = '';
-            _czc.push(["_trackEvent",'接口','模块保存']);
+        },
+        moduleUpdateCommonParams:function(){
+            var requestArgs = JSON.stringify(this.currentModule.requestArgs);
+            var requestHeaders = JSON.stringify(this.currentModule.requestHeaders);
+            utils.post('/module/'+this.currentModule.id+'.json',{requestArgs:requestArgs,requestHeaders:requestHeaders},function(rs){
+                toastr.success('操作成功');
+            });
         },
         insertNewResponseArgsRow: function () {
             gdata.currentApi.responseArgs.push({require: "true", children: [], type: 'string'});
@@ -1090,6 +1388,14 @@ export default{
         },
         insertNewRequestArgsRow: function () {
             gdata.currentApi.requestArgs.push({require: "false", children: [], type: 'string'});
+        },
+        import2GHeaders(){
+            this.status.importModal = true;
+            this.flag.import = "gHeaders";
+        },
+        import2GRequestArgs(){
+            this.status.importModal = true;
+            this.flag.import = "gRequestArgs";
         },
         import2RequestArgs(){
             this.status.importModal = true;
@@ -1126,9 +1432,13 @@ export default{
                     self.currentApi.requestHeaders.push(d);
                 } else if (self.flag.import == 'responseArgs') {
                     self.currentApi.responseArgs.push(d);
+                } else if(self.flag.import == 'gHeaders'){
+                    self.currentModule.requestHeaders.push(d);
+                } else if(self.flag.import == 'gRequestArgs'){
+                    self.currentModule.requestArgs.push(d);
                 }
             });
-            this.status.importModal = false
+            this.status.importModal = false;
             _czc.push(["_trackEvent",'接口','导入json']);
         },
         wsConnect(){
@@ -1178,10 +1488,10 @@ export default{
                         toastr.error('同一模块无须移动');
                         return false;
                     } else {
-                        copyMove({type: 'folder', action: 'move', moduleId: this.flag.moveCopySelectModuleId}, this);
+                        page.copyMove({type: 'folder', action: 'move', moduleId: this.flag.moveCopySelectModuleId}, this);
                     }
                 } else {
-                    copyMove({
+                    page.copyMove({
                         type: 'api',
                         action: 'move',
                         moduleId: this.flag.moveCopySelectModuleId,
@@ -1191,9 +1501,9 @@ export default{
             } else {
                 //copy
                 if (this.flag.moveCopyName == '分类') {
-                    copyMove({type: 'folder', action: 'copy', moduleId: this.flag.moveCopySelectModuleId},this);
+                    page.copyMove({type: 'folder', action: 'copy', moduleId: this.flag.moveCopySelectModuleId},this);
                 } else {
-                    copyMove({
+                    page.copyMove({
                         type: 'api',
                         action: 'copy',
                         moduleId: this.flag.moveCopySelectModuleId,
@@ -1207,10 +1517,55 @@ export default{
             win.document.documentElement.innerHTML='';
             win.document.write(utils.unescape(this.currentApi.result));
             win.document.close();
+        },
+        shareItemClockClick:function(e){
+            var $dom=$(e.target).parent().next();
+            $dom.show();
+            $dom.focus();
+        },
+        shareItemPasswordBlur:function(item,e){
+            let self = e.target;
+            $(self).hide();
+            let now = $(self).val();
+            let originalValue = $(self).data('value') || '';
+            if(now == originalValue){
+                return true;
+            }
+            utils.post('/share/'+item.id+'.json',{password:now},function(rs){
+                toastr.success('密码已修改');
+            })
+        },
+        shareCreate:function(){
+            let self = this;
+            let data = $('#share-form').serialize() + '&projectId='+this.id+"&shareAll="+(this.flag.shareAll?'YES':'NO');
+            utils.post('/share.json',data,function(rs){
+                self.getShares(true);
+                self.status.shareCreateModal=false;
+                toastr.success('创建成功');
+            });
+        },
+        confirmPassword:function(){
+            page.reget(this);
+        },
+        getShares:function(reget){
+            this.status.shareModal=true;
+            if(this.shares == null || reget){
+                let self = this;
+                utils.get('/project/'+this.id+'/shares.json',{},function(rs){
+                    self.shares = rs.data.shares;
+                });
+            }
+        },
+        deleteShare:function(item){
+            let self = this;
+            utils.delete('/share/'+item.id+'.json',function(){
+                self.shares.$remove(item);
+            });
         }
     }
 }
 
+//初始化接口
 function initInterface(self, item) {
     if (!item.requestArgs) {
         item.requestArgs = []
@@ -1288,6 +1643,7 @@ function initInterface(self, item) {
             d.testValue = value;
         }
     });
+
     if (!item.resultHeaders) {
         item.resultHeaders = '';
     }
@@ -1299,10 +1655,84 @@ function initInterface(self, item) {
     }
 
     self.currentApi = Object.assign({}, item, item);
+
+    //如果是json或者xml的请求数据类型，则提供可视化修改
+    if((item.dataType == 'JSON' || item.dataType == 'XML') && !self.editing){
+        initAceEditor(item.dataType,self);
+    }
 }
+//初始化ace编辑器
+function initAceEditor(type,self){
+    var mode;
+    if(type == 'JSON'){
+        mode = 'ace/mode/json';
+    }else if(type =='XML'){
+        mode = 'ace/mode/xml';
+    }
+    setTimeout(function(){
+        let aceeditor=ace.edit("ace-editor-box");
+        window.aceeditor = aceeditor;
+        aceeditor.setTheme("ace/theme/chrome");
+        aceeditor.session.setMode(mode);
+        aceeditor.setValue(self.requestArgsPreview);
+    },300);
+}
+/**
+ * 请求参数转为对象
+ * @param data
+ * @return object
+ */
+function getRequestArgsObject(data){
+    let obj={};
+    data.forEach(function(d){
+        let name = d.name;
+        switch(d.type){
+            case 'string':
+                obj[name] = d.testValue || d.defaultValue || '';
+                break;
+            case 'number':
+                obj[name] = d.testValue || d.defaultValue || 0;
+                break;
+            case 'boolean':
+                obj[name] = d.testValue || d.defaultValue || true;
+                break;
+            case 'object':
+                obj[name] = getRequestArgsObject(d.children);
+                break;
+            case 'array':
+                obj[name] = [];
+                break;
+            case 'array[number]':
+                obj[name] = [0,1];
+                break;
+            case 'array[boolean]':
+                obj[name] = [true];
+                break;
+            case 'array[string]':
+                obj[name] = [''];
+                break;
+            case 'array[object]':
+                obj[name] = [getRequestArgsObject({},d.children)];
+                break;
+            case 'array[array]':
+                obj[name] = [[]];
+                break;
+            default:
+                obj[name] = '';
+                break;
+        }
+    });
+    return obj;
+}
+
+/**
+ * 初始化默认值，不初始化vuejs无法监听改变
+ * @param arr
+ */
 function initDefaultData(arr) {
     arr.forEach(function (d) {
         d.children = d.children || [];
+        d.testValue = d.testValue || '';
         initDefaultData(d.children)
     });
 }
@@ -1603,106 +2033,9 @@ function initEditor(value) {
     });
 }
 
-function renderViewBox(value) {
-    $('#view-box').html('');
-    setTimeout(function(){
-        editormd.markdownToHTML('view-box', {
-            htmlDecode: "style,script,iframe",  // you can filter tags decode
-            markdown: (value || ''),
-            emoji: false,
-            taskList: false,
-            tex: false,  // 默认不解析
-            flowChart: false,  // 默认不解析
-            sequenceDiagram: false  // 默认不解析
-        });
-    },10)
-}
-
-function copyMove(data, self) {
-    data.targetId = gdata.flag.moveCopyId;
-    gdata.status.moveCopyModal = false;
-    data.projectId = gdata.id;
-    utils.post('/project/' + gdata.id + '/copymove.json', data, function () {
-        toastr.success('操作成功', '', {timeOut: 2000, "positionClass": "toast-top-right"});
-        reget(self);
-    });
-}
-
-function reget(self) {
-    if (!self) {
-        self = gdata;
-    }
-    self.status.loading = true;
-    self.error.projectNotExists = false;
-    self.error.noModule = false;
-    self.error.noInterface = false;
-    self.currentApi = {result: null};
-    utils.get('/project/' + self.$parent.projectId + '.json', {}, function (rs) {
-        if (rs.code == 0) {
-            if (!rs.data.project) {
-                self.error.projectNotExists = true;
-                return;
-            }
-            self.project = rs.data.project;
-            if(self.project.environments){
-                self.envs = utils.toJSON(self.project.environments);
-                if(!self.envs){
-                    self.envs=[];
-                }
-                if(!Array.isArray(self.envs)){
-                    self.envs=[];
-                }
-                var envId = localStorage.getItem(self.id+'_env');
-                if(envId){
-                    let temp;
-                    self.envs.forEach(function(item){
-                        if(item.id == envId){
-                            temp = item;
-                            return true;
-                        }
-                    });
-                    if(!temp){
-                        temp = self.envs[0];
-                    }
-
-                    self.currentEnv = temp;
-                }else{
-                   self.currentEnv = self.envs[0];
-                }
-                if(!self.currentEnv){
-                    self.currentEnv = {name:'环境切换',vars:[]};
-                }
-                if(!self.currentEnv.vars){
-                    self.currentEnv.vars =[];
-                }
 
 
-            }else{
-                self.envs=[];
-                self.currentEnv = {name:'环境切换',vars:[]};
-            }
-            if (rs.data.modules.length > 0) {
-                gdata.modules = rs.data.modules;
-                gdata.currentModule = gdata.modules[0];
-            }
-            var isNew = (self.$route.query.n == 'y');
-            if (isNew) {
-                self.editing = true;
-                self.showGuide = false;
-                self.currentFolder = gdata.modules[0].folders[0];
-                self.currentApi = self.currentFolder.children[0];
-                if (!self.currentApi) {
-                    self.currentApi = {};
-                }
-                initInterface(self, self.currentApi);
-            }
-        }
-    }, function () {
-        self.status.loading = false;
-    });
-}
 
-//
-function defaultView(self){
-    self.showGuide = true;
-}
+
+
+

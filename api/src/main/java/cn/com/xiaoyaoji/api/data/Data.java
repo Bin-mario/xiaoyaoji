@@ -12,7 +12,6 @@ import cn.com.xiaoyaoji.api.data.bean.*;
  */
 public interface Data {
 
-
     int insert(Object instance);
 
     int update(Object instance);
@@ -61,7 +60,7 @@ public interface Data {
 
     int deleteProject(String id);
 
-    List<User> searchUsers(String key,String... excludeIds);
+    List<User> searchUsers(String key, String... excludeIds);
 
     boolean checkEmailExists(String email);
 
@@ -98,6 +97,23 @@ public interface Data {
     String getModuleName(String moduleId);
 
     String getInterfaceName(String interfaceId);
+
+    String getProjectEditable(String projectId, String userId);
+
+    int updateProjectUserEditable(String projectId, String userId, String editable);
+
+    int updateCommonlyUsedProject(String projectId, String userId, String isCommonlyUsed);
+
+    List<Module> getModules(String[] moduleIdsArray);
+
+    List<InterfaceFolder> getFoldersByModuleIds(String[] moduleIds);
+
+    List<Interface> getInterfacesByModuleIds(String[] moduleIds);
+
+    List<Share> getSharesByProjectId(String projectId);
+
+    List<Map<String,Object>> getModuleNameIdsInIds(String[] moduleIdsArray);
+
 
     //void test();
 }

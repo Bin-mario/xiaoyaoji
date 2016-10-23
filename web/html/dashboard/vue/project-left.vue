@@ -16,9 +16,15 @@
                 <li class="db-item"><a v-link="{path:'/add'}" class="bd-add">
                     <i class="iconfont icon-add-circle"></i>创建项目</a></li>
                 <li class="line"></li>
+                <li v-show='projectNumber' class="bd-project-title">常用项目</li>
+                <li class="db-item" v-for="item in projects | filterBy 'YES' in 'commonlyUsed'">
+                    <a v-link="{ path: '/project/'+item.id}"><i class="iconfont icon-projects"></i>{{item.name}}</a>
+                    <a class="shoucang"><i v-on:click="toggle(item)" class="iconfont icon-biaoxingfill"></i></a>
+                </li>
                 <li class="bd-project-title">我的项目</li>
                 <li class="db-item" v-for="item in projects | filterBy filter in 'name'">
                     <a v-link="{ path: '/project/'+item.id,params:{name:item.name}}"><i class="iconfont icon-projects"></i>{{item.name}}</a>
+                    <a class="shoucang"><i v-on:click="toggle(item)" v-bind:class="{'icon-biaoxingfill':item.commonlyUsed=='YES','icon-biaoxing':item.commonlyUsed=='NO'}" class="iconfont "></i></a>
                 </li>
             </ul>
         </div>
@@ -68,15 +74,22 @@
             </div>
             <div class="line"></div>
             <br/>
-            <ul>
-                <li class="db-item"><a v-link="{path:'/add'}" class="bd-add"><i
-                        class="iconfont icon-add-circle"></i>创建项目</a></li>
+			<ul>
+                <li class="db-item"><a v-link="{path:'/add'}" class="bd-add">
+                    <i class="iconfont icon-add-circle"></i>创建项目</a></li>
                 <li class="line"></li>
+                <li v-show='projectNumber' class="bd-project-title">常用项目</li>
+                <li class="db-item" v-for="item in projects | filterBy 'YES' in 'commonlyUsed'">
+                    <a v-link="{ path: '/project/'+item.id}"><i class="iconfont icon-projects"></i>{{item.name}}</a>
+                    <a class="shoucang"><i v-on:click="toggle(item)" class="iconfont icon-biaoxingfill"></i></a>
+                </li>
                 <li class="bd-project-title">我的项目</li>
                 <li class="db-item" v-for="item in projects | filterBy filter in 'name'">
-                    <a v-link="{ path: '/project/'+item.id,params:{name:item.name}}" v-on:click="showContent=false"><i class="iconfont icon-projects"></i>{{item.name}}</a>
+                    <a v-link="{ path: '/project/'+item.id,params:{name:item.name}}"><i class="iconfont icon-projects"></i>{{item.name}}</a>
+                    <a class="shoucang"><i v-on:click="toggle(item)" v-bind:class="{'icon-biaoxingfill':item.commonlyUsed=='YES','icon-biaoxing':item.commonlyUsed=='NO'}" class="iconfont "></i></a>
                 </li>
             </ul>
+
         </div>
         <div class="db-left-layer" v-bind:class="{'hide':!showContent}" v-on:click="showContent=false" ></div>
     </div>
@@ -86,11 +99,18 @@
     var data={
         showContent:false,
         projects:[],
-        filter:''
+        filter:'',
+        projectNumber:0             
     };
     function load(self){
         utils.get('/project/list.json',{},function(rs){
-            data.projects=rs.data.projects;
+            data.projects=rs.data.projects;                      
+            for (var i = 0; i< data.projects.length; i++) {
+                if (data.projects[i].commonlyUsed == 'YES') {                	
+                    data.projectNumber ++;
+                }
+            }
+
         },null,function(rs){
             if (location.href.indexOf('/project/demo') != -1)
                 return true;
@@ -115,6 +135,18 @@
         methods: {
             logout:function(){
                 utils.logout();
+            },
+            toggle:function(item){
+                if(item.commonlyUsed=='YES'){
+                	item.commonlyUsed='NO';
+                	utils.post('/project/'+ item.id + '/commonly.json',{isCommonlyUsed:'NO'});
+                	data.projectNumber--;                
+                } else {
+                	item.commonlyUsed='YES';
+                	utils.post('/project/'+ item.id + '/commonly.json',{isCommonlyUsed:'YES'});
+                	data.projectNumber++;                
+                }                            
+
             }
         }
     }

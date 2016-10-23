@@ -63,6 +63,7 @@ public class InterfaceController {
         AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectPermission(MemoryUtils.getUser(parameter).getId(),in.getProjectId()),"无操作权限");
         in.setLastUpdateTime(new Date());
         in.setCreateTime(new Date());
+        in.setStatus(Interface.Status.ENABLE);
         in.setId(StringUtils.id());
         int rs = ServiceFactory.instance().create(in);
         AssertUtils.isTrue(rs>0,"增加失败");

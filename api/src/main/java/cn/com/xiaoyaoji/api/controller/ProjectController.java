@@ -69,12 +69,20 @@ public class ProjectController {
         if (project == null || !Project.Status.VALID.equals(project.getStatus())) {
             return new _HashMap<>();
         }
+        User user = MemoryUtils.getUser(parameter);
         if(project.getPermission().equals(Project.Permission.PRIVATE)){
-            User user = MemoryUtils.getUser(parameter);
             AssertUtils.isTrue(user!=null,"无访问权限");
             if(!user.getId().equals(project.getUserId())){
                 AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectPermission(user.getId(),project.getId()),"无访问权限");
             }
+        }
+        if(user!=null) {
+            project.setEditable(ServiceFactory.instance().getProjectEditable(project.getId(), user.getId()));
+        }else{
+            project.setEditable(ProjectUser.Editable.NO);
+        }
+        if(project.getId().equalsIgnoreCase("demo")){
+            project.setEditable(ProjectUser.Editable.YES);
         }
         List<Module> modules = ServiceFactory.instance().getModules(id);
         List<InterfaceFolder> folders = null;
@@ -129,6 +137,28 @@ public class ProjectController {
                 .add("project", project);
     }
 
+    @Get("/{id}/shares")
+    public Object shares(@RequestParam("id") String id) {
+        return new _HashMap<>()
+                .add("shares", ServiceFactory.instance().getSharesByProjectId(id));
+    }
+
+
+    /**
+     * 设置是否常用项目
+     * @param id
+     * @param parameter
+     * @return
+     */
+    @Post("/{id}/commonly")
+    public int updateCommonlyUsed(@RequestParam("id") String id,Parameter parameter){
+        String userId = MemoryUtils.getUser(parameter).getId();
+        String isCommonlyUsed = parameter.getParamString().get("isCommonlyUsed");
+        AssertUtils.notNull(isCommonlyUsed,"isCommonlyUsed is null");
+        int rs = ServiceFactory.instance().updateCommonlyUsedProject(id,userId,isCommonlyUsed);
+        AssertUtils.isTrue(rs>0,"操作失败");
+        return rs;
+    }
 
     //创建默认模块
     private Module createDefaultModule(String token,String projectId) {
@@ -178,6 +208,7 @@ public class ProjectController {
         project.setCreateTime(new Date());
         project.setUserId(user.getId());
         project.setStatus(Project.Status.VALID);
+        project.setEditable(ProjectUser.Editable.YES);
         AssertUtils.notNull(project.getName(), "missing name");
         //AssertUtils.notNull(project.getTeamId(),"missing teamId");
         AssertUtils.notNull(project.getUserId(), "missing userId");
@@ -198,10 +229,16 @@ public class ProjectController {
         AssertUtils.notNull(user,"无操作权限");
         Project project = ServiceFactory.instance().getProject(projectId);
         AssertUtils.notNull(project,"项目不存在");
-        AssertUtils.notNull(user.getId().equals(project.getUserId()),"无操作权限");
+        AssertUtils.isTrue(user.getId().equals(project.getUserId()),"无操作权限");
     }
 
 
+    /**
+     * 更新
+     * @param id
+     * @param parameter
+     * @return
+     */
     @Post("{id}")
     public Object update(@RequestParam("id") String id, Parameter parameter) {
         String token = parameter.getParamString().get("token");
@@ -355,6 +392,7 @@ public class ProjectController {
         AssertUtils.isTrue(!pu.getUserId().equals(user.getId()), "不能邀请自己");
         pu.setCreateTime(new Date());
         pu.setStatus(ProjectUser.Status.PENDING);
+        pu.setEditable(ProjectUser.Editable.NO);
         pu.setProjectId(id);
         int rs = ServiceFactory.instance().create(pu);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
@@ -382,6 +420,7 @@ public class ProjectController {
         pu.setId(StringUtils.id());
         pu.setUserId(userId);
         pu.setProjectId(id);
+        pu.setEditable(ProjectUser.Editable.YES);
         AssertUtils.isTrue(org.apache.commons.lang3.StringUtils.isNotBlank(pu.getProjectId()), "missing projectId");
         pu.setCreateTime(new Date());
         pu.setStatus(ProjectUser.Status.PENDING);
@@ -440,6 +479,25 @@ public class ProjectController {
         User temp = MemoryUtils.getUser(parameter);
         AssertUtils.isTrue(temp.getId().equals(project.getUserId()),"无操作权限");
         int rs = ServiceFactory.instance().deleteProjectUser(id, userId);
+        AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+        return rs;
+    }
+
+
+    /**
+     * 设置是否可编辑
+     * @param projectId 项目id
+     * @param userId
+     * @param editable
+     * @param parameter
+     * @return
+     */
+    @Post("/{id}/pu/{userId}/{editable}")
+    public int editProjectEditable(@RequestParam("id") String projectId, @RequestParam("userId") String userId,
+                                   @RequestParam("editable") String editable,  Parameter parameter){
+        AssertUtils.isTrue(ProjectUser.Editable.YES.equals(editable) || ProjectUser.Editable.NO.equals(editable),"参数错误");
+        checkUserHasOperatePermission(projectId,parameter);
+        int rs = ServiceFactory.instance().updateProjectUserEditable(projectId,userId,editable);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
         return rs;
     }
@@ -558,7 +616,7 @@ public class ProjectController {
                             section.add(new Paragraph("数据类型：" + in.getDataType(), apiFont));
                             section.add(new Paragraph("响应类型：" + in.getContentType(), apiFont));
                         }
-
+                        section.add(new Paragraph(in.getDescription(),apiFont));
                         String requestHeader = in.getRequestHeaders();
                         if(org.apache.commons.lang3.StringUtils.isNotBlank(requestHeader)){
                             List<RequestResponseArgs> requestHeaders = JSON.parseObject(requestHeader, new TypeReference<List<RequestResponseArgs>>(){});
@@ -607,7 +665,7 @@ public class ProjectController {
                                 section.add(table);
                             }
                         }
-                        section.add(new Paragraph(in.getDescription(),apiFont));
+
 
                         if(org.apache.commons.lang3.StringUtils.isNotBlank(in.getExample())) {
                             section.add(new Paragraph("例子", subtitle));
@@ -700,41 +758,41 @@ public class ProjectController {
         table.setSpacingBefore(10);
     }
 
-    private java.util.List<Module> getModulesByProjectId(Project project,String token) {
+    private List<Module> getModulesByProjectId(Project project,String token) {
 
         if (project == null || !Project.Status.VALID.equals(project.getStatus())) {
             return null;
         }
         boolean has = ServiceFactory.instance().checkUserHasProjectPermission(MemoryUtils.getUser(token).getId(),project.getId());
         AssertUtils.isTrue(has,"无访问权限");
-        java.util.List<Module> modules = ServiceFactory.instance().getModules(project.getId());
-        java.util.List<InterfaceFolder> folders = null;
+        List<Module> modules = ServiceFactory.instance().getModules(project.getId());
+        List<InterfaceFolder> folders = null;
         if (modules.size() > 0) {
             // 获取该项目下所有文件夹
             folders = ServiceFactory.instance().getFoldersByProjectId(project.getId());
-            Map<String, java.util.List<InterfaceFolder>> folderMap = ResultUtils.listToMap(folders, new Handler<InterfaceFolder>() {
+            Map<String, List<InterfaceFolder>> folderMap = ResultUtils.listToMap(folders, new Handler<InterfaceFolder>() {
                 @Override
                 public String key(InterfaceFolder item) {
                     return item.getModuleId();
                 }
             });
             for (Module module : modules) {
-                java.util.List<InterfaceFolder> temp = folderMap.get(module.getId());
+                List<InterfaceFolder> temp = folderMap.get(module.getId());
                 if (temp != null) {
                     module.setFolders(temp);
                 }
             }
 
             // 获取该项目下所有接口
-            java.util.List<Interface> interfaces = ServiceFactory.instance().getInterfacesByProjectId(project.getId());
-            Map<String, java.util.List<Interface>> interMap = ResultUtils.listToMap(interfaces, new Handler<Interface>() {
+            List<Interface> interfaces = ServiceFactory.instance().getInterfacesByProjectId(project.getId());
+            Map<String, List<Interface>> interMap = ResultUtils.listToMap(interfaces, new Handler<Interface>() {
                 @Override
                 public String key(Interface item) {
                     return item.getFolderId();
                 }
             });
             for (InterfaceFolder folder : folders) {
-                java.util.List<Interface> temp = interMap.get(folder.getId());
+                List<Interface> temp = interMap.get(folder.getId());
                 if (temp != null) {
                     folder.setChildren(temp);
                 }

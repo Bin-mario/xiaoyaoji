@@ -65,6 +65,12 @@ export default {
                 $('body').addClass('loading');
                 require(['../vue/api.vue'],resolve);
             }
+    },
+    '/share/:id':{
+        component: function(resolve){
+                $('body').addClass('loading');
+                require(['../vue/share.vue'],resolve);
+            }
     }
     
 }
