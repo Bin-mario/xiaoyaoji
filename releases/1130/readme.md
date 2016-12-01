@@ -1,10 +1,11 @@
-11/28:
+11/30:
 1.修改页面文字错误
 2.修改导出被隐藏bug
 3.增加接口与文件夹排序功能
 4.增加参数排序功能
 5.增加头像上传功能
-5.修改接口description类型
+6.修改接口description类型
+7.解决第三方登录bug
 
 SQL修改:
 1. interface_folder 增加sort int 字段 alter table interface_folder add column sort int;

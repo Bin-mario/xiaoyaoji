@@ -5,8 +5,7 @@ toastr.options.preventDuplicates=true;
 window._xyj_={
     history:false,
     version:'1.6',
-    api:'',
-    //api:'//localhost:9999',
+    api:'http://localhost:8081',
     ws:''
 };
 console.log('version:'+_xyj_.version);
