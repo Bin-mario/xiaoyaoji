@@ -1,0 +1,72 @@
+<!--[if lt IE 9]> <script>location.href='unsupport.html?refer='+encodeURIComponent(location.href)</script> <![endif]-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>操作记录 - 小幺鸡</title>
+  <!-- build:stylecss ../assets/css/style.css -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <!-- endbuild -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="renderer" content="webkit" />
+  <link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.com.cn/" />
+  <meta name="keywords" content="小幺鸡,接口文档管理,接口平台,api,api管理,api测试,接口文档工具,接口演示,rest,restful,rest api,接口测试,postman,文档管理,websocket在线测试" />
+  <meta name="description" content="简单好用的在线文档管理工具，支持restapi、websocket在线测试,支持markdown编辑器,提升开发效率降低接口错误率。" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+<style>
+html {
+	overflow-x:hidden;	 /* 强制关闭横向scroll */
+	overflow-y:scroll;   /* 强制显示纵向scroll */
+}
+</style>
+</head>
+
+<body id="history">
+<div class="iframe-page" >
+	<h2>操作记录</h2>
+	<div class="records" > 
+		<ul>                             <!-- logs -->
+			<li v-for="log in logs" v-show="logs.length>0">  <!-- logs不为空时显示 -->
+				<div class="each-record">
+					<div class="col-sm-2">
+						<img class="db-user-logo" v-bind:src='log.avatar'>
+					</div>				
+					<div class="col-sm-5 user-name">{{log.nickname}}</div>
+					<div class="record-time col-sm-5">{{log.createTime}}</div>
+					<div class="col-sm-10 record-detail">{{log.log}}</div>
+				</div>
+			</li>
+		</ul> 
+		<div class="loading" v-show="loading">          <!-- 加载动画 -->
+			<span></span> 
+			<span></span> 
+			<span></span> 
+			<span></span> 
+			<span></span>
+		</div>
+		<div class="bottom" v-show="noData">            <!-- 到达底部 -->
+			<br/>
+			<p>没有更多记录了</p>
+		</div>
+	</div>
+
+	<footer>
+		<i class="iconfont icon-iconfontshuaxin" v-on:click="reload"></i>  <!-- 刷新 -->
+
+		<div>显示数量:                           
+			<select v-model="limit">                    <!-- 设置每页显示数量 -->
+				<option value ="10" selected="selected">10</option>
+  				<option value ="20">20</option>
+  				<option value="50">50</option>  
+			</select>
+		</div>
+
+	</footer>
+</div>
+${require('../includes/js1.html')}
+<!-- build:dashboard ../built/history.js -->
+<script src="../../built/history.js"></script>
+<!-- endbuild -->
+</body>
+</html>

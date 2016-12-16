@@ -53,19 +53,15 @@ new Vue({
                 }
                 utils.login.success(rs.data.token, rs.data.user, self.params['refer']);
             });
-            _czc.push(['_trackEvent', '登录', '账户密码']);
         },
         qq: function () {
             utils.login.qq();
-            _czc.push(['_trackEvent', '登录', 'QQ']);
         },
         weibo: function () {
             utils.login.weibo();
-            _czc.push(['_trackEvent', '登录', '微博']);
         },
         github: function () {
             utils.login.github();
-            _czc.push(['_trackEvent', '登录', 'GITHUB']);
         }
     }
 });

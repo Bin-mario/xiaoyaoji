@@ -8,7 +8,7 @@
     <listener>
         <listener-class>cn.com.xiaoyaoji.api.listener.ContextListener</listener-class>
     </listener>
-    <!--
+     <!--
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.css</url-pattern>
@@ -27,7 +27,6 @@
     </servlet-mapping>
     -->
 
-
     <servlet>
         <servlet-name>mangoservlet</servlet-name>
         <servlet-class>org.mangoframework.core.MangoDispatcher</servlet-class>
@@ -39,7 +38,7 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
+        <welcome-file>api.html</welcome-file>
     </welcome-file-list>
     <jsp-config>
        <jsp-property-group>
@@ -48,6 +47,12 @@
            <trim-directive-whitespaces>true</trim-directive-whitespaces>
         </jsp-property-group>
     </jsp-config>
+    <session-config>
+        <session-timeout>1</session-timeout>
+        <cookie-config>
+            <max-age>0</max-age>
+        </cookie-config>
+    </session-config>
     <error-page>
         <error-code>405</error-code>
         <location>/WEB-INF/jsp/404.jsp</location>
@@ -71,7 +76,7 @@
         <init-param>
             <!-- 密码 -->
             <param-name>loginPassword</param-name>
-            <param-value>admin</param-value>
+            <param-value>123456</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

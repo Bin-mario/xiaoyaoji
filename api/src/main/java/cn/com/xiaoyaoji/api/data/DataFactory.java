@@ -1,5 +1,18 @@
 package cn.com.xiaoyaoji.api.data;
 
+import cn.com.xiaoyaoji.api.data.bean.*;
+import cn.com.xiaoyaoji.api.ex.Pagination;
+import cn.com.xiaoyaoji.api.ex.SQLBuildResult;
+import cn.com.xiaoyaoji.api.handler.IntegerResultHandler;
+import cn.com.xiaoyaoji.api.handler.StringResultHandler;
+import cn.com.xiaoyaoji.api.utils.*;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.MapHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -7,21 +20,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
-
-import cn.com.xiaoyaoji.api.data.bean.*;
-import cn.com.xiaoyaoji.api.ex.SQLBuildResult;
-import cn.com.xiaoyaoji.api.handler.IntegerResultHandler;
-import cn.com.xiaoyaoji.api.handler.StringResultHandler;
-import cn.com.xiaoyaoji.api.utils.*;
-import cn.com.xiaoyaoji.api.utils.StringUtils;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanHandler;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.dbutils.handlers.MapHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
-import org.apache.commons.lang3.*;
-import org.apache.log4j.Logger;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: zhoujingjie
@@ -49,13 +50,14 @@ public class DataFactory implements Data {
         });
     }
 
-    private DataFactory() {}
+    private DataFactory() {
+    }
 
     public static Data instance() {
         return instance;
     }
 
-    private  <T> T process(Handler<T> handler) {
+    private <T> T process(Handler<T> handler) {
         Connection connection = null;
         try {
             connection = JdbcUtils.getConnect();
@@ -87,7 +89,7 @@ public class DataFactory implements Data {
         }
     }
 
-    public QueryRunner getQueryRunner(){
+    public QueryRunner getQueryRunner() {
         return new MyQueryRunner();
     }
 
@@ -219,21 +221,21 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                User user = getById(User.class,thirdparty.getUserId());
-                AssertUtils.notNull(user,"无效用户");
+                User user = getById(User.class, thirdparty.getUserId());
+                AssertUtils.notNull(user, "无效用户");
                 //检查是否绑定
-                int rs = qr.query(connection,"select count(id) from "+TableNames.USER_THIRD+" where userId=? and type=? and id =?",new IntegerResultHandler(),thirdparty.getUserId(),thirdparty.getType(),thirdparty.getId());
-                if(rs == 1)
+                int rs = qr.query(connection, "select count(id) from " + TableNames.USER_THIRD + " where userId=? and type=? and id =?", new IntegerResultHandler(), thirdparty.getUserId(), thirdparty.getType(), thirdparty.getId());
+                if (rs == 1)
                     return rs;
                 //删除第三方
-                rs = qr.update(connection,"delete from "+TableNames.USER_THIRD+" where  id=?",thirdparty.getId());
+                rs = qr.update(connection, "delete from " + TableNames.USER_THIRD + " where  id=?", thirdparty.getId());
                 // 创建第三方
                 StringBuilder thirdSql = new StringBuilder("insert into ");
                 thirdSql.append(TableNames.USER_THIRD);
                 thirdSql.append(" (id,userid,type) values(?,?,?)");
-                rs += qr.update(connection, thirdSql.toString(), thirdparty.getId(), thirdparty.getUserId(),thirdparty.getType());
-                if(rs>0){
-                    if(org.apache.commons.lang3.StringUtils.isBlank(user.getAvatar())){
+                rs += qr.update(connection, thirdSql.toString(), thirdparty.getId(), thirdparty.getUserId(), thirdparty.getType());
+                if (rs > 0) {
+                    if (org.apache.commons.lang3.StringUtils.isBlank(user.getAvatar())) {
 
                     }
                 }
@@ -248,10 +250,10 @@ public class DataFactory implements Data {
             @Override
             public List<Module> handle(Connection connection, QueryRunner qr) throws SQLException {
                 StringBuilder sql = new StringBuilder();
-                sql.append("select * from "+TableNames.MODULES);
+                sql.append("select * from " + TableNames.MODULES);
                 sql.append(" where projectId=?");
                 sql.append(" order by createTime asc ");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Module.class),projectId);
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Module.class), projectId);
             }
         });
     }
@@ -262,10 +264,10 @@ public class DataFactory implements Data {
             @Override
             public List<Interface> handle(Connection connection, QueryRunner qr) throws SQLException {
                 StringBuilder sql = new StringBuilder();
-                sql.append("select * from "+TableNames.INTERFACES);
+                sql.append("select * from " + TableNames.INTERFACES);
                 sql.append(" where folderId=?");
-                sql.append(" order by createTime asc ");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Interface.class),folderId);
+                sql.append(" order by sort asc ");
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Interface.class), folderId);
             }
         });
     }
@@ -276,9 +278,9 @@ public class DataFactory implements Data {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
                 StringBuilder sql = new StringBuilder();
-                sql.append("update "+TableNames.INTERFACES);
+                sql.append("update " + TableNames.INTERFACES);
                 sql.append(" set folder=? where moduleId=? and folder=?");
-                return qr.update(connection,sql.toString(),newName,moduleId,originalName);
+                return qr.update(connection, sql.toString(), newName, moduleId, originalName);
             }
         });
     }
@@ -288,11 +290,11 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                qr.update(connection,"delete from "+TableNames.INTERFACE_FOLDER+" where id = ?",folderId);
+                qr.update(connection, "delete from " + TableNames.INTERFACE_FOLDER + " where id = ?", folderId);
                 StringBuilder sql = new StringBuilder();
-                sql.append("delete from "+TableNames.INTERFACES);
+                sql.append("delete from " + TableNames.INTERFACES);
                 sql.append("where moduleId=? and folderId=?");
-                return qr.update(connection,sql.toString(),moduleId,folderId);
+                return qr.update(connection, sql.toString(), moduleId, folderId);
             }
         });
     }
@@ -302,9 +304,9 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                int rs = qr.update(connection,"delete from "+TableNames.MODULES+" where id =?",id);
-                rs += qr.update(connection,"delete from "+ TableNames.INTERFACES+" where moduleId=?",id);
-                rs += qr.update(connection,"delete from "+TableNames.INTERFACE_FOLDER+" where moduleId=?",id);
+                int rs = qr.update(connection, "delete from " + TableNames.MODULES + " where id =?", id);
+                rs += qr.update(connection, "delete from " + TableNames.INTERFACES + " where moduleId=?", id);
+                rs += qr.update(connection, "delete from " + TableNames.INTERFACE_FOLDER + " where moduleId=?", id);
                 return rs;
             }
         });
@@ -315,8 +317,8 @@ public class DataFactory implements Data {
         return process(new Handler<List<InterfaceFolder>>() {
             @Override
             public List<InterfaceFolder> handle(Connection connection, QueryRunner qr) throws SQLException {
-                String sql = "select * from "+TableNames.INTERFACE_FOLDER+" where moduleId=? order by createTime asc";
-                return qr.query(connection,sql,new BeanListHandler<>(InterfaceFolder.class),moduleId);
+                String sql = "select * from " + TableNames.INTERFACE_FOLDER + " where moduleId=? order by sort asc";
+                return qr.query(connection, sql, new BeanListHandler<>(InterfaceFolder.class), moduleId);
             }
         });
     }
@@ -326,8 +328,8 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                int rs =qr.update(connection,"delete from "+TableNames.INTERFACE_FOLDER+" where id=?",id);
-                rs += qr.update(connection,"delete from "+ TableNames.INTERFACES+" where folderId=?",id);
+                int rs = qr.update(connection, "delete from " + TableNames.INTERFACE_FOLDER + " where id=?", id);
+                rs += qr.update(connection, "delete from " + TableNames.INTERFACES + " where folderId=?", id);
                 return rs;
             }
         });
@@ -344,7 +346,7 @@ public class DataFactory implements Data {
                         .append(" where tu.userId=? or t.userId=?")
                         .append(" order by tu.createTime desc,t.createTime desc ");
 
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Team.class),userId,userId);
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Team.class), userId, userId);
             }
         });
     }
@@ -358,9 +360,8 @@ public class DataFactory implements Data {
                         .append(" p left join user u on u.id = p.userId ")
                         .append(" left join project_user pu on pu.projectId = p.id ")
                         .append("  where ( pu.userId=?) and p.status='VALID'")
-                        .append(" order by createTime asc")
-                        ;
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Project.class),userId);
+                        .append(" order by createTime asc");
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Project.class), userId);
             }
         });
     }
@@ -371,7 +372,7 @@ public class DataFactory implements Data {
             @Override
             public List<User> handle(Connection connection, QueryRunner qr) throws SQLException {
                 StringBuilder sql = new StringBuilder("select u.id,u.nickname,u.avatar,u.email,pu.editable from user u left join project_user pu on pu.userId=u.id where pu.projectId=?");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(User.class),projectId);
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(User.class), projectId);
             }
         });
     }
@@ -381,13 +382,13 @@ public class DataFactory implements Data {
         return process(new Handler<List<User>>() {
             @Override
             public List<User> handle(Connection connection, QueryRunner qr) throws SQLException {
-                StringBuilder sql = new StringBuilder("select u.id,u.nickname,avatar,u.email from "+TableNames.USER+" u \n" +
+                StringBuilder sql = new StringBuilder("select u.id,u.nickname,avatar,u.email from " + TableNames.USER + " u \n" +
                         "where u.id in (\n" +
-                        "\tselect userId from "+TableNames.PROJECT_USER+" where projectId in (\n" +
-                        "\t\tselect projectId from "+TableNames.PROJECT_USER+" where userId=?\n" +
+                        "\tselect userId from " + TableNames.PROJECT_USER + " where projectId in (\n" +
+                        "\t\tselect projectId from " + TableNames.PROJECT_USER + " where userId=?\n" +
                         "\t)\n" +
                         ")\n");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(User.class),userId);
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(User.class), userId);
             }
         });
     }
@@ -433,15 +434,15 @@ public class DataFactory implements Data {
     }
     */
     //假删除
-   @Override
+    @Override
     public int deleteTeam(final String id) {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                StringBuilder sql = new StringBuilder("update "+TableNames.TEAM+" set status=? where id =?");
-                int rs= qr.update(connection,sql.toString(),Team.Status.INVALID,id);
-                sql = new StringBuilder("update "+TableNames.PROJECT+" set status=? where teamId=?");
-                rs+= qr.update(connection,sql.toString(),Team.Status.INVALID,id);
+                StringBuilder sql = new StringBuilder("update " + TableNames.TEAM + " set status=? where id =?");
+                int rs = qr.update(connection, sql.toString(), Team.Status.INVALID, id);
+                sql = new StringBuilder("update " + TableNames.PROJECT + " set status=? where teamId=?");
+                rs += qr.update(connection, sql.toString(), Team.Status.INVALID, id);
                 return rs;
             }
         });
@@ -449,6 +450,7 @@ public class DataFactory implements Data {
 
     /**
      * //删除项目
+     *
      * @param id
      * @return
      */
@@ -458,36 +460,42 @@ public class DataFactory implements Data {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
                 //删除项目
+                int rs = qr.update(connection,"delete from "+TableNames.PROJECT+" where id =?",id);
                 //删除文件夹
+                rs += qr.update(connection,"delete from "+TableNames.INTERFACE_FOLDER+" where projectid =?",id);
                 //删除接口
+                rs += qr.update(connection,"delete from "+TableNames.INTERFACES+" where projectid =?",id);
                 //删除项目与用户关联
-                //todo 删除项目消息内容
+                rs += qr.update(connection,"delete from "+TableNames.PROJECT_USER+" where projectid =?",id);
+                //删除模块
+                rs += qr.update(connection,"delete from "+TableNames.MODULES+" where projectid =?",id);
                 //删除项目日志
-                StringBuilder sql = new StringBuilder("update "+TableNames.PROJECT+" set status=? where id=?");
-                int rs = qr.update(connection,sql.toString(),Team.Status.INVALID,id);
+                rs += qr.update(connection,"delete from "+TableNames.PROJECT_LOG+" where projectid =?",id);
+                //删除分享
+                rs += qr.update(connection,"delete from "+TableNames.SHARE+" where projectid =?",id);
                 return rs;
             }
         });
     }
 
     @Override
-    public List<User> searchUsers(final String key,final String... excludeIds) {
+    public List<User> searchUsers(final String key, final String... excludeIds) {
         return process(new Handler<List<User>>() {
             @Override
             public List<User> handle(Connection connection, QueryRunner qr) throws SQLException {
-                String n = '%'+key+'%';
-                StringBuilder _excludeIds_ =new StringBuilder("\'\',");
-                if(excludeIds!=null && excludeIds.length>0){
-                    for(String id:excludeIds){
+                String n = '%' + key + '%';
+                StringBuilder _excludeIds_ = new StringBuilder("\'\',");
+                if (excludeIds != null && excludeIds.length > 0) {
+                    for (String id : excludeIds) {
                         _excludeIds_.append("\'");
                         _excludeIds_.append(id);
                         _excludeIds_.append("\'");
                         _excludeIds_.append(",");
                     }
                 }
-                _excludeIds_ = _excludeIds_.delete(_excludeIds_.length()-1,_excludeIds_.length());
-                StringBuilder sql = new StringBuilder("select id,email,nickname from user where  id not in("+_excludeIds_+") and nickname like ? order by length(nickname) asc limit 5");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(User.class),n);
+                _excludeIds_ = _excludeIds_.delete(_excludeIds_.length() - 1, _excludeIds_.length());
+                StringBuilder sql = new StringBuilder("select id,email,nickname from user where  id not in(" + _excludeIds_ + ") and nickname like ? order by length(nickname) asc limit 5");
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(User.class), n);
             }
         });
     }
@@ -497,7 +505,7 @@ public class DataFactory implements Data {
         return process(new Handler<Boolean>() {
             @Override
             public Boolean handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select count(id) from "+TableNames.USER+" where email=?",new IntegerResultHandler(),email)>0;
+                return qr.query(connection, "select count(id) from " + TableNames.USER + " where email=?", new IntegerResultHandler(), email) > 0;
             }
         });
     }
@@ -507,7 +515,7 @@ public class DataFactory implements Data {
         return process(new Handler<Boolean>() {
             @Override
             public Boolean handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select count(id) from "+TableNames.PROJECT_USER+" where projectId=? and userId=?",new IntegerResultHandler(),projectId,userId)>0;
+                return qr.query(connection, "select count(id) from " + TableNames.PROJECT_USER + " where projectId=? and userId=?", new IntegerResultHandler(), projectId, userId) > 0;
             }
         });
     }
@@ -517,8 +525,8 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                String sql = "delete from "+TableNames.PROJECT_USER+" where projectId=? and userId=?";
-                return qr.update(connection,sql,projectId,userId);
+                String sql = "delete from " + TableNames.PROJECT_USER + " where projectId=? and userId=?";
+                return qr.update(connection, sql, projectId, userId);
             }
         });
     }
@@ -529,8 +537,8 @@ public class DataFactory implements Data {
             @Override
             public List<Interface> handle(Connection connection, QueryRunner qr) throws SQLException {
                 StringBuilder sql = new StringBuilder("select * from ").append(TableNames.INTERFACES);
-                sql.append(" where moduleId=? order by createTime asc");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Interface.class),moduleId);
+                sql.append(" where moduleId=? order by sort asc");
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Interface.class), moduleId);
             }
         });
     }
@@ -542,8 +550,8 @@ public class DataFactory implements Data {
             public List<InterfaceFolder> handle(Connection connection, QueryRunner qr) throws SQLException {
                 StringBuilder sql = new StringBuilder("select * from ").append(TableNames.INTERFACE_FOLDER)
                         .append(" where projectId=?")
-                        .append(" order by createtime asc");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(InterfaceFolder.class),projectId);
+                        .append(" order by sort asc");
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(InterfaceFolder.class), projectId);
             }
         });
     }
@@ -553,8 +561,8 @@ public class DataFactory implements Data {
         return process(new Handler<List<Interface>>() {
             @Override
             public List<Interface> handle(Connection connection, QueryRunner qr) throws SQLException {
-                StringBuilder sql = new StringBuilder("select * from ").append(TableNames.INTERFACES).append(" where projectId=? order by createtime asc");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Interface.class),projectId);
+                StringBuilder sql = new StringBuilder("select * from ").append(TableNames.INTERFACES).append(" where projectId=? order by sort asc");
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Interface.class), projectId);
             }
         });
     }
@@ -564,8 +572,8 @@ public class DataFactory implements Data {
         return process(new Handler<String>() {
             @Override
             public String handle(Connection connection, QueryRunner qr) throws SQLException {
-                String sql  ="select id from "+TableNames.USER+" where email =? limit 1";
-                return qr.query(connection,sql,new StringResultHandler(),email);
+                String sql = "select id from " + TableNames.USER + " where email =? limit 1";
+                return qr.query(connection, sql, new StringResultHandler(), email);
             }
         });
     }
@@ -575,14 +583,14 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                FindPassword fp = getById(FindPassword.class,id);
-                AssertUtils.notNull(fp,"无效请求");
-                AssertUtils.isTrue(fp.getIsUsed()==0,"该token已使用");
-                AssertUtils.isTrue(fp.getEmail().equals(email),"无效token");
+                FindPassword fp = getById(FindPassword.class, id);
+                AssertUtils.notNull(fp, "无效请求");
+                AssertUtils.isTrue(fp.getIsUsed() == 0, "该token已使用");
+                AssertUtils.isTrue(fp.getEmail().equals(email), "无效token");
                 String newPassword = StringUtils.password(password);
                 String sql = new StringBuilder("update ").append(TableNames.USER).append(" set password=? where email=?").toString();
-                int rs = qr.update(connection,sql,newPassword,email);
-                rs += qr.update(connection,new StringBuilder("update ").append(TableNames.FIND_PASSWORD).append(" set isUsed=1 where id =?").toString(),id);
+                int rs = qr.update(connection, sql, newPassword, email);
+                rs += qr.update(connection, new StringBuilder("update ").append(TableNames.FIND_PASSWORD).append(" set isUsed=1 where id =?").toString(), id);
                 return rs;
             }
         });
@@ -594,7 +602,7 @@ public class DataFactory implements Data {
             @Override
             public Boolean handle(Connection connection, QueryRunner qr) throws SQLException {
                 String sql = new StringBuilder("select count(id) from ").append(TableNames.PROJECT_USER).append(" where userId=? and projectId=? and editable='YES'").toString();
-                return qr.query(connection,sql,new IntegerResultHandler(),userId,projectId)>0;
+                return qr.query(connection, sql, new IntegerResultHandler(), userId, projectId) > 0;
             }
         });
     }
@@ -605,29 +613,29 @@ public class DataFactory implements Data {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
                 SQLBuildResult sb = SqlUtils.generateInsertSQL(project);
-                int rs= qr.update(connection,sb.getSql(),sb.getParams());
+                int rs = qr.update(connection, sb.getSql(), sb.getParams());
                 ProjectUser pu = new ProjectUser();
                 pu.setId(StringUtils.id());
                 pu.setCreateTime(new Date());
                 pu.setStatus(ProjectUser.Status.ACCEPTED);
                 pu.setUserId(project.getUserId());
                 pu.setProjectId(project.getId());
-                sb=SqlUtils.generateInsertSQL(pu);
-                rs += qr.update(connection,sb.getSql(),sb.getParams());
-                for(Module m:modules){
+                sb = SqlUtils.generateInsertSQL(pu);
+                rs += qr.update(connection, sb.getSql(), sb.getParams());
+                for (Module m : modules) {
                     sb = SqlUtils.generateInsertSQL(m);
-                    rs +=qr.update(connection,sb.getSql(),sb.getParams());
-                    System.out.println("rs:"+rs+" +module");
+                    rs += qr.update(connection, sb.getSql(), sb.getParams());
+                    System.out.println("rs:" + rs + " +module");
                 }
-                for(InterfaceFolder f:folders){
+                for (InterfaceFolder f : folders) {
                     sb = SqlUtils.generateInsertSQL(f);
-                    rs +=qr.update(connection,sb.getSql(),sb.getParams());
-                    System.out.println("rs:"+rs+" +folder");
+                    rs += qr.update(connection, sb.getSql(), sb.getParams());
+                    System.out.println("rs:" + rs + " +folder");
                 }
-                for(Interface in:interfaces){
+                for (Interface in : interfaces) {
                     sb = SqlUtils.generateInsertSQL(in);
-                    rs +=qr.update(connection,sb.getSql(),sb.getParams());
-                    System.out.println("rs:"+rs+" +in");
+                    rs += qr.update(connection, sb.getSql(), sb.getParams());
+                    System.out.println("rs:" + rs + " +in");
                 }
                 return rs;
             }
@@ -639,9 +647,9 @@ public class DataFactory implements Data {
         process(new Handler<Object>() {
             @Override
             public Object handle(Connection connection, QueryRunner qr) throws SQLException {
-                user.setBindQQ(qr.query(connection,"select count(id) from "+TableNames.USER_THIRD+" where userId=? and type='QQ'",new IntegerResultHandler(),user.getId())>0);
-                user.setBindWeibo(qr.query(connection,"select count(id) from "+TableNames.USER_THIRD+" where userId=? and type='WEIBO'",new IntegerResultHandler(),user.getId())>0);
-                user.setBindGithub(qr.query(connection,"select count(id) from "+TableNames.USER_THIRD+" where userId=? and type='GITHUB'",new IntegerResultHandler(),user.getId())>0);
+                user.setBindQQ(qr.query(connection, "select count(id) from " + TableNames.USER_THIRD + " where userId=? and type='QQ'", new IntegerResultHandler(), user.getId()) > 0);
+                user.setBindWeibo(qr.query(connection, "select count(id) from " + TableNames.USER_THIRD + " where userId=? and type='WEIBO'", new IntegerResultHandler(), user.getId()) > 0);
+                user.setBindGithub(qr.query(connection, "select count(id) from " + TableNames.USER_THIRD + " where userId=? and type='GITHUB'", new IntegerResultHandler(), user.getId()) > 0);
                 return null;
             }
         });
@@ -649,8 +657,8 @@ public class DataFactory implements Data {
 
     @Override
     public int copyFolder(String folderId, final String moduleId) {
-        final InterfaceFolder folder = getById(InterfaceFolder.class,folderId);
-        AssertUtils.notNull(folder,"无效分类id");
+        final InterfaceFolder folder = getById(InterfaceFolder.class, folderId);
+        AssertUtils.notNull(folder, "无效分类id");
         final List<Interface> interfaces = getInterface(folderId);
         return process(new Handler<Integer>() {
             @Override
@@ -659,24 +667,24 @@ public class DataFactory implements Data {
                 folder.setId(StringUtils.id());
                 folder.setCreateTime(new Date());
                 folder.setModuleId(moduleId);
-                if(folder.getName()== null){
+                if (folder.getName() == null) {
                     folder.setName("");
                 }
-                if(!folder.getName().contains("COPY")) {
+                if (!folder.getName().contains("COPY")) {
                     folder.setName(folder.getName() + "_COPY");
                 }
                 SQLBuildResult sb = SqlUtils.generateInsertSQL(folder);
-                int rs= qr.update(connection,sb.getSql(),sb.getParams());
+                int rs = qr.update(connection, sb.getSql(), sb.getParams());
 
-                if(interfaces!=null && interfaces.size()>0){
-                    for(Interface in: interfaces){
+                if (interfaces != null && interfaces.size() > 0) {
+                    for (Interface in : interfaces) {
                         in.setId(StringUtils.id());
                         in.setFolderId(folder.getId());
                         in.setModuleId(moduleId);
                         in.setCreateTime(new Date());
                         in.setLastUpdateTime(new Date());
                         sb = SqlUtils.generateInsertSQL(in);
-                        rs += qr.update(connection,sb.getSql(),sb.getParams());
+                        rs += qr.update(connection, sb.getSql(), sb.getParams());
                     }
                 }
                 return rs;
@@ -689,7 +697,7 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.update(connection,"delete from "+TableNames.USER_THIRD+" where userId=? and type=?",userId,type);
+                return qr.update(connection, "delete from " + TableNames.USER_THIRD + " where userId=? and type=?", userId, type);
             }
         });
     }
@@ -700,7 +708,7 @@ public class DataFactory implements Data {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
                 SQLBuildResult sb = SqlUtils.generateInsertSQL(project);
-                int rs = qr.update(connection,sb.getSql(),sb.getParams());
+                int rs = qr.update(connection, sb.getSql(), sb.getParams());
                 ProjectUser pu = new ProjectUser();
                 pu.setUserId(project.getUserId());
                 pu.setId(StringUtils.id());
@@ -709,7 +717,7 @@ public class DataFactory implements Data {
                 pu.setStatus(ProjectUser.Status.ACCEPTED);
                 pu.setEditable(project.getEditable());
                 sb = SqlUtils.generateInsertSQL(pu);
-                rs += qr.update(connection,sb.getSql(),sb.getParams());
+                rs += qr.update(connection, sb.getSql(), sb.getParams());
                 return rs;
             }
         });
@@ -720,7 +728,7 @@ public class DataFactory implements Data {
         return process(new Handler<String>() {
             @Override
             public String handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select name from "+TableNames.PROJECT+" where id = ?",new StringResultHandler(),projectId);
+                return qr.query(connection, "select name from " + TableNames.PROJECT + " where id = ?", new StringResultHandler(), projectId);
             }
         });
     }
@@ -730,7 +738,7 @@ public class DataFactory implements Data {
         return process(new Handler<String>() {
             @Override
             public String handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select name from "+TableNames.INTERFACE_FOLDER+" where id = ?",new StringResultHandler(),folderId);
+                return qr.query(connection, "select name from " + TableNames.INTERFACE_FOLDER + " where id = ?", new StringResultHandler(), folderId);
             }
         });
     }
@@ -740,7 +748,7 @@ public class DataFactory implements Data {
         return process(new Handler<String>() {
             @Override
             public String handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select name from "+TableNames.MODULES+" where id = ?",new StringResultHandler(),moduleId);
+                return qr.query(connection, "select name from " + TableNames.MODULES + " where id = ?", new StringResultHandler(), moduleId);
             }
         });
     }
@@ -750,7 +758,7 @@ public class DataFactory implements Data {
         return process(new Handler<String>() {
             @Override
             public String handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select name from "+TableNames.INTERFACES+" where id = ?",new StringResultHandler(),interfaceId);
+                return qr.query(connection, "select name from " + TableNames.INTERFACES + " where id = ?", new StringResultHandler(), interfaceId);
             }
         });
     }
@@ -760,7 +768,7 @@ public class DataFactory implements Data {
         return process(new Handler<String>() {
             @Override
             public String handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select editable from "+SqlUtils.getTableName(ProjectUser.class)+" where projectId=? and userId=? limit 1",new StringResultHandler(),projectId,userId);
+                return qr.query(connection, "select editable from " + SqlUtils.getTableName(ProjectUser.class) + " where projectId=? and userId=? limit 1", new StringResultHandler(), projectId, userId);
             }
         });
     }
@@ -770,8 +778,8 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                String sql = "update "+SqlUtils.getTableName(ProjectUser.class)+" set editable=? where projectId = ? and userId = ?";
-                return qr.update(connection,sql,editable,projectId,userId);
+                String sql = "update " + SqlUtils.getTableName(ProjectUser.class) + " set editable=? where projectId = ? and userId = ?";
+                return qr.update(connection, sql, editable, projectId, userId);
             }
         });
     }
@@ -781,8 +789,8 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                String sql = "update "+SqlUtils.getTableName(ProjectUser.class)+" set commonlyUsed=? where projectId = ? and userId = ?";
-                return qr.update(connection,sql,isCommonlyUsed,projectId,userId);
+                String sql = "update " + SqlUtils.getTableName(ProjectUser.class) + " set commonlyUsed=? where projectId = ? and userId = ?";
+                return qr.update(connection, sql, isCommonlyUsed, projectId, userId);
             }
         });
     }
@@ -796,12 +804,12 @@ public class DataFactory implements Data {
                 sql.append("select * from ")
                         .append(TableNames.MODULES)
                         .append(" where id in (");
-                for(String moduleId: moduleIdsArray) {
+                for (String moduleId : moduleIdsArray) {
                     sql.append("?,");
                 }
-                sql = sql.delete(sql.length()-1,sql.length());
+                sql = sql.delete(sql.length() - 1, sql.length());
                 sql.append(") order by createTime asc");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Module.class),moduleIdsArray);
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Module.class), moduleIdsArray);
             }
         });
     }
@@ -814,12 +822,12 @@ public class DataFactory implements Data {
                 StringBuilder sql = new StringBuilder();
                 sql.append("select * from ").append(TableNames.INTERFACE_FOLDER);
                 sql.append(" where moduleId in (");
-                for(String moduleId: moduleIds) {
+                for (String moduleId : moduleIds) {
                     sql.append("?,");
                 }
-                sql = sql.delete(sql.length()-1,sql.length());
-                sql.append(") order by createTime asc");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(InterfaceFolder.class),moduleIds);
+                sql = sql.delete(sql.length() - 1, sql.length());
+                sql.append(") order by sort asc");
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(InterfaceFolder.class), moduleIds);
             }
         });
     }
@@ -832,12 +840,12 @@ public class DataFactory implements Data {
                 StringBuilder sql = new StringBuilder("select * from ")
                         .append(TableNames.INTERFACES)
                         .append(" where moduleId in (");
-                for(String moduleId: moduleIds) {
+                for (String moduleId : moduleIds) {
                     sql.append("?,");
                 }
-                sql = sql.delete(sql.length()-1,sql.length());
-                sql.append(" )order by createtime asc");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Interface.class),moduleIds);
+                sql = sql.delete(sql.length() - 1, sql.length());
+                sql.append(" )order by sort asc");
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Interface.class), moduleIds);
             }
         });
     }
@@ -851,35 +859,152 @@ public class DataFactory implements Data {
                 sql.append("select s.*,u.nickname username from share s\n");
                 sql.append("left join user u on u.id = s.userid\n");
                 sql.append("where s.projectId = ?");
-                return qr.query(connection,sql.toString(),new BeanListHandler<>(Share.class),projectId);
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Share.class), projectId);
             }
         });
     }
 
     @Override
-    public List<Map<String,Object>> getModuleNameIdsInIds(final String[] moduleIdsArray) {
-        return process(new Handler<List<Map<String,Object>>>() {
+    public List<Map<String, Object>> getModuleNameIdsInIds(final String[] moduleIdsArray) {
+        return process(new Handler<List<Map<String, Object>>>() {
             @Override
-            public List<Map<String,Object>> handle(Connection connection, QueryRunner qr) throws SQLException {
+            public List<Map<String, Object>> handle(Connection connection, QueryRunner qr) throws SQLException {
                 StringBuilder sql = new StringBuilder();
                 sql.append("select id,name from module where id in (");
-                for(String moduleId : moduleIdsArray){
+                for (String moduleId : moduleIdsArray) {
                     sql.append("?,");
                 }
-                sql = sql.delete(sql.length()-1,sql.length());
-                sql.append(") order by createTime asc ");
-                return qr.query(connection,sql.toString(),new MapListHandler(),moduleIdsArray);
+                sql = sql.delete(sql.length() - 1, sql.length());
+                sql.append(") order by sort asc ");
+                return qr.query(connection, sql.toString(), new MapListHandler(), moduleIdsArray);
+            }
+        });
+    }
+
+    @Override
+    public int updateFolderSorts(final String[] idsorts) {
+        return process(new Handler<Integer>() {
+            @Override
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                int rs = 0;
+                for (String is : idsorts) {
+                    String[] temp = is.split("_");
+                    if (temp.length == 2) {
+                        String id = temp[0], sort = temp[1];
+                        rs += qr.update(connection, "update " + TableNames.INTERFACE_FOLDER + " set sort=? where id =?", sort, id);
+                    }
+                }
+                return rs;
+            }
+        });
+    }
+
+    @Override
+    public int updateInterfaceSorts(final String[] idsorts) {
+        return process(new Handler<Integer>() {
+            @Override
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                int rs = 0;
+                for (String is : idsorts) {
+                    String[] temp = is.split("_");
+                    if (temp.length == 2) {
+                        String id = temp[0], sort = temp[1];
+                        rs += qr.update(connection, "update " + TableNames.INTERFACES + " set sort=? where id =?", sort, id);
+                    }
+                }
+                return rs;
+            }
+        });
+    }
+
+    public String getUserName(final String userId) {
+        return process(new Handler<String>() {
+            @Override
+            public String handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.query(connection, "select nickname from " + TableNames.USER + " where id = ?", new StringResultHandler(), userId);
+            }
+        });
+    }
+
+    @Override
+    public List<ProjectLog> getProjectLogs(final Pagination pagination) {
+        return process(new Handler<List<ProjectLog>>() {
+            @Override
+            public List<ProjectLog> handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.query(connection,"select pl.*,u.nickname,u.avatar from "+TableNames.PROJECT_LOG+" pl left join user u on u.id = pl.userId where pl.projectId=? order by pl.createTime desc limit ?,?",new BeanListHandler<>(ProjectLog.class),pagination.getParams().get("projectId"),pagination.getStart(),pagination.getLimit());
+            }
+        });
+    }
+
+    @Override
+    public int importFromMJSON(final Project project, final List<Module> moduleList) {
+        return process(new Handler<Integer>() {
+            @Override
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                //初始化项目
+                project.setId(StringUtils.id());
+                project.setCreateTime(new Date());
+                SQLBuildResult sql = SqlUtils.generateInsertSQL(project);
+                int rs = qr.update(connection,sql.getSql(),sql.getParams());
+
+                ProjectUser projectUser = new ProjectUser();
+                projectUser.setCreateTime(new Date());
+                projectUser.setStatus(ProjectUser.Status.ACCEPTED);
+                projectUser.setProjectId(project.getId());
+                projectUser.setCommonlyUsed(ProjectUser.CommonlyUsed.NO);
+                projectUser.setUserId(project.getUserId());
+                projectUser.setEditable(ProjectUser.Editable.YES);
+                projectUser.setId(StringUtils.id());
+                sql = SqlUtils.generateInsertSQL(projectUser);
+                rs = qr.update(connection,sql.getSql(),sql.getParams());
+
+                //初始化模块
+                for(Module m:moduleList){
+                    m.setProjectId(project.getId());
+                    m.setCreateTime(new Date());
+                    m.setId(StringUtils.id());
+                    sql = SqlUtils.generateInsertSQL(m);
+                    rs += qr.update(connection,sql.getSql(),sql.getParams());
+
+                    //初始化文件夹
+                    int fi = 1;
+                    for(InterfaceFolder f: m.getFolders()){
+                        f.setProjectId(project.getId());
+                        f.setModuleId(m.getId());
+                        f.setSort(fi++);
+                        f.setCreateTime(new Date());
+                        f.setId(StringUtils.id());
+                        sql = SqlUtils.generateInsertSQL(f);
+                        rs += qr.update(connection,sql.getSql(),sql.getParams());
+
+                        //初始化接口
+                        int i=1;
+                        for(Interface in:f.getChildren()){
+                            in.setSort(i++);
+                            in.setId(StringUtils.id());
+                            in.setFolderId(f.getId());
+                            in.setModuleId(m.getId());
+                            in.setProjectId(project.getId());
+                            in.setCreateTime(new Date());
+                            in.setLastUpdateTime(new Date());
+                            sql = SqlUtils.generateInsertSQL(in);
+                            rs += qr.update(connection,sql.getSql(),sql.getParams());
+
+                        }
+                    }
+                }
+                return rs;
             }
         });
     }
 
 
-    public void test(){
+    public void test() {
         process(new Handler<Object>() {
             @Override
             public Object handle(Connection connection, QueryRunner qr) throws SQLException {
-                List<Project> projects = qr.query(connection,"select id,userid from project",new BeanListHandler<>(Project.class));
-                for(Project project : projects){
+                List<Project> projects = qr.query(connection, "select id,userid from project", new BeanListHandler<>(Project.class));
+                for (Project project : projects) {
                     ProjectUser pu = new ProjectUser();
                     pu.setId(StringUtils.id());
                     pu.setUserId(project.getUserId());
@@ -887,7 +1012,7 @@ public class DataFactory implements Data {
                     pu.setStatus(ProjectUser.Status.ACCEPTED);
                     pu.setCreateTime(new Date());
                     SQLBuildResult sb = SqlUtils.generateInsertSQL(pu);
-                    int rs = qr.update(connection,sb.getSql(),sb.getParams());
+                    int rs = qr.update(connection, sb.getSql(), sb.getParams());
                     System.out.println(rs);
                 }
                 return null;

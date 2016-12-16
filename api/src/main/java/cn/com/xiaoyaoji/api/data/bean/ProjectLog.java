@@ -1,6 +1,7 @@
 package cn.com.xiaoyaoji.api.data.bean;
 
 import cn.com.xiaoyaoji.api.annotations.Alias;
+import cn.com.xiaoyaoji.api.annotations.Ignore;
 
 import java.util.Date;
 
@@ -17,6 +18,10 @@ public class ProjectLog {
     private String log;
     private String action;
     private String projectId;
+    @Ignore
+    private String nickname;
+    @Ignore
+    private String avatar;
 
     public ProjectLog() {
     }
@@ -68,5 +73,21 @@ public class ProjectLog {
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

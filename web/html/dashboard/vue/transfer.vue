@@ -73,7 +73,6 @@
                 },function(){
                     self.loading=false;
                 })   ;
-                _czc.push(["_trackEvent",'接口','项目转移']);
             }
         },
         methods:{

@@ -1,10 +1,15 @@
 package cn.com.xiaoyaoji.api.controller;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 import cn.com.xiaoyaoji.api.data.bean.Thirdparty;
+import cn.com.xiaoyaoji.api.ex.ImageData;
 import cn.com.xiaoyaoji.api.thirdly.QQ;
+import cn.com.xiaoyaoji.api.utils.StringUtils;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang3.*;
 import org.mangoframework.core.annotation.Get;
 import org.mangoframework.core.annotation.Post;
 import org.mangoframework.core.annotation.RequestMapping;
@@ -66,6 +71,7 @@ public class UserController {
         user.setType(User.Type.USER);
         user.setCreatetime(new Date());
         user.setId(StringUtils.id());
+        user.setAvatar("/assets/img/defaultlogo.jpg");
         user.setStatus(User.Status.PENDING);
         int rs = ServiceFactory.instance().create(user);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
@@ -273,5 +279,35 @@ public class UserController {
         return new _HashMap<>()
                 .add("user",user)
                 ;
+    }
+
+    @Post("avatar")
+    public Object uploadAvatar(Parameter parameter) throws IOException {
+        User user = MemoryUtils.getUser(parameter);
+        String fileAccess = ConfigUtils.getFileAccessURL();
+
+        List<FileItem> avatars = parameter.getParamFile().get("avatar");
+        if(avatars != null && avatars.size()>0) {
+            FileItem avatar = avatars.get(0);
+            if(avatar.getSize() > 0 && avatar.getContentType().startsWith("image")){
+                ImageData id = FileUtils.upload(avatar);
+                User temp = new User();
+                temp.setAvatar(fileAccess+id.getPath());
+                temp.setId(user.getId());
+                int rs = ServiceFactory.instance().update(temp);
+                AssertUtils.isTrue(rs>0,"上传失败");
+                if(org.apache.commons.lang3.StringUtils.isNotBlank(user.getAvatar()) && user.getAvatar().startsWith(fileAccess)){
+                    String url = user.getAvatar().substring(fileAccess.length());
+                    try {
+                        FileUtils.delete(url);
+                    } catch (IOException e) {
+                    }
+                }
+                user.setAvatar(temp.getAvatar());
+                MemoryUtils.putUser(parameter.getParamString().get("token"),user);
+                return new _HashMap<>().add("avatar",user.getAvatar());
+            }
+        }
+        return new Result<>(false,"请上传图片");
     }
 }

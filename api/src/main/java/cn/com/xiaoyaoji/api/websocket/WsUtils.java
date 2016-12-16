@@ -54,6 +54,7 @@ public class WsUtils {
         if(sessions!= null){
             for(Session session :sessions){
                 try {
+                    //todo 并发问题
                     session.getBasicRemote().sendText(JsonUtils.toString(message));
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);

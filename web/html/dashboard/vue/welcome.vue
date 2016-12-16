@@ -18,6 +18,18 @@
         </li>
         <li class="fl">
             <div class="cb">
+                <input type="file" v-on:change="import2mjson" id="mjsonfile" class="cb-import-mjson">
+                <a>
+                    <i class="iconfont icon-import fl"></i>
+                    <div class="fl db-wel-item">
+                        <h3>导入项目</h3>
+                        <p class="db-wel-item-desc">导入mjson文件</p>
+                    </div>
+                </a>
+            </div>
+        </li>
+        <li class="fl">
+            <div class="cb">
                 <a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=7e99bd0ada4c6586d8e4e609b28d997f86e07336124fca08ac7b02fbe9d07130">
                     <i class="iconfont icon-qqqun fl"></i>
                     <div class="fl db-wel-item">
@@ -42,6 +54,7 @@
 </div>
 </template>
 <script>
+    import utils from '../../src/utils.js'
     export default{
         route:{
             activate: function (transition) {
@@ -55,6 +68,20 @@
         },
         data:function(){
             return {}
+        },
+        methods:{
+            import2mjson:function(e){
+                if (e.target.files.length === 0) { return; }  //未选取图片时防止报错
+                let file = e.target.files[0];       //获取用户选取的图片
+                var fd = new FormData();
+                fd.append('mjson',file);
+                utils.fileloader('/project/importmjson.json',fd,function(rs){
+                    toastr.success('导入成功');
+                    setTimeout(function(){
+                        location.reload();
+                    },1000);
+                });
+            }
         }
     }
 </script>

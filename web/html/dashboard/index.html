@@ -48,6 +48,7 @@
         </div>
     </div>
 </template>
+
 <div style="display: none">
 
     <!-- build:thirdparty ../built/thirdparty.js -->
@@ -55,27 +56,31 @@
     <script src="../assets/toastr/toastr.min.js"></script>
     <script src="../assets/pace/pace.min.js"></script>
     <!-- endbuild -->
-    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/config.js?v=1.7"></script>
     <!-- build:common ../built/common.js -->
     <script src="../../built/common.js"></script>
     <!-- endbuild -->
-
 </div>
 
 <script src="../assets/editor.md/editormd.min.js"></script>
 <script src="../assets/editor.md/lib/marked.min.js"></script>
 <script src="../assets/editor.md/lib/prettify.min.js"></script>
 <script src="../assets/clipboard/clipboard.min.js"></script>
-<script src="../assets/xml2json/xml2json.min.js"></script>
+<script src="../assets/xml2json/2xml.js"></script>
+<script src="../assets/xml2json/2json.js"></script>
 <script src="../assets/ace/src-min/ace.js"></script>
-<script>
-    if(!window._cnc_){
-        window._cnc={push:function(){}}
-    }
-</script>
+<script src="../assets/html5sortable/html.sortable.min.js"></script>
 <!-- build:dashboard ../built/dashboard.js -->
 <script src="../../built/dashboard.js"></script>
 <!-- endbuild -->
-<script src="http://s95.cnzz.com/z_stat.php?id=1260226777&web_id=1260226777" language="JavaScript"></script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?9bd56a6d0766b887592ee921aa94763f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
 </body>
 </html>

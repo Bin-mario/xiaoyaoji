@@ -5,8 +5,10 @@ import cn.com.xiaoyaoji.api.asynctask.log.Log;
 import cn.com.xiaoyaoji.api.data.bean.Interface;
 import cn.com.xiaoyaoji.api.data.bean.Project;
 import cn.com.xiaoyaoji.api.data.bean.TableNames;
+import cn.com.xiaoyaoji.api.ex.Message;
 import cn.com.xiaoyaoji.api.ex._HashMap;
 import cn.com.xiaoyaoji.api.service.ServiceFactory;
+import cn.com.xiaoyaoji.api.service.ServiceTool;
 import cn.com.xiaoyaoji.api.utils.AssertUtils;
 import cn.com.xiaoyaoji.api.utils.BeanUtils;
 import cn.com.xiaoyaoji.api.utils.MemoryUtils;
@@ -67,10 +69,69 @@ public class InterfaceController {
         in.setId(StringUtils.id());
         int rs = ServiceFactory.instance().create(in);
         AssertUtils.isTrue(rs>0,"增加失败");
-        AsyncTaskBus.instance().push(Log.create(parameter.getParamString().get("token"), Log.CREATE_INTERFACE,in.getName(),in.getProjectId()));
-        AsyncTaskBus.instance().push(in.getProjectId(),Project.Action.CREATE_INTERFACE,in.getId(),token,in.getFolderId());
+        AsyncTaskBus.instance().push(in.getProjectId(),Project.Action.CREATE_INTERFACE,in.getId(),token,"创建接口-"+in.getName(),in.getFolderId());
         return in.getId();
     }
+
+    /**
+     * 对比修改记录
+     * @param before
+     * @param now
+     * @return
+     */
+    private String diffOperation(Interface before,Interface now){
+        StringBuilder sb = new StringBuilder();
+        if(ServiceTool.modified(before.getName(),now.getName())){
+            sb.append("名称,");
+        }
+        if(ServiceTool.modified(before.getDescription(),now.getDescription())){
+            sb.append("描述,");
+        }
+        if(ServiceTool.modified(before.getFolderId(),now.getFolderId())){
+            sb.append("分类,");
+        }
+        if(ServiceTool.modified(before.getUrl(),now.getUrl())){
+            sb.append("地址,");
+        }
+        if(ServiceTool.modified(before.getRequestMethod(),now.getRequestMethod())){
+            sb.append("请求方法,");
+        }
+        if(ServiceTool.modified(before.getContentType(),now.getContentType())){
+            sb.append("响应类型,");
+        }
+        if(ServiceTool.modified(before.getRequestHeaders(),now.getRequestHeaders())){
+            sb.append("请求头,");
+        }
+        if(ServiceTool.modified(before.getRequestArgs(),now.getRequestArgs())){
+            sb.append("请求参数,");
+        }
+        if(ServiceTool.modified(before.getResponseArgs(),now.getResponseArgs())){
+            sb.append("响应参数,");
+        }
+        if(ServiceTool.modified(before.getExample(),now.getExample())){
+            sb.append("示例数据,");
+        }
+        if(ServiceTool.modified(before.getProjectId(),now.getProjectId())){
+            sb.append("所属项目,");
+        }
+        if(ServiceTool.modified(before.getModuleId(),now.getModuleId())){
+            sb.append("所属模块,");
+        }
+        if(ServiceTool.modified(before.getDataType(),now.getDataType())){
+            sb.append("请求数据类型,");
+        }
+        if(ServiceTool.modified(before.getProtocol(),now.getProtocol())){
+            sb.append("请求协议,");
+        }
+        if(ServiceTool.modified(before.getStatus(),now.getStatus())){
+            sb.append("接口状态,");
+        }
+        if(sb.length()>0){
+            sb = sb.delete(sb.length()-1,sb.length());
+        }
+        return sb.toString();
+    }
+
 
     /**
      * 更新
@@ -91,8 +152,10 @@ public class InterfaceController {
         int rs= ServiceFactory.instance().update(in);
         AssertUtils.isTrue(rs>0,"修改失败");
         String token = parameter.getParamString().get("token");
-        AsyncTaskBus.instance().push(Log.create(token, Log.UPDATE_INTERFACE,temp.getName(),temp.getProjectId()));
-        AsyncTaskBus.instance().push(temp.getProjectId(),Project.Action.UPDATE_INTERFACE,id,token);
+        String diff =diffOperation(temp,in);
+        if(diff.length()>0) {
+            AsyncTaskBus.instance().push(temp.getProjectId(), Project.Action.UPDATE_INTERFACE, id, token, "修改接口-" + temp.getName()+"-" + diff);
+        }
         return rs;
     }
 
@@ -111,8 +174,7 @@ public class InterfaceController {
         AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectPermission(MemoryUtils.getUser(parameter).getId(),temp.getProjectId()),"无操作权限");
         int rs = ServiceFactory.instance().delete(TableNames.INTERFACES,id);
         AssertUtils.isTrue(rs>0,"删除失败");
-        AsyncTaskBus.instance().push(Log.create(parameter.getParamString().get("token"), Log.DELETE_INTERFACE,temp.getName(),temp.getProjectId()));
-        AsyncTaskBus.instance().push(temp.getProjectId(),Project.Action.DELETE_INTERFACE,id,token);
+        AsyncTaskBus.instance().push(temp.getProjectId(),Project.Action.DELETE_INTERFACE,id,token,"删除接口-"+temp.getName());
         return rs;
     }
 
@@ -142,5 +204,16 @@ public class InterfaceController {
             return createInterface(parameter);
         }
         return update(id,parameter);
+    }
+
+
+    @Post("sort")
+    public Object sort(Parameter parameter){
+        String idsort = parameter.getParamString().get("sort");
+        AssertUtils.notNull(idsort,"参数为空");
+        String[] idsorts = idsort.split(",");
+        int rs = ServiceFactory.instance().updateInterfaceSorts(idsorts);
+        AssertUtils.notNull(rs>0, Message.OPER_ERR);
+        return true;
     }
 }

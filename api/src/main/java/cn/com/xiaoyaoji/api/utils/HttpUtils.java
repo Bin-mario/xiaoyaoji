@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -24,7 +25,7 @@ public class HttpUtils {
     private static HttpClient client;
 
     static {
-        client = new HttpClient();
+        client = new HttpClient(new MultiThreadedHttpConnectionManager());
     }
 
     public static String get(String url) {

@@ -22,7 +22,6 @@ new Vue({
                 toastr.success('注册成功!');
                 location.href=utils.config.ctx+'/dashboard/';
             });
-            _czc.push(['_trackEvent', '注册', '账户密码']);
         }
     }
 });

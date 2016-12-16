@@ -1,7 +1,7 @@
 package cn.com.xiaoyaoji.api.controller;
 
 import cn.com.xiaoyaoji.api.annotations.Ignore;
-import cn.com.xiaoyaoji.api.data.ServiceTool;
+import cn.com.xiaoyaoji.api.service.ServiceTool;
 import cn.com.xiaoyaoji.api.data.bean.*;
 import cn.com.xiaoyaoji.api.ex.Handler;
 import cn.com.xiaoyaoji.api.ex.Result;

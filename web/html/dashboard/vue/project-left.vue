@@ -104,13 +104,7 @@
     };
     function load(self){
         utils.get('/project/list.json',{},function(rs){
-            data.projects=rs.data.projects;                      
-            for (var i = 0; i< data.projects.length; i++) {
-                if (data.projects[i].commonlyUsed == 'YES') {                	
-                    data.projectNumber ++;
-                }
-            }
-
+            data.projects=rs.data.projects;     
         },null,function(rs){
             if (location.href.indexOf('/project/demo') != -1 || location.href.indexOf('/share/') != -1)
                 return true;
@@ -132,6 +126,18 @@
                 }
             }
         },
+        computed:{
+            projectNumber:function(){
+                data.projectNumber = 0;
+                let length = data.projects.length;
+                for (let i=0; i<length; i++){
+                    if (data.projects[i].commonlyUsed=='YES'){
+                        data.projectNumber++;
+                    }
+                }
+                return data.projectNumber;
+            }
+        },
         methods: {
             logout:function(){
                 utils.logout();
@@ -140,11 +146,9 @@
                 if(item.commonlyUsed=='YES'){
                 	item.commonlyUsed='NO';
                 	utils.post('/project/'+ item.id + '/commonly.json',{isCommonlyUsed:'NO'});
-                	data.projectNumber--;                
                 } else {
                 	item.commonlyUsed='YES';
                 	utils.post('/project/'+ item.id + '/commonly.json',{isCommonlyUsed:'YES'});
-                	data.projectNumber++;                
                 }                            
 
             }

@@ -3,6 +3,7 @@ package cn.com.xiaoyaoji.api.cache;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author zhoujingjie
@@ -10,12 +11,13 @@ import java.util.Map;
  */
 public class MemoryCache implements Cache {
     private static Map<String, Value> dataMap;
-
     static {
-        dataMap = new HashMap<>();
+        dataMap = new ConcurrentHashMap<>();
     }
 
     public void put(String token, String key, Object data, int expires) {
+        if(token == null)
+            return;
         Value value = dataMap.get(token);
         if (value == null) {
             value = new Value();
@@ -26,11 +28,13 @@ public class MemoryCache implements Cache {
     }
 
     public Object get(String token, String key, int expires) {
+        if(token == null)
+            return null;
         Value value = dataMap.get(token);
         if (value == null)
             return null;
         if (value.getExpires().getTime() < System.currentTimeMillis()) {
-            dataMap.put(token, null);
+            dataMap.remove(token);
             return null;
         }
         value.setExpires(new Date(new Date().getTime() + expires * 1000));

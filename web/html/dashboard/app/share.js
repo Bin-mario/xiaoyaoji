@@ -16,7 +16,6 @@ ResponseArgsVue.props = ['responseArgs', 'editing'];
 //this is nothing
 var gdata = {
     status: {
-       
         envModal: false,    //环境变量编辑模态
         loading: true,      //loading
         apiLoading: false,  //api价值
@@ -78,7 +77,7 @@ var gdata = {
 };
 //页面全局变量
 var page = {
-    x2js:new X2JS(),
+    formater:{xml:new XML.ObjTree()},
     listener:{
         success:function (e) {
             new Result().resolve(e.detail, gdata.currentApi.contentType);
@@ -300,8 +299,9 @@ export default{
             this.$parent.projectId = this.id;
             this.show= 'doc';
             page.reget(this);
-            if (window._czc) {
-                _czc.push(["_trackPageview", location.pathname + (location.hash), document.referrer]);
+
+            if (window._hmt) {
+                _hmt.push(['_trackPageview', '/project/'+this.id]);
             }
         },
         activate: function (transition) {
@@ -348,24 +348,9 @@ export default{
         requestArgsPreview:function(){
             var type = this.currentApi.dataType;
             if(type == 'XML'){
-                //todo 增加全局操作
-                let args = utils.toJSON(this.currentModule.requestArgs);
-                let text='<?xml version="1.0" encoding="UTF-8"?>\n<xml>\n';
-                args.forEach(function(item){
-                    var name = item.name.replace(/\s/g,'');
-                    text += '    <'+name+'>' +(item.defaultValue || '')+'</'+name+'>\n';
-                });
-                args = utils.toJSON(this.currentApi.requestArgs);
-                args.forEach(function(item){
-                    if(item.name){
-                        var name = item.name.replace(/\s/g,'');
-                        text += '    <'+name+'>' +(item.defaultValue || '')+'</'+name+'>\n';
-                    }
-                });
-                text+= '</xml>';
-                return text;
+                obj = {xml:obj};
+                return formatXml(page.formater.xml.writeXML(obj));
             }else if(type =='JSON'){
-                var obj = getRequestArgsObject(this.currentApi.requestArgs);
                 if(obj){
                     return JSON.stringify(obj,null,'\t');
                 }
@@ -503,13 +488,11 @@ export default{
         envClick:function(e){
             $('#api-env-details').css('left',$(e.currentTarget).offset().left);
             this.status.showEnvs=true;
-            _czc.push(["_trackEvent",'接口','环境变量点击']);
         },
         folderClick: function (event) {
             var $dom = $(event.currentTarget);
             $dom.toggleClass("open");
             $dom.next().slideToggle();
-            _czc.push(["_trackEvent",'接口','文件夹点击']);
         },
         apiClick: function (item, folder) {
 
@@ -523,7 +506,6 @@ export default{
                 document.documentElement.scrollTop = 110;
             }
 
-            _czc.push(["_trackEvent",'接口','点击',this.currentApi.name,this.currentApi.id]);
         },
         apiSave: function () {
             let data = this.currentApi;//$.extend({},this.currentApi);
@@ -582,7 +564,6 @@ export default{
                 localStorage.setItem('form.dataType',data.dataType);
                 localStorage.setItem('form.contentType',data.contentType);
             });
-            _czc.push(["_trackEvent",'接口','接口保存']);
         },
         apiVarsClick:function(name,e){
             
@@ -592,6 +573,9 @@ export default{
             var self = this;
             //var url = this.requestURL;
             var url = $('#requestURL').val();
+            if(url && !url.match(/http[s]?:/) && !url.match(/\/\//)){
+                url = 'http://'+url;
+            }
             var args = getRequestArgs();
             for (let name in args) {
                 let key = self.currentApi.id + ':args:' + name;
@@ -706,7 +690,6 @@ export default{
             } else {
                 $.ajax(params);
             }
-            _czc.push(["_trackEvent",'接口','测试',this.currentApi.name,this.currentApi.id]);
         },
         apiMock: function () {
 
@@ -734,11 +717,10 @@ export default{
                     break;
                 case "XML":
                     rs =mockJSON(self.currentApi.responseArgs);
-                    rs = page.x2js.json2xml_str(rs);
+                    rs =formatXml(page.formater.xml.writeXML(rs)) ;
                     break;
             }
             new Result().resolve(rs, self.currentApi.contentType);
-            _czc.push(["_trackEvent",'接口','mock',this.currentApi.name,this.currentApi.id]);
         },
         moduleClick: function (item) {
             if (!item.folders) {
@@ -748,7 +730,6 @@ export default{
             this.currentApi = {};
             this.currentFolder = null;
             this.show = 'doc';
-            _czc.push(["_trackEvent",'接口','模块点击',item.name,item.id]);
         },
         importOk(){
             if (!this.importValue) {
@@ -780,7 +761,6 @@ export default{
                 }
             });
             this.status.importModal = false;
-            _czc.push(["_trackEvent",'接口','导入json']);
         },
         wsConnect(){
             //var url = this.ws.url;
@@ -802,7 +782,6 @@ export default{
             ws.onerror = function (evt) {
                 self.ws.log += '\nonError:' + (evt.data || '');
             };
-            _czc.push(["_trackEvent",'接口','websocket测试']);
         },
         wsDisconnect(){
             this.ws.instance.close()

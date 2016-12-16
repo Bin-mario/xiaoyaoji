@@ -9,6 +9,7 @@ import cn.com.xiaoyaoji.api.ex._HashMap;
 import cn.com.xiaoyaoji.api.asynctask.log.Log;
 import cn.com.xiaoyaoji.api.asynctask.message.MessageBus;
 import cn.com.xiaoyaoji.api.service.ServiceFactory;
+import cn.com.xiaoyaoji.api.service.ServiceTool;
 import cn.com.xiaoyaoji.api.utils.*;
 import cn.com.xiaoyaoji.api.utils.StringUtils;
 import cn.com.xiaoyaoji.api.view.PdfView;
@@ -21,9 +22,12 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.mangoframework.core.annotation.*;
 import org.mangoframework.core.dispatcher.Parameter;
+import org.mangoframework.core.exception.InvalidArgumentException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,7 +45,7 @@ import java.util.Map;
  */
 @RequestMapping("/project")
 public class ProjectController {
-
+    private static Logger logger =Logger.getLogger(ProjectController.class);
 
     @Get("list")
     public Object list(Parameter parameter) {
@@ -64,7 +68,7 @@ public class ProjectController {
      */
     @Ignore
     @Get(value = "{id}", template = "/api")
-    public Object get(@RequestParam("id") String id, Parameter parameter) {
+    public Map<String, Object> get(@RequestParam("id") String id, Parameter parameter) {
         Project project = ServiceFactory.instance().getProject(id);
         if (project == null || !Project.Status.VALID.equals(project.getStatus())) {
             return new _HashMap<>();
@@ -73,7 +77,8 @@ public class ProjectController {
         if(project.getPermission().equals(Project.Permission.PRIVATE)){
             AssertUtils.isTrue(user!=null,"无访问权限");
             if(!user.getId().equals(project.getUserId())){
-                AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectPermission(user.getId(),project.getId()),"无访问权限");
+                //检查用户是否有访问权限
+                AssertUtils.isTrue(ServiceFactory.instance().checkProjectUserExists(project.getId(),user.getId()),"无访问权限");
             }
         }
         if(user!=null) {
@@ -122,11 +127,55 @@ public class ProjectController {
             modules = new ArrayList<>();
             modules.add(module);
         }
-        return new _HashMap<>()
+        return new _HashMap<String,Object>()
                 .add("modules", modules)
                 .add("project", project)
                 ;
     }
+
+    /**
+     * 导出成json
+     * @param id
+     * @param parameter
+     * @return
+     */
+    @Get(value = "/{id}/exportmjson")
+    public Object export2JSON(@RequestParam("id") String id, Parameter parameter){
+        parameter.getResponse().setHeader("Content-Disposition","attachment; filename=\""+id+".mjson\"");
+        Map<String,Object> map= get(id,parameter);
+        AssertUtils.isTrue(map.size()>0,"项目不存在或无效");
+        return map;
+    }
+
+    /**
+     * 导出成json
+     * @param parameter
+     * @return
+     */
+    @Post(value = "/importmjson")
+    public Object importFromJSON(Parameter parameter){
+        List<FileItem> items = parameter.getParamFile().get("mjson");
+        AssertUtils.isTrue(items!=null && items.size()>0,"请上传mjson文件");
+        try {
+            String json = IOUtils.toString(items.get(0).getInputStream(),"UTF-8");
+            JSONObject obj = JSON.parseObject(json);
+            Project project = obj.getObject("project",Project.class);
+            project.setUserId(MemoryUtils.getUser(parameter).getId());
+            JSONArray modules = obj.getJSONArray("modules");
+            List<Module> moduleList = new ArrayList<>(modules.size());
+            for(int i=0;i<modules.size();i++){
+                Module module = modules.getObject(i,Module.class);
+                moduleList.add(module);
+            }
+            int rs= ServiceFactory.instance().importFromMJSON(project,moduleList);
+            AssertUtils.isTrue(rs>0,"导入失败");
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            throw new InvalidArgumentException("json格式错误或导入错误");
+        }
+        return true;
+    }
+
 
 
     @Get("/{id}/info")
@@ -170,7 +219,6 @@ public class ProjectController {
         module.setName("默认模块");
         int rs = ServiceFactory.instance().create(module);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        AsyncTaskBus.instance().push(Log.create(token, Log.CREATE_PROJECT,"默认模块",projectId));
         module.addInterfaceFolder(createDefaultFolder(module.getId(),projectId,token));
         return module;
     }
@@ -184,7 +232,6 @@ public class ProjectController {
         folder.setProjectId(projectId);
         int rs = ServiceFactory.instance().create(folder);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        AsyncTaskBus.instance().push(Log.create(token, Log.CREATE_FOLDER,"默认分类",projectId));
         return folder;
     }
 
@@ -214,24 +261,33 @@ public class ProjectController {
         AssertUtils.notNull(project.getUserId(), "missing userId");
         int rs = ServiceFactory.instance().createProject(project);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        AsyncTaskBus.instance().push(Log.create(token, Log.CREATE_PROJECT,project.getName(),project.getId()));
         return project.getId();
     }
-    private void checkUserHasEditPermission(String projectId,Parameter parameter){
-        User user = MemoryUtils.getUser(parameter);
-        AssertUtils.notNull(user,"无操作权限");
-        boolean permission = ServiceFactory.instance().checkUserHasProjectPermission(user.getId(),projectId);
-        AssertUtils.isTrue(permission,"无操作权限");
-    }
 
-    private void checkUserHasOperatePermission(String projectId,Parameter parameter){
-        User user = MemoryUtils.getUser(parameter);
-        AssertUtils.notNull(user,"无操作权限");
-        Project project = ServiceFactory.instance().getProject(projectId);
-        AssertUtils.notNull(project,"项目不存在");
-        AssertUtils.isTrue(user.getId().equals(project.getUserId()),"无操作权限");
-    }
 
+    private String diffOperation(Project before,Project now){
+        StringBuilder sb = new StringBuilder();
+        if(ServiceTool.modified(before.getName(),now.getName())){
+            sb.append("名称,");
+        }
+        if(ServiceTool.modified(before.getDescription(),now.getDescription())){
+            sb.append("描述,");
+        }
+        if(ServiceTool.modified(before.getPermission(),now.getPermission())){
+            sb.append("项目状态,");
+        }
+        if(ServiceTool.modified(before.getEnvironments(),now.getEnvironments())){
+            sb.append("环境变量,");
+        }
+        if(ServiceTool.modified(before.getDetails(),now.getDetails())){
+            sb.append("文档说明,");
+        }
+
+        if(sb.length()>0){
+            sb = sb.delete(sb.length()-1,sb.length());
+        }
+        return sb.toString();
+    }
 
     /**
      * 更新
@@ -242,31 +298,38 @@ public class ProjectController {
     @Post("{id}")
     public Object update(@RequestParam("id") String id, Parameter parameter) {
         String token = parameter.getParamString().get("token");
-        checkUserHasEditPermission(id,parameter);
+        Project before = ServiceFactory.instance().getProject(id);
+        ServiceTool.checkUserHasEditPermission(id,parameter);
+        //
         Project project = BeanUtils.convert(Project.class, parameter.getParamString());
         project.setId(id);
         project.setUserId(null);
         int rs = ServiceFactory.instance().update(project);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-
-        String projectName = ServiceFactory.instance().getProjectName(id);
-        AsyncTaskBus.instance().push(Log.create(token, Log.UPDATE_PROJECT,projectName,id));
+        AsyncTaskBus.instance().push(id,Log.UPDATE_PROJECT,id,token,"修改项目-"+before.getName()+"-" +diffOperation(before,project));
         return rs;
     }
 
+    /**
+     * 项目转让
+     * @param id
+     * @param parameter
+     * @return
+     */
     @Post("/{id}/transfer")
     public Object transfer(@RequestParam("id") String id, Parameter parameter) {
         String userId = parameter.getParamString().get("userId");
         String token = parameter.getParamString().get("token");
         AssertUtils.isTrue(org.apache.commons.lang3.StringUtils.isNoneBlank(userId),"missing userId");
-        checkUserHasOperatePermission(id,parameter);
+        Project before = ServiceFactory.instance().getProject(id);
+        ServiceTool.checkUserHasOperatePermission(before,parameter);
         Project temp = new Project() ;
         temp.setId(id);
         temp.setUserId(userId);
         int rs = ServiceFactory.instance().update(temp);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        String projectName = ServiceFactory.instance().getProjectName(id);
-        AsyncTaskBus.instance().push(Log.create(token, Log.TRANSFER_PROJECT,projectName,id));
+        String userName = ServiceFactory.instance().getUserName(userId);
+        AsyncTaskBus.instance().push(id,Log.TRANSFER_PROJECT,id,token,"转让项目给"+userName);
         return rs;
     }
 
@@ -279,12 +342,12 @@ public class ProjectController {
      */
     @Delete("{id}")
     public Object delete(@RequestParam("id") String id, Parameter parameter) {
-        checkUserHasOperatePermission(id,parameter);
+        Project before = ServiceFactory.instance().getProject(id);
+        ServiceTool.checkUserHasEditPermission(id,parameter);
         String token = parameter.getParamString().get("token");
         int rs = ServiceFactory.instance().deleteProject(id);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        String projectName = ServiceFactory.instance().getProjectName(id);
-        AsyncTaskBus.instance().push(Log.create(token, Log.DELETE_PROJECT,projectName,id));
+        //AsyncTaskBus.instance().push(id,Log.DELETE_PROJECT,id,token,"删除项目-"+before.getName());
         return rs;
     }
 
@@ -294,7 +357,6 @@ public class ProjectController {
         if (org.apache.commons.lang3.StringUtils.isEmpty(id)) {
             return create(parameter);
         }
-        checkUserHasOperatePermission(id,parameter);
         return update(id, parameter);
     }
 
@@ -306,6 +368,7 @@ public class ProjectController {
      */
     @Post("/{id}/copymove")
     public int copyMove(@RequestParam("id") String id, Parameter parameter){
+        //todo 复制移动
         AssertUtils.notNull(parameter,"action","moduleId","type","targetId");
         //动作
         String action = parameter.getParamString().get("action");
@@ -472,9 +535,8 @@ public class ProjectController {
      */
     @Delete("/{id}/pu/{userId}")
     public int removeMember(@RequestParam("id") String id, @RequestParam("userId") String userId, Parameter parameter) {
-        checkUserHasOperatePermission(id,parameter);
         Project project = ServiceFactory.instance().getProject(id);
-        AssertUtils.notNull(project,"项目不存在");
+        ServiceTool.checkUserHasOperatePermission(project,parameter);
         AssertUtils.isTrue(!project.getUserId().equals(userId),"不能移除自己");
         User temp = MemoryUtils.getUser(parameter);
         AssertUtils.isTrue(temp.getId().equals(project.getUserId()),"无操作权限");
@@ -496,7 +558,9 @@ public class ProjectController {
     public int editProjectEditable(@RequestParam("id") String projectId, @RequestParam("userId") String userId,
                                    @RequestParam("editable") String editable,  Parameter parameter){
         AssertUtils.isTrue(ProjectUser.Editable.YES.equals(editable) || ProjectUser.Editable.NO.equals(editable),"参数错误");
-        checkUserHasOperatePermission(projectId,parameter);
+        Project project = ServiceFactory.instance().getProject(projectId);
+        ServiceTool.checkUserHasOperatePermission(project,parameter);
+        AssertUtils.isTrue(!project.getUserId().equals(userId),"项目所有人不能修改自己的权限");
         int rs = ServiceFactory.instance().updateProjectUserEditable(projectId,userId,editable);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
         return rs;
@@ -510,11 +574,13 @@ public class ProjectController {
      */
     @Delete("/{id}/quit")
     public int quit(@RequestParam("id") String id,Parameter parameter) {
+        String token = parameter.getParamString().get("token");
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project,"project not exists");
         String userId=MemoryUtils.getUser(parameter).getId();
         AssertUtils.isTrue(!project.getUserId().equals(userId),"项目所有人不能退出项目");
         int rs = ServiceFactory.instance().deleteProjectUser(id, userId);
+        AsyncTaskBus.instance().push(id,Log.QUIT_PROJECT,id,token,"退出项目");
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
         return rs;
     }
@@ -683,7 +749,6 @@ public class ProjectController {
             }
             document.close();
             byte[] data = baos.toByteArray();
-            AsyncTaskBus.instance().push(Log.create(token, Log.EXPORT_PROJECT,project.getName(),project.getId()));
             return new PdfView(data,project.getName()+".pdf");
         } finally {
             //document.close();
@@ -758,41 +823,41 @@ public class ProjectController {
         table.setSpacingBefore(10);
     }
 
-    private List<Module> getModulesByProjectId(Project project,String token) {
+    private java.util.List<Module> getModulesByProjectId(Project project,String token) {
 
         if (project == null || !Project.Status.VALID.equals(project.getStatus())) {
             return null;
         }
         boolean has = ServiceFactory.instance().checkUserHasProjectPermission(MemoryUtils.getUser(token).getId(),project.getId());
         AssertUtils.isTrue(has,"无访问权限");
-        List<Module> modules = ServiceFactory.instance().getModules(project.getId());
-        List<InterfaceFolder> folders = null;
+        java.util.List<Module> modules = ServiceFactory.instance().getModules(project.getId());
+        java.util.List<InterfaceFolder> folders = null;
         if (modules.size() > 0) {
             // 获取该项目下所有文件夹
             folders = ServiceFactory.instance().getFoldersByProjectId(project.getId());
-            Map<String, List<InterfaceFolder>> folderMap = ResultUtils.listToMap(folders, new Handler<InterfaceFolder>() {
+            Map<String, java.util.List<InterfaceFolder>> folderMap = ResultUtils.listToMap(folders, new Handler<InterfaceFolder>() {
                 @Override
                 public String key(InterfaceFolder item) {
                     return item.getModuleId();
                 }
             });
             for (Module module : modules) {
-                List<InterfaceFolder> temp = folderMap.get(module.getId());
+                java.util.List<InterfaceFolder> temp = folderMap.get(module.getId());
                 if (temp != null) {
                     module.setFolders(temp);
                 }
             }
 
             // 获取该项目下所有接口
-            List<Interface> interfaces = ServiceFactory.instance().getInterfacesByProjectId(project.getId());
-            Map<String, List<Interface>> interMap = ResultUtils.listToMap(interfaces, new Handler<Interface>() {
+            java.util.List<Interface> interfaces = ServiceFactory.instance().getInterfacesByProjectId(project.getId());
+            Map<String, java.util.List<Interface>> interMap = ResultUtils.listToMap(interfaces, new Handler<Interface>() {
                 @Override
                 public String key(Interface item) {
                     return item.getFolderId();
                 }
             });
             for (InterfaceFolder folder : folders) {
-                List<Interface> temp = interMap.get(folder.getId());
+                java.util.List<Interface> temp = interMap.get(folder.getId());
                 if (temp != null) {
                     folder.setChildren(temp);
                 }

@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var path = require("path");
 var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.js', [
-    'dashboard','login','findpassword',
+    'dashboard','history','login','findpassword',
     'index','register','forget']
 );
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -44,6 +44,7 @@ var isDev=false;
 module.exports = {
     entry:{
         'dashboard':'./html/dashboard/app/index.js',
+        'history': './html/dashboard/app/history.js',
         'register':'./html/src/register.js',
         'login':'./html/src/login.js',
         'forget':'./html/src/forget.js',

@@ -18,6 +18,7 @@ public class InterfaceFolder {
     private Date createTime;
     private String moduleId;
     private String projectId;
+    private Integer sort;
     @Ignore
     private List<Interface> children = new ArrayList<>();
 
@@ -67,5 +68,13 @@ public class InterfaceFolder {
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

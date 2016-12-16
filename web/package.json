@@ -45,5 +45,8 @@
     "vue-style-loader": "^1.0.0",
     "vue-validator": "^2.1.5",
     "webpack": "^1.13.1"
+  },
+  "dependencies": {
+    "html5sortable": "^0.4.2"
   }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.com.xiaoyaoji.api.data.bean.*;
+import cn.com.xiaoyaoji.api.ex.Pagination;
 
 /**
  * @author: zhoujingjie
@@ -60,7 +61,7 @@ public interface Data {
 
     int deleteProject(String id);
 
-    List<User> searchUsers(String key, String... excludeIds);
+    List<User> searchUsers(String key,String... excludeIds);
 
     boolean checkEmailExists(String email);
 
@@ -114,6 +115,15 @@ public interface Data {
 
     List<Map<String,Object>> getModuleNameIdsInIds(String[] moduleIdsArray);
 
+    int updateFolderSorts(String[] idsorts);
+
+    int updateInterfaceSorts(String[] idsorts);
+
+    String getUserName(String userId);
+
+    List<ProjectLog> getProjectLogs(Pagination pagination);
+
+    int importFromMJSON(Project project, List<Module> moduleList);
 
     //void test();
 }

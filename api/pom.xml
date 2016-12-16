@@ -2,7 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <name>api-manager</name>
+    <parent>
+        <groupId>cn.com.xiaoyaoji</groupId>
+        <artifactId>xiaoyaoji</artifactId>
+        <version>1.0</version>
+    </parent>
+    <name>api</name>
     <groupId>cn.com.xiaoyao.api</groupId>
     <version>2.0</version>
     <modelVersion>4.0.0</modelVersion>
@@ -18,11 +23,6 @@
         </developer>
     </developers>
     <dependencies>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
      <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -98,6 +98,26 @@
             <version>5.1.33</version>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
             <version>7.1.0</version>
@@ -131,30 +151,9 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.9</version>
         </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.2</version>
-        </dependency>
     </dependencies>
     <build>
-        <finalName>xiaoyaoji</finalName>
+        <finalName>api</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -200,7 +199,7 @@
                         <defaultsDescriptor>${project.basedir}/src/main/webapp/etc/webdefault.xml</defaultsDescriptor>
                     </webApp>
                     <httpConnector>
-                        <port>9000</port>
+                        <port>9999</port>
                         <idleTimeout>600</idleTimeout>
                     </httpConnector>
                 </configuration>

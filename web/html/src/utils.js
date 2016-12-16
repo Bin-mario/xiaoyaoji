@@ -86,13 +86,26 @@ var utils = {
             error: error
         });
     },
+    fileloader:function(url, data, success, error){
+        this.ajax({
+            url: url,
+            data: data,
+            type: 'post',
+            cache: false,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: success,
+            error: error
+        });
+    },
     "delete": function (url, success, error) {
         this.ajax({
             url: url,
             type: 'delete',
             success: success,
             error: error
-        })
+        });
     },
     escape: function (str) {
         if(!str)
@@ -187,6 +200,13 @@ var utils = {
     },
     copyArray:function(source){
         return $.extend(true,[],source);
+    },
+    args2Params:function(args){
+        var params = '';
+        for (var p in args) {
+            params += (p + '=' + args[p] + '&');
+        }
+        return params;
     }
 };
 $._ajax_ = function(params){

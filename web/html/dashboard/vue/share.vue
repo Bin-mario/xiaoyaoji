@@ -101,7 +101,7 @@
                                 </div>
                                 <template v-if="currentApi.description">
                                     <p class="api-details-title">接口描述</p>
-                                    <pre>{{currentApi.description}}</pre>
+                                    <div>{{{currentApi.description}}}</div>
                                 </template>
                                 <template v-if="(currentModule.requestHeaders&&currentModule.requestHeaders.length>0)">
                                     <p class="api-details-title">全局请求头</p>
@@ -109,8 +109,8 @@
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
-                                            <li class="col-sm-7">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-7">描述</li>
                                         </ul>
                                         <request-headers-vue
                                                 v-bind:request-headers.sync="currentModule.requestHeaders"
@@ -124,8 +124,8 @@
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
-                                            <li class="col-sm-7">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-7">描述</li>
                                         </ul>
                                         <request-headers-vue
                                                 v-bind:request-headers.sync="currentApi.requestHeaders"
@@ -140,8 +140,8 @@
                                             <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
                                             <li class="col-sm-1">类型</li>
-                                            <li class="col-sm-6">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-6">描述</li>
                                         </ul>
                                         <request-args-vue
                                                 v-bind:request-args.sync="currentModule.requestArgs"
@@ -156,8 +156,8 @@
                                             <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
                                             <li class="col-sm-1">类型</li>
-                                            <li class="col-sm-6">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-6">描述</li>
                                         </ul>
                                         <request-args-vue
                                                 v-bind:request-args.sync="currentApi.requestArgs"
@@ -168,10 +168,10 @@
                                     <p class="api-details-title">响应数据</p>
                                     <div class="div-table">
                                         <ul class="div-table-header div-table-line cb">
-                                            <li class="col-sm-2">参数名称</li>
+                                            <li class="col-sm-3">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
                                             <li class="col-sm-2">数据类型</li>
-                                            <li class="col-sm-7">描述</li>
+                                            <li class="col-sm-6">描述</li>
                                         </ul>
                                         <response-args-vue
                                                 v-bind:response-args.sync="currentApi.responseArgs"

@@ -4,8 +4,10 @@ import cn.com.xiaoyaoji.api.asynctask.AsyncTaskBus;
 import cn.com.xiaoyaoji.api.data.bean.InterfaceFolder;
 import cn.com.xiaoyaoji.api.asynctask.log.Log;
 import cn.com.xiaoyaoji.api.data.bean.Project;
+import cn.com.xiaoyaoji.api.ex.Message;
 import cn.com.xiaoyaoji.api.ex._HashMap;
 import cn.com.xiaoyaoji.api.service.ServiceFactory;
+import cn.com.xiaoyaoji.api.service.ServiceTool;
 import cn.com.xiaoyaoji.api.utils.AssertUtils;
 import cn.com.xiaoyaoji.api.utils.BeanUtils;
 import cn.com.xiaoyaoji.api.utils.MemoryUtils;
@@ -30,8 +32,7 @@ public class InterfaceFolderController {
         AssertUtils.notNull(folder,"该分类不存在或已删除");
         int rs = ServiceFactory.instance().deleteInterfaceFolder(id);
         AssertUtils.isTrue(rs>0,"操作失败");
-        AsyncTaskBus.instance().push(Log.create(token, Log.DELETE_FOLDER,folder.getName(),folder.getProjectId()));
-        AsyncTaskBus.instance().push(folder.getProjectId(), Project.Action.DELETE_FOLDER,folder.getId(),token);
+        AsyncTaskBus.instance().push(folder.getProjectId(), Project.Action.DELETE_FOLDER,folder.getId(),token,"删除分类-"+folder.getName());
         return rs;
     }
     @Get("{id}")
@@ -56,8 +57,7 @@ public class InterfaceFolderController {
         AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectPermission(MemoryUtils.getUser(parameter).getId(),folder.getProjectId()),"无操作权限");
         int rs = ServiceFactory.instance().create(folder);
         AssertUtils.isTrue(rs>0,"操作失败");
-        AsyncTaskBus.instance().push(Log.create(token, Log.CREATE_FOLDER,folder.getName(),folder.getProjectId()));
-        AsyncTaskBus.instance().push(folder.getProjectId(), Project.Action.CREATE_FOLDER,folder.getId(),token,folder.getModuleId());
+        AsyncTaskBus.instance().push(folder.getProjectId(), Project.Action.CREATE_FOLDER,folder.getId(),token,"创建分类-"+folder.getName(),folder.getModuleId());
         return folder.getId();
     }
 
@@ -72,9 +72,25 @@ public class InterfaceFolderController {
         folder.setId(id);
         int rs = ServiceFactory.instance().update(folder);
         AssertUtils.isTrue(rs>0,"操作失败");
-        AsyncTaskBus.instance().push(Log.create(token, Log.UPDATE_FOLDER,folder.getName(),folder.getProjectId()));
-        AsyncTaskBus.instance().push(temp.getProjectId(), Project.Action.UPDATE_FOLDER,temp.getId(),token);
+        AsyncTaskBus.instance().push(temp.getProjectId(), Project.Action.UPDATE_FOLDER,temp.getId(),token,"修改分类-"+temp.getName()+"-"+diffOperation(temp,folder));
         return rs;
+    }
+
+    private String diffOperation(InterfaceFolder before,InterfaceFolder now){
+        StringBuilder sb = new StringBuilder();
+        if(ServiceTool.modified(before.getName(),now.getName())){
+            sb.append("名称,");
+        }
+        if(ServiceTool.modified(before.getModuleId(),now.getModuleId())){
+            sb.append("所属模块,");
+        }
+        if(ServiceTool.modified(before.getProjectId(),now.getProjectId())){
+            sb.append("所属项目,");
+        }
+        if(sb.length()>0){
+            sb = sb.delete(sb.length()-1,sb.length());
+        }
+        return sb.toString();
     }
 
     @Post("save")
@@ -85,5 +101,14 @@ public class InterfaceFolderController {
         return update(id,parameter);
     }
 
+    @Post("sort")
+    public Object sort(Parameter parameter){
+        String idsort = parameter.getParamString().get("sort");
+        AssertUtils.notNull(idsort,"参数为空");
+        String[] idsorts = idsort.split(",");
+        int rs = ServiceFactory.instance().updateFolderSorts(idsorts);
+        AssertUtils.notNull(rs>0, Message.OPER_ERR);
+        return true;
+    }
 
 }

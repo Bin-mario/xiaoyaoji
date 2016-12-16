@@ -2,7 +2,7 @@
 <div class="db-export">
     <ul class="cb">
         <li v-on:click="pdf" id="export-pdf"><i class="iconfont icon-pdf"></i> <p>导出PDF</p></li>
-        <!--<li><i class="iconfont icon-json"></i> <p>导出JSON</p></li>-->
+        <li v-on:click="json"><i class="iconfont icon-jsonfile"></i> <p>导出JSON</p></li>
         <!--<li><i class="iconfont icon-sql"></i> <p>导出SQL</p></li>-->
     </ul>
 </div>
@@ -29,14 +29,17 @@
                     self.project=rs.data.project;
                 });
                 self.$parent.projectId=this.$route.params.id;
-                _czc.push(["_trackEvent",'接口','导出']);
             }
         },
         methods:{
             pdf:function(){
                 if(this.project){
-                    _czc.push(["_trackEvent",'接口','导出',this.project.name,this.project.id,'export-pdf']);
                     location.href=utils.config.root+'/project/'+this.project.id+'/export.pdf?token='+utils.token();
+                }
+            },
+            json:function(){
+                if(this.project){
+                    location.href=utils.config.root+'/project/'+this.project.id+'/exportmjson.mjson?token='+utils.token();
                 }
             }
         }

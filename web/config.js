@@ -4,7 +4,7 @@ toastr.options.positionClass = 'toast-top-center';
 toastr.options.preventDuplicates=true;
 window._xyj_={
     history:false,
-    version:'1.6',
+    version:'1.7',
     api:'',
     //api:'//localhost:9999',
     ws:''

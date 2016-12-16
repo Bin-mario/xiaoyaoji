@@ -42,7 +42,6 @@
                self.project=rs.data.project;
             });
             self.$parent.projectId=this.$route.params.id;
-            _czc.push(["_trackEvent",'接口','删除项目']);
          }
       },
       data:function(){

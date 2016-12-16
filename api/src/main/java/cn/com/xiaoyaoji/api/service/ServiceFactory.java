@@ -7,6 +7,7 @@ import java.util.Map;
 
 import cn.com.xiaoyaoji.api.data.DataFactory;
 import cn.com.xiaoyaoji.api.data.bean.*;
+import cn.com.xiaoyaoji.api.ex.Pagination;
 import cn.com.xiaoyaoji.api.utils.FileUtils;
 import cn.com.xiaoyaoji.api.utils.ResultUtils;
 import cn.com.xiaoyaoji.api.utils.StringUtils;
@@ -287,5 +288,24 @@ public class ServiceFactory {
             }
         }
         return shares;
+    }
+
+    public int updateFolderSorts(String[] idsorts) {
+        return DataFactory.instance().updateFolderSorts(idsorts);
+    }
+
+    public int updateInterfaceSorts(String[] idsorts) {
+        return DataFactory.instance().updateInterfaceSorts(idsorts);
+    }
+    public String getUserName(String userId) {
+        return DataFactory.instance().getUserName(userId);
+    }
+
+    public List<ProjectLog> getProjectLogs(Pagination pagination) {
+        return ResultUtils.list(DataFactory.instance().getProjectLogs(pagination));
+    }
+
+    public int importFromMJSON(Project project, List<Module> moduleList) {
+        return DataFactory.instance().importFromMJSON(project,moduleList);
     }
 }

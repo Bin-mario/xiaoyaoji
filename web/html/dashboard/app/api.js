@@ -30,7 +30,8 @@ var gdata = {
         moveCopyId: '' ,     //复制移动id
         showEnvs:false,      //环境变量显示状态
         showEnvValues:false,
-        showModuleGlobal:false
+        showModuleGlobal:false,
+        showHistory:false
     },
     ws: { //websocket操作
         instance: null,
@@ -97,7 +98,7 @@ var gdata = {
 };
 //页面全局变量
 var page = {
-    x2js:new X2JS(),
+    formater:{xml:new XML.ObjTree()},
     listener:{
         success:function (e) {
             new Result().resolve(e.detail, gdata.currentApi.contentType);
@@ -151,6 +152,7 @@ var page = {
                     if(item.id == folderId){
                         item.children.push(rs.data.interface);
                         isBreak = true;
+                        page.sortable.interface();
                         return true;
                     }
                 });
@@ -192,6 +194,7 @@ var page = {
             gdata.modules.forEach(function(item){
                 if(item.id == moduleId){
                     item.folders.push(rs.data.folder);
+                    page.sortable.folder();
                     return true;
                 }
             });
@@ -373,6 +376,64 @@ var page = {
         module.requestArgs = utils.toJSON(module.requestArgs);
         module.requestHeaders = utils.toJSON(module.requestHeaders);
     },
+    sortable:{
+        init:function(){
+            this.folder();
+            this.interface();
+        },
+        folder:function(){
+            // 排序
+            setTimeout(function(){
+                sortable('#api-edit-nav','destroy');
+                let parent = sortable('#api-edit-nav');
+                $(parent).off('sortupdate').on('sortupdate',function(e){
+                    let oldindex = e.detail.oldElementIndex;
+                    let nowindex = e.detail.elementIndex;
+                    let children =e.detail.endparent.children;
+                    let idsorts = [];
+                    if(oldindex>nowindex){
+                        for(let i=nowindex;i<=oldindex;i++){
+                            let $dom = $(children[i]);
+                            idsorts.push($dom.data('id')+'_'+$dom.index());
+                        }
+                    }else{
+                        for(let i=nowindex;i>=oldindex;i--){
+                            let $dom = $(children[i]);
+                            idsorts.push($dom.data('id')+'_'+$dom.index());
+                        }
+                    }
+                    gdata.currentModule.folders.move(oldindex,nowindex);
+                    utils.post('/interfacefolder/sort.json',{sort:idsorts.toString()});
+                });
+            },500);
+        },
+        interface:function(){
+            // 排序
+            setTimeout(function(){
+                sortable('#api-edit-nav .apis-nav-sub','destroy');
+                let sub = sortable('#api-edit-nav .apis-nav-sub');
+                $(sub).off('sortupdate').on('sortupdate',function(e){
+                    let oldindex = e.detail.oldElementIndex;
+                    let nowindex = e.detail.elementIndex;
+                    let children =e.detail.endparent.children;
+                    let idsorts = [];
+                    if(oldindex>nowindex){
+                        for(let i=nowindex;i<=oldindex;i++){
+                            let $dom = $(children[i]);
+                            idsorts.push($dom.data('id')+'_'+$dom.index());
+                        }
+                    }else{
+                        for(let i=nowindex;i>=oldindex;i--){
+                            let $dom = $(children[i]);
+                            idsorts.push($dom.data('id')+'_'+$dom.index());
+                        }
+                    }
+                    e.detail.item.dispatchEvent(new CustomEvent('apisort',{detail:e.detail}))
+                    utils.post('/interface/sort.json',{sort:idsorts.toString()});
+                });
+            },500);
+        }
+    },
     reget:function(self) {
         if (!self) {
             self = gdata;
@@ -441,6 +502,9 @@ var page = {
                 self.currentApi =page.initInterfaceParameters(self.currentFolder.id);
                 initInterface(self, self.currentApi);
             }
+
+            //
+            page.sortable.init();
         }
         else{
             toastr.error(rs.errorMsg);
@@ -539,12 +603,13 @@ export default{
 
             //
             (function(){
-                $('body').undelegate('.xyj-dropdown-toggle','click').delegate('.xyj-dropdown-toggle','click',function(e){
+                let $body=$('body');
+                $body.undelegate('.xyj-dropdown-toggle','click').delegate('.xyj-dropdown-toggle','click',function(e){
                     $(this).next().toggle();
                     e.stopPropagation();
                 });
 
-                $('body').undelegate('.icon-menu','click').delegate('.icon-menu','click',function(e){
+                $body.undelegate('.icon-menu','click').delegate('.icon-menu','click',function(e){
                     let right = document.documentElement.clientWidth - 1485;
                     if(right<15){
                         right =15;
@@ -556,27 +621,50 @@ export default{
                     $('#api-menus').css({top:top,right:right}).show();
                     e.stopPropagation();
                 });
-                $(window).resize(function(){
-                    //修改menu位置
+                $body.undelegate('.icon-history','click').delegate('.icon-history','click',function(e){
+                    let top = $(this).offset().top+50;
                     let right = document.documentElement.clientWidth - 1485;
-                    if(right<15){
-                        right =15;
+                    if (right>300){
+                        right = document.documentElement.clientWidth - 300 - 1485;
+                    } else {
+                        if (right<15){
+                            right =15;
+                        }
+                        if(document.documentElement.clientWidth<1255){
+                            right =document.documentElement.clientWidth-1255 + 15;
+                        }
                     }
-                    if(document.documentElement.clientWidth<1255){
-                        right =document.documentElement.clientWidth-1255 + 15;
-                    }
-                    $('#api-menus').css({right:right});
+                    $('#api-history').css({top:top,right:right});
+                    self.status.showHistory=true;
+                    e.stopPropagation();
                 });
+
+                $(window).resize(function(){
+                    let right = document.documentElement.clientWidth - 1485;
+                    if (right>300){                        
+                        $('#api-menus').css({right:right});
+                        $('#api-history').css({right:right-300}); //窗口从大变小时有问题
+                    } else {
+                        if (right<15){
+                            right =15;
+                        }
+                        if(document.documentElement.clientWidth<1255){
+                            right =document.documentElement.clientWidth-1255 + 15;
+                        }
+                        $('#api-menus').css({right:right});
+                        $('#api-history').css({right:right});
+                    }
+                });
+
                 $(document).click(function(){
                     $('.xyj-dropdown-list').hide();
                     $('#api-menus').hide();
+                    self.status.showHistory = false;
                     self.flag.actionId = null;
                     self.status.showEnvs=false;
                     self.flag.moduleActionId = null;
                 });
-
-
-
+                
             })();
             page.task.destroy();
             page.task.init();
@@ -585,8 +673,9 @@ export default{
             this.$parent.projectId = this.id;
             this.show= 'doc';
             page.reget(this);
-            if (window._czc) {
-                _czc.push(["_trackPageview", location.pathname + (location.hash), document.referrer]);
+
+            if (window._hmt) {
+                _hmt.push(['_trackPageview', '/project/'+this.id]);
             }
         },
         activate: function (transition) {
@@ -632,25 +721,13 @@ export default{
         },
         requestArgsPreview:function(){
             var type = this.currentApi.dataType;
+            var obj = getRequestArgsObject(this.currentApi.requestArgs);
+            var g = getRequestArgsObject(this.currentModule.requestArgs);
+            obj = $.extend(true,g,obj);
             if(type == 'XML'){
-                //todo 增加全局操作
-                let args = utils.toJSON(this.currentModule.requestArgs);
-                let text='<?xml version="1.0" encoding="UTF-8"?>\n<xml>\n';
-                args.forEach(function(item){
-                    var name = item.name.replace(/\s/g,'');
-                    text += '    <'+name+'>' +(item.defaultValue || '')+'</'+name+'>\n';
-                });
-                args = utils.toJSON(this.currentApi.requestArgs);
-                args.forEach(function(item){
-                    if(item.name){
-                        var name = item.name.replace(/\s/g,'');
-                        text += '    <'+name+'>' +(item.defaultValue || '')+'</'+name+'>\n';
-                    }
-                });
-                text+= '</xml>';
-                return text;
+                obj = {xml:obj};
+                return formatXml(page.formater.xml.writeXML(obj));
             }else if(type =='JSON'){
-                var obj = getRequestArgsObject(this.currentApi.requestArgs);
                 if(obj){
                     return JSON.stringify(obj,null,'\t');
                 }
@@ -731,6 +808,7 @@ export default{
                     var desc = this.project.details;
                     initEditor(desc, this);
                 }
+                _initsort_();
             } else {
                 if(this.show=='doc'){
                     page.renderViewBox(this.project.details);
@@ -741,7 +819,6 @@ export default{
                     page.renderViewBox(this.project.details);
                 }
             }
-            _czc.push(["_trackEvent", "接口", "切换模式",value+""]);
         },
         "show": function (value) {
             if (value=='doc') {
@@ -858,12 +935,10 @@ export default{
         envClick:function(e){
             $('#api-env-details').css('left',$(e.currentTarget).offset().left);
             this.status.showEnvs=true;
-            _czc.push(["_trackEvent",'接口','环境变量点击']);
         },
         envEdit:function(){
             this.status.envModal=true;
             this.flag.tempEnv.vars.push({});
-            _czc.push(["_trackEvent",'接口','环境变量编辑']);
         },
         envNewLine:function(index){
             if(index == this.flag.tempEnv.vars.length-1){
@@ -873,7 +948,6 @@ export default{
         createEnv:function () {
             this.status.envModal=true;
             this.flag.tempEnv={vars:[{}]};
-            _czc.push(["_trackEvent",'接口','环境变量创建']);
         },
         envSave:function(){
             let self= this;
@@ -935,7 +1009,6 @@ export default{
                     }
                 }
             });
-            _czc.push(["_trackEvent",'接口','环境变量移除']);
         },
         envCopy:function(){
             var vars = $.extend(true,[],this.flag.tempEnv.vars);
@@ -945,7 +1018,6 @@ export default{
             utils.post('/project/'+this.id+'.json',{environments:JSON.stringify(this.envs)},function(rs){
                 toastr.success('复制成功');
             });
-            _czc.push(["_trackEvent",'接口','环境变量复制']);
         },
         folderNew: function (event) {
             this.status.folderModal = true;
@@ -953,15 +1025,12 @@ export default{
             this.folderName = '';
             event.stopPropagation();
             focusFolderName();
-            _czc.push(["_trackEvent",'接口','创建分类']);
         },
         folderEdit: function (item, event) {
             this.status.folderModal = true;
             this.currentFolder = item;
             this.folderName = item.name;
-
             event.stopPropagation();
-            _czc.push(["_trackEvent",'接口','编辑分类']);
         },
         folderSave: function () {
             this.$validate(true);
@@ -987,6 +1056,7 @@ export default{
                 });
             } else {
                 utils.post('/interfacefolder.json', {
+                    sort:self.currentModule.folders.length,
                     moduleId: self.currentModule.id,
                     projectId: self.currentModule.projectId,
                     name: name
@@ -995,13 +1065,13 @@ export default{
                         self.currentModule.folders.push({
                             name: name, id: rs.data, children: []
                         });
+                        page.sortable.folder();
                     }
                 });
             }
             gdata.status.folderModal = false;
             //this.currentFolder=null;
             this.folderName = null;
-            _czc.push(["_trackEvent",'接口','修改分类']);
         },
         folderDelete: function (item, event) {
             if (!confirm('是否确认删除?')) {
@@ -1012,7 +1082,6 @@ export default{
                 self.$data.currentModule.folders.$remove(item);
             });
             event.stopPropagation();
-            _czc.push(["_trackEvent",'接口','删除分类']);
         },
         folderNewApi: function (item, event) {
             event.stopPropagation();
@@ -1032,31 +1101,30 @@ export default{
             }
             //设置默认数据
             this.currentApi =page.initInterfaceParameters(item.id);
+            //设置接口默认位置
+            this.currentApi.sort = item.children.length;
             this.currentFolder = item;
             if (document.documentElement.scrollTop > 100) {
                 document.documentElement.scrollTop = 110;
             }
-            _czc.push(["_trackEvent",'接口','新建api']);
         },
         folderClick: function (event) {
             var $dom = $(event.currentTarget);
             $dom.toggleClass("open");
             $dom.next().slideToggle();
-            _czc.push(["_trackEvent",'接口','文件夹点击']);
+        },
+        apiDescBlur:function(e){
+            this.currentApi.description = $('#api-description').html();
         },
         apiClick: function (item, folder) {
-
             this.currentFolder = folder;
             this.show = 'api';
             this.currentApi = item;
             this.currentModule.lastUpdateTime = item.lastUpdateTime;
             initInterface(this, item);
-
             if (document.documentElement.scrollTop > 100) {
                 document.documentElement.scrollTop = 110;
             }
-
-            _czc.push(["_trackEvent",'接口','点击',this.currentApi.name,this.currentApi.id]);
         },
         apiDelete: function (item, arr, event) {
             event.stopPropagation();
@@ -1070,7 +1138,6 @@ export default{
                 }
                 arr.$remove(item);
             });
-            _czc.push(["_trackEvent",'接口','接口删除']);
         },
         apiSave: function () {
             let data = this.currentApi;//$.extend({},this.currentApi);
@@ -1122,6 +1189,7 @@ export default{
                 } else {
                     data.id = rs.data;
                     folder.children.push(data);
+                    page.sortable.interface();
                 }
                 //设置默认值
                 localStorage.setItem('form.protocol',data.protocol);
@@ -1129,7 +1197,6 @@ export default{
                 localStorage.setItem('form.dataType',data.dataType);
                 localStorage.setItem('form.contentType',data.contentType);
             });
-            _czc.push(["_trackEvent",'接口','接口保存']);
         },
         apiVarsClick:function(name,e){
             
@@ -1139,6 +1206,9 @@ export default{
             var self = this;
             //var url = this.requestURL;
             var url = $('#requestURL').val();
+            if(url && !url.match(/http[s]?:/) && !url.match(/\/\//)){
+                url = 'http://'+url;
+            }
             var args = getRequestArgs();
             for (let name in args) {
                 let key = self.currentApi.id + ':args:' + name;
@@ -1149,11 +1219,7 @@ export default{
             }
             //如果是图片或二进制
             if (self.currentApi.contentType == "IMAGE" || self.currentApi.contentType == 'BINARY') {
-                var params = '';
-                for (var p in args) {
-                    params += (p + '=' + args[p] + '&');
-                }
-                window.open(url + '?' + params);
+                window.open(url + '?' + utils.args2Params(args));
                 params = undefined;
                 return true;
             }
@@ -1166,7 +1232,6 @@ export default{
                     localStorage.setItem(key, value);
                 }
             }
-
 
             var params = {
                 url: url,
@@ -1208,6 +1273,13 @@ export default{
                     //self.result = rs;
                 }
             };
+            if(this.currentApi.requestMethod =='DELETE'){
+                if(params.url.indexOf('?')!=-1){
+                    params.url += '&'+utils.args2Params(args);
+                }else{
+                    params.url += '?'+utils.args2Params(args);
+                }
+            }
             switch (this.currentApi.dataType) {
                 case "FORM-DATA":
                     params.contentType = false;
@@ -1253,10 +1325,8 @@ export default{
             } else {
                 $.ajax(params);
             }
-            _czc.push(["_trackEvent",'接口','测试',this.currentApi.name,this.currentApi.id]);
         },
         apiMock: function () {
-
             var self = this;
             //如果是图片或二进制
             if(self.currentApi.contentType == 'IMAGE'){
@@ -1281,11 +1351,13 @@ export default{
                     break;
                 case "XML":
                     rs =mockJSON(self.currentApi.responseArgs);
-                    rs = page.x2js.json2xml_str(rs);
+                    rs =formatXml(page.formater.xml.writeXML(rs)) ;
                     break;
             }
             new Result().resolve(rs, self.currentApi.contentType);
-            _czc.push(["_trackEvent",'接口','mock',this.currentApi.name,this.currentApi.id]);
+        },
+        apisortupdate:function(folder,e){
+            folder.move(e.detail.oldElementIndex,e.detail.elementIndex);
         },
         moduleDelete: function (item) {
             if(this.modules.length<=1){
@@ -1304,7 +1376,6 @@ export default{
             } else {
                 this.error.noModule = true;
             }
-            _czc.push(["_trackEvent",'接口','模块删除']);
         },
         moduleEdit: function (item) {
             this.status.moduleModal = true;
@@ -1325,7 +1396,7 @@ export default{
             this.currentApi = {};
             this.currentFolder = null;
             this.show = 'doc';
-            _czc.push(["_trackEvent",'接口','模块点击',item.name,item.id]);
+            page.sortable.init();
         },
         moduleSave: function () {
             this.$validate(true);
@@ -1382,12 +1453,23 @@ export default{
         },
         insertNewResponseArgsRow: function () {
             gdata.currentApi.responseArgs.push({require: "true", children: [], type: 'string'});
+            _initsort_();
         },
         insertNewRequestHeadersRow: function () {
             gdata.currentApi.requestHeaders.push({require: 'true', children: []});
+            _initsort_();
         },
         insertNewRequestArgsRow: function () {
             gdata.currentApi.requestArgs.push({require: "false", children: [], type: 'string'});
+            _initsort_();
+        },
+        insertNewGRequestHeadersRow:function(){
+            this.currentModule.requestHeaders.push({children:[],require:'true'});
+            _initsort_();
+        },
+        insertNewGRequestArgsRow:function(){
+            this.currentModule.requestArgs.push({type:'string',children:[],require:'true'})
+            _initsort_();
         },
         import2GHeaders(){
             this.status.importModal = true;
@@ -1439,7 +1521,7 @@ export default{
                 }
             });
             this.status.importModal = false;
-            _czc.push(["_trackEvent",'接口','导入json']);
+            _initsort_();
         },
         wsConnect(){
             //var url = this.ws.url;
@@ -1461,7 +1543,6 @@ export default{
             ws.onerror = function (evt) {
                 self.ws.log += '\nonError:' + (evt.data || '');
             };
-            _czc.push(["_trackEvent",'接口','websocket测试']);
         },
         wsDisconnect(){
             this.ws.instance.close()
@@ -1479,7 +1560,6 @@ export default{
             this.flag.move = (move == 'move');
             this.status.moveCopyModal = true;
             this.flag.moveCopyId = id;
-            _czc.push(["_trackEvent",'接口','复制移动'+type]);
         },
         copyMoveOk: function () {
             if (this.flag.move) {
@@ -1557,6 +1637,9 @@ export default{
             }
         },
         deleteShare:function(item){
+            if(!confirm('是否确认删除?')){
+                return true;
+            }
             let self = this;
             utils.delete('/share/'+item.id+'.json',function(){
                 self.shares.$remove(item);
@@ -1660,7 +1743,43 @@ function initInterface(self, item) {
     if((item.dataType == 'JSON' || item.dataType == 'XML') && !self.editing){
         initAceEditor(item.dataType,self);
     }
+    $('#api-description').html(item.description || '');
+    _initsort_();
+
 }
+(function(){
+    Array.prototype.move = function (old_index, new_index) {
+        if (new_index >= this.length) {
+            var k = new_index - this.length;
+            while ((k--) + 1) {
+                this.push(undefined);
+            }
+        }
+        this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+        return this; // for testing purposes
+    };
+
+    //初始化排序
+    window._initsort_=function(){
+        setTimeout(function(){
+            sortable('.div-editing-table','destroy');
+            let doms= sortable('.div-editing-table',{
+                handle:'.icon-drag-copy',
+                items:'.div-editing-line'
+            });
+            $(doms).off('sortupdate').on('sortupdate',function(e){
+                let clazz = $(e.detail.item).attr('class');
+                if(clazz.indexOf('placeholder-request-args')!=-1){
+                    e.detail.item.dispatchEvent(new CustomEvent('requestargsortupdate',{detail:e.detail}));
+                }else if(clazz.indexOf('placeholder-request-headers')!=-1){
+                    e.detail.item.dispatchEvent(new CustomEvent('requestheadersortupdate',{detail:e.detail}));
+                }else if(clazz.indexOf('placeholder-response-args')!=-1){
+                    e.detail.item.dispatchEvent(new CustomEvent('responseargssortupdate',{detail:e.detail}));
+                }
+            });
+        },500);
+    };
+})();
 //初始化ace编辑器
 function initAceEditor(type,self){
     var mode;
@@ -1712,7 +1831,7 @@ function getRequestArgsObject(data){
                 obj[name] = [''];
                 break;
             case 'array[object]':
-                obj[name] = [getRequestArgsObject({},d.children)];
+                obj[name] = [getRequestArgsObject(d.children)];
                 break;
             case 'array[array]':
                 obj[name] = [[]];
@@ -1724,6 +1843,7 @@ function getRequestArgsObject(data){
     });
     return obj;
 }
+
 
 /**
  * 初始化默认值，不初始化vuejs无法监听改变
@@ -1792,9 +1912,9 @@ function parseImportData(data, temp) {
     } else if (data.constructor.name == 'Object') {
         for (var key in data) {
             var v = data[key];
+            var t = {children: []};
+            t.name = key;
             if (v != undefined) {
-                var t = {children: []};
-                t.name = key;
                 if (v.constructor.name == 'Object') {
                     t.type = 'object';
                     parseImportData(v, t.children);
@@ -1812,9 +1932,11 @@ function parseImportData(data, temp) {
                 } else if (v.constructor.name == 'Boolean') {
                     t.type = 'boolean'
                 }
-                t.require = 'true';
-                temp.push(t);
+            } else {
+                t.type = '';
             }
+            t.require = 'true';
+            temp.push(t);
         }
     }
 }

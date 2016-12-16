@@ -10,7 +10,8 @@
                 <ul>
                     <li data-id="{{item.id}}" v-for="item in modules"
                         class="api-module fl api-module-item"
-                        v-bind:class="{'active':currentModule.id == item.id}">
+                        v-bind:class="{'active':currentMod
+                        ule.id == item.id}">
                         <span v-on:click="moduleClick(item)">{{item.name}}</span>
                         <i class="icon-angeldownblock iconfont" v-on:click.stop="flag.moduleActionId= item.id" v-show="editing"></i>
                         <div class="api-item-actions" v-show="flag.moduleActionId == item.id && editing">
@@ -22,7 +23,7 @@
                     </li>
                     <li class="api-module fl api-module-plus" v-on:click="moduleNew" v-show="editing">
                         <i class="icon-tianjia iconfont"></i></li>
-                    <li class="fr api-module"><i class="iconfont icon-chick" style="cursor: default"></i></li>
+                    <li class="fr api-module"><i class="iconfont icon-history"></i></li>
                     <li class="fr api-module"><i class="iconfont icon-menu"></i></li>
                     <li class="fr api-module api-env" v-show="currentEnv" v-on:click.stop="envClick($event)">{{currentEnv.name}} <i class="iconfont icon-angeldownblock"></i></li>
                     <li class="fr api-module">
@@ -37,6 +38,8 @@
         <div class="api-env-details" id="api-env-details" v-show="status.showEnvs" v-on:mouseleave="status.showEnvs=false">
             <ul class="api-env-items">
                 <li v-for="item in envs" v-bind:class="{'active':item.t==currentEnv.t}" v-on:click="currentEnv=item" v-on:mouseover="envOver(item,$event)">{{item.name}}</li>
+
+
                 <li class="line"></li>
                 <li v-on:click="createEnv" v-on:mouseover="status.showEnvValues=false" v-if="project.editable=='YES'" class="api-env-create">添加环境</li>
             </ul>
@@ -101,6 +104,12 @@
                         <p>删除项目</p>
                     </a>
                 </li>
+                <li v-if="editable">
+                    <a v-link="'/project/'+id+'/export'">
+                        <p><i class="iconfont icon-export"></i></p>
+                        <p>导出项目</p>
+                    </a>
+                </li>
                 <li>
                     <a href="http://www.xiaoyaoji.com.cn/help.html" target="_blank">
                         <p><i class="iconfont icon-question"></i></p>
@@ -110,6 +119,12 @@
 
             </ul>
         </div>
+        <div class="api-history" id="api-history" v-show="status.showHistory">            <!-- iframe所在div -->
+            <i class="iconfont icon-close" v-on:click.stop="status.showHistory=false"></i>
+            <iframe v-bind:src="'history.html?projectId='+id" frameBorder="0" scrolling="yes" width="300px" style="height: 500px" marginheight="0"></iframe>
+        </div>
+        
+</div> 
         <datalist id="headerlist">
             <option v-for="item in flag.headers" value="{{item}}">
         </datalist>
@@ -132,7 +147,7 @@
                             <div class="fl" v-on:click="folderNew"><i class="icon-tianjia iconfont"></i> 添加分类</div>
                             <div class="fl" v-on:click="folderNewApi(null,$event)"><i class="icon-tianjia iconfont"></i> 添加接口</div>
                         </div>
-                        <ul class="apis-nav" id="api-edit-nav">
+                        <ul class="apis-nav">
                             <li>
                                 <div class="api-name api-description cb" v-bind:class="{'active':show=='doc'}"
                                      v-on:click="show='doc'">
@@ -148,11 +163,12 @@
                                     <span>模块全局参数</span>
                                 </div>
                             </li>
-
+                        </ul>
+                        <ul class="apis-nav api-folder-list" id="api-edit-nav">
                             <template v-if="!currentModule.folders">
                                 {{currentModule.folders = []}}
                             </template>
-                            <li v-for="item in currentModule.folders">
+                            <li v-for="item in currentModule.folders" data-id="{{item.id}}">
                                 <div class="api-name api-folder cb" v-bind:class="{'open':!collapse}" v-on:click="folderClick">
                                     <span>{{item.name}}</span>
                                     <div class="fr">
@@ -161,7 +177,7 @@
                                     </div>
                                 </div>
                                 <ul class="apis-nav apis-nav-sub" v-bind:class="{'hide':collapse}">
-                                    <li v-for="api in item.children">
+                                    <li v-on:apisort="apisortupdate(item.children,$event)" v-for="api in item.children" data-id="{{api.id}}">
                                         <div class="api-name cb" v-on:click="apiClick(api,item)"
                                              v-bind:class="{'active':currentApi.id == api.id}">
                                             <span v-bind:class="{'deprecated':api.status=='DEPRECATED'}">{{api.name}}</span>
@@ -196,20 +212,23 @@
                         </div>
                         <div v-bind:class="{'hide':show!='module'}" class="form">
                             <p class="api-details-title">全局请求头</p>
-                            <div class="div-table editing">
+                            <div class="div-table">
                                 <ul class="div-table-header div-table-line cb">
                                     <li class="col-sm-1">操作</li>
                                     <li class="col-sm-3">参数名称</li>
                                     <li class="col-sm-2">是否必须</li>
-                                    <li class="col-sm-4">描述</li>
                                     <li class="col-sm-2">默认值</li>
+                                    <li class="col-sm-4">描述</li>
                                 </ul>
+
+                            </div>
+                            <div class="div-table editing div-editing-table">
                                 <request-headers-vue
                                         v-bind:request-headers.sync="currentModule.requestHeaders"
                                         v-bind:editing="editing"></request-headers-vue>
                             </div>
                             <div class="item">
-                                <button class="btn btn-default btn-sm" v-on:click="currentModule.requestHeaders.push({children:[],require:'true'})">
+                                <button class="btn btn-default btn-sm" v-on:click="insertNewGRequestHeadersRow">
                                     <i class="iconfont icon-tianjia"></i>添加参数
                                 </button>
                                 <button class="btn btn-default btn-sm" v-on:click="import2GHeaders">
@@ -217,21 +236,23 @@
                                 </button>
                             </div>
 
-                            <p class="api-details-title">全局请求头</p>
-                            <div class="div-table editing">
+                            <p class="api-details-title">全局请求参数</p>
+                            <div class="div-table">
                                 <ul class="div-table-header div-table-line cb">
                                     <li class="col-sm-1">操作</li>
                                     <li class="col-sm-3">参数名称</li>
                                     <li class="col-sm-2">是否必须</li>
                                     <li class="col-sm-2">类型</li>
-                                    <li class="col-sm-2">描述</li>
                                     <li class="col-sm-2">默认值</li>
+                                    <li class="col-sm-2">描述</li>
                                 </ul>
+                            </div>
+                            <div class="div-table editing div-editing-table">
                                 <request-args-vue v-bind:request-args="currentModule.requestArgs"
                                                   v-bind:editing="editing"></request-args-vue>
                             </div>
                             <div class="item">
-                                <button class="btn btn-default btn-sm" v-on:click="currentModule.requestArgs.push({type:'string',children:[],require:'true'})">
+                                <button class="btn btn-default btn-sm" v-on:click="insertNewGRequestArgsRow">
                                     <i class="iconfont icon-tianjia"></i>添加参数
                                 </button>
                                 <button class="btn btn-default btn-sm" v-on:click="import2GRequestArgs">
@@ -286,11 +307,11 @@
                                                     <option value="X-WWW-FORM-URLENCODED">X-WWW-FORM-URLENCODED</option>
                                                     <template v-if="currentApi.requestMethod == 'POST'">
                                                         <option value="FORM-DATA">FORM-DATA</option>
-                                                        <option value="JSON">JSON</option>
-                                                        <option value="RAW">RAW</option>
                                                         <option value="BINARY">BINARY</option>
-                                                        <option value="XML">XML</option>
                                                     </template>
+                                                    <option value="JSON">JSON</option>
+                                                    <option value="RAW">RAW</option>
+                                                    <option value="XML">XML</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -343,8 +364,9 @@
                                 <div class="item">
                                     <div class="col-sm-1 label">接口描述</div>
                                     <div class="col-sm-11">
-                                    <textarea class="text"
-                                              v-model="currentApi.description">{{currentApi.description}}</textarea>
+                                        <div contenteditable="true" v-on:blur="apiDescBlur" id="api-description"></div>
+                                    <!--<textarea class="text"
+                                              v-model="currentApi.description">{{currentApi.description}}</textarea>-->
                                     </div>
                                 </div>
                                 <template v-if="currentApi.protocol == 'HTTP'">
@@ -355,14 +377,16 @@
                                 </div>
                                 <!-- 请求头参数 -->
                                 <div class="tab-content" v-bind:class="{'active':(flag.tab=='header') ||  (currentApi.dataType=='BINARY') }">
-                                    <div class="div-table editing">
+                                    <div class="div-table">
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-1">操作</li>
                                             <li class="col-sm-3">参数名称</li>
                                             <li class="col-sm-2">是否必须</li>
-                                            <li class="col-sm-4">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-4">描述</li>
                                         </ul>
+                                    </div>
+                                    <div class="div-table editing div-editing-table">
                                         <request-headers-vue
                                                 v-bind:request-headers.sync="currentApi.requestHeaders"
                                                 v-bind:editing="editing"></request-headers-vue>
@@ -381,15 +405,17 @@
 
                                 <!-- 请求参数 -->
                                 <div class="tab-content" v-bind:class="{'active':flag.tab=='body'}" v-if="currentApi.dataType!='BINARY'">
-                                    <div class="div-table editing">
+                                    <div class="div-table">
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-1">操作</li>
                                             <li class="col-sm-3">参数名称</li>
                                             <li class="col-sm-2">是否必须</li>
                                             <li class="col-sm-2">类型</li>
-                                            <li class="col-sm-2">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-2">描述</li>
                                         </ul>
+                                    </div>
+                                    <div class="div-table editing div-editing-table">
                                         <request-args-vue v-bind:request-args="currentApi.requestArgs"
                                                           v-bind:editing="editing"></request-args-vue>
                                     </div>
@@ -406,7 +432,7 @@
                                 <!-- 响应参数 -->
                                 <p class="api-details-title">响应数据</p>
                                 <div>
-                                    <div class="div-table editing">
+                                    <div class="div-table">
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-1">操作</li>
                                             <li class="col-sm-3">参数名称</li>
@@ -414,6 +440,8 @@
                                             <li class="col-sm-2">类型</li>
                                             <li class="col-sm-4">描述</li>
                                         </ul>
+                                    </div>
+                                    <div class="div-table editing div-editing-table">
                                         <response-args-vue v-bind:response-args="currentApi.responseArgs"
                                                            v-bind:editing="editing"></response-args-vue>
                                     </div>
@@ -451,7 +479,7 @@
                 <div class="apis">
                     <div v-if="currentModule.folders && currentModule.folders.length>0" class="cb api-container">
                         <div class="fl apis-left">
-                            <ul class="apis-nav api-folder-list">
+                            <ul class="apis-nav">
                                 <li>
                                     <div class="api-name api-description" v-bind:class="{'active':show=='doc'}"
                                          v-on:click="show='doc'">
@@ -461,16 +489,18 @@
                                     </span>
                                     </div>
                                 </li>
+                            </ul>
+                            <ul class="apis-nav api-folder-list">
                                 <template v-if="!currentModule.folders">
                                     {{currentModule.folders = []}}
                                 </template>
-                                <li v-for="item in currentModule.folders" class="cb">
+                                <li v-for="item in currentModule.folders" class="cb" data-id="{{item.id}}">
                                     <!--<span class="fr handle">::</span>-->
                                     <div class="api-name api-folder" v-bind:class="{'open':!collapse}" v-on:click="folderClick">
                                         <span>{{item.name}}</span>
                                     </div>
                                     <ul class="apis-nav apis-nav-sub" v-bind:class="{'hide':collapse}">
-                                        <li v-for="api in item.children" v-on:click="show='api'">
+                                        <li v-for="api in item.children" data-id="{{api.id}}" v-on:click="show='api'">
                                             <div class="api-name" v-bind:class="{'active':currentApi.id == api.id}"
                                                  v-on:click="apiClick(api,item)">
                                                 <span v-bind:class="{'deprecated':api.status=='DEPRECATED'}">{{api.name}}</span>
@@ -503,7 +533,7 @@
                                 </div>
                                 <template v-if="currentApi.description">
                                     <p class="api-details-title">接口描述</p>
-                                    <pre>{{currentApi.description}}</pre>
+                                    <div>{{{currentApi.description}}}</div>
                                 </template>
                                 <template v-if="(currentModule.requestHeaders&&currentModule.requestHeaders.length>0)">
                                     <p class="api-details-title">全局请求头</p>
@@ -511,8 +541,8 @@
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
-                                            <li class="col-sm-7">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-7">描述</li>
                                         </ul>
                                         <request-headers-vue
                                                 v-bind:request-headers.sync="currentModule.requestHeaders"
@@ -526,8 +556,8 @@
                                         <ul class="div-table-header div-table-line cb">
                                             <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
-                                            <li class="col-sm-7">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-7">描述</li>
                                         </ul>
                                         <request-headers-vue
                                                 v-bind:request-headers.sync="currentApi.requestHeaders"
@@ -542,8 +572,8 @@
                                             <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
                                             <li class="col-sm-1">类型</li>
-                                            <li class="col-sm-6">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-6">描述</li>
                                         </ul>
                                         <request-args-vue
                                                 v-bind:request-args.sync="currentModule.requestArgs"
@@ -558,8 +588,8 @@
                                             <li class="col-sm-2">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
                                             <li class="col-sm-1">类型</li>
-                                            <li class="col-sm-6">描述</li>
                                             <li class="col-sm-2">默认值</li>
+                                            <li class="col-sm-6">描述</li>
                                         </ul>
                                         <request-args-vue
                                                 v-bind:request-args.sync="currentApi.requestArgs"
@@ -570,10 +600,10 @@
                                     <p class="api-details-title">响应数据</p>
                                     <div class="div-table">
                                         <ul class="div-table-header div-table-line cb">
-                                            <li class="col-sm-2">参数名称</li>
+                                            <li class="col-sm-3">参数名称</li>
                                             <li class="col-sm-1">是否必须</li>
                                             <li class="col-sm-2">数据类型</li>
-                                            <li class="col-sm-7">描述</li>
+                                            <li class="col-sm-6">描述</li>
                                         </ul>
                                         <response-args-vue
                                                 v-bind:response-args.sync="currentApi.responseArgs"
@@ -755,8 +785,6 @@
                                         <p>安装的时候请注意勾选，安装后请刷新页面。</p>
                                         <p>
                                             <a href="https://chrome.google.com/webstore/detail/%E5%B0%8F%E5%B9%BA%E9%B8%A1/omohfhadnbkakganodaofplinheljnbd" target="_blank" class="btn btn-default">Chrome应用商店</a>
-                                            <a href="/extension/xiaoyaoji.crx" target="_blank" class="btn btn-default">本地下载</a>
-                                            <a href="http://jingyan.baidu.com/article/e5c39bf56286ae39d6603374.html" target="_blank" class="btn btn-default">本地下载安装教程</a>
                                         </p>
                                     </div>
                                     <div v-else>

@@ -19,6 +19,9 @@ public class Log implements AsyncTask<ProjectLog> {
     public static final String DELETE_PROJECT="project.delete";
     public static final String TRANSFER_PROJECT="project.transfer";
     public static final String EXPORT_PROJECT="project.export";
+    public static final String QUIT_PROJECT="project.quit";
+
+
 
     public static final String CREATE_FOLDER="folder.create";
     public static final String UPDATE_FOLDER="folder.update";

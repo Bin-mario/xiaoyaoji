@@ -35,6 +35,7 @@ public class Interface {
     private String dataType;
     private String protocol;
     private String status;
+    private Integer sort;
 
     public interface Status{
         //启用
@@ -196,5 +197,13 @@ public class Interface {
 
     public void setRequestHeaders(String requestHeaders) {
         this.requestHeaders = requestHeaders;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }
