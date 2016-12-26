@@ -2,17 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>cn.com.xiaoyaoji</groupId>
-        <artifactId>xiaoyaoji</artifactId>
-        <version>1.0</version>
-    </parent>
-    <name>api</name>
-    <groupId>cn.com.xiaoyao.api</groupId>
-    <version>2.0</version>
     <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.com.xiaoyaoji</groupId>
+    <artifactId>xiaoyaoji</artifactId>
     <packaging>war</packaging>
-    <artifactId>api</artifactId>
+    <version>1.7.1</version>
     <description>小幺鸡,简单好用的在线接口文档管理工具</description>
     <url>http://www.xiaoyaoji.com.cn</url>
     <developers>
@@ -23,7 +18,7 @@
         </developer>
     </developers>
     <dependencies>
-     <dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
@@ -41,6 +36,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <!-- 源码： http://git.oschina.net/zhoujingjie/mangoframework -->
             <groupId>org.mangoframework</groupId>
             <artifactId>mango-core</artifactId>
             <version>1.2.4</version>
@@ -152,9 +148,23 @@
             <version>5.5.9</version>
         </dependency>
     </dependencies>
+
     <build>
-        <finalName>api</finalName>
+
+        <finalName>xiaoyaoji</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -206,5 +216,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
