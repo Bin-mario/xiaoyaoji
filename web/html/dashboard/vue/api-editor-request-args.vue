@@ -18,7 +18,7 @@
                 <select v-model="item.type">
                     <option value="string">string</option>
                     <option value="number">number</option>
-                    <option value="number">boolean</option>
+                    <option value="boolean">boolean</option>
                     <option value="object">object</option>
                     <option value="array">array</option>
                     <option value="array[number]">array[number]</option>
