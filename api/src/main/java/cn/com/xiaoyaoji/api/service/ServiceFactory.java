@@ -308,4 +308,8 @@ public class ServiceFactory {
     public int importFromMJSON(Project project, List<Module> moduleList) {
         return DataFactory.instance().importFromMJSON(project,moduleList);
     }
+
+    public int moveFolder(String folderId,String newModuleId) {
+        return DataFactory.instance().moveFolder(folderId, newModuleId);
+    }
 }

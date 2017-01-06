@@ -376,10 +376,7 @@ public class ProjectController {
         if (action.equals("move")) {
             // 移动
             if (type.equals("folder")) {
-                InterfaceFolder folder = new InterfaceFolder();
-                folder.setId(targetId);
-                folder.setModuleId(moduleId);
-                rs = ServiceFactory.instance().update(folder);
+                rs = ServiceFactory.instance().moveFolder(targetId,moduleId);
                 // String folderName = ServiceFactory.instance().getInterfaceFolderName(targetId);
                 // AsyncTaskBus.instance().push(Log.create(token, Log.MOVE_FOLDER,folderName,id));
             } else {

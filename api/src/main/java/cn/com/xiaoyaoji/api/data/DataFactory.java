@@ -998,6 +998,18 @@ public class DataFactory implements Data {
         });
     }
 
+    @Override
+    public int moveFolder(final String folderId, final String newModuleId) {
+        return process(new Handler<Integer>() {
+            @Override
+            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
+                int rs = qr.update(connection,"update "+TableNames.INTERFACE_FOLDER+" set moduleId=? where id=?",newModuleId,folderId);
+                rs += qr.update(connection,"update "+TableNames.INTERFACES+" set moduleId=? where folderId=?",newModuleId,folderId);
+                return rs;
+            }
+        });
+    }
+
 
     public void test() {
         process(new Handler<Object>() {

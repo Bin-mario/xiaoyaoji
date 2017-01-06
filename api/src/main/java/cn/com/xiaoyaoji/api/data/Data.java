@@ -125,5 +125,7 @@ public interface Data {
 
     int importFromMJSON(Project project, List<Module> moduleList);
 
+    int moveFolder(String folderId,String newModuleId);
+
     //void test();
 }
