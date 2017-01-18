@@ -67,15 +67,8 @@
            * window._xyj_.api地址为 api的地址，默认是当前工程目录，如果你的api是单独部署，则改为改api对应的 http://ip:port 
 
 
-现在部分windows机器上tomcat下出现接口404问题，解决方法是
-         删除/WEB-INF/web.xml中 这一段代码
- ```
-          <filter-mapping>
-              <filter-name>DruidWebStatFilter</filter-name>
-              <url-pattern>/*</url-pattern>
-          </filter-mapping>
- ```
 
+## 现在部分windows机器上tomcat下出现接口404问题，解决方法是tomcat的文件夹路径不要有空格。
 
 ### 效果
 ![基本](img/basic.png)
