@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "小幺鸡",
   "description": "简单好用的在线接口文档管理工具",
   "icons":{
@@ -8,7 +8,7 @@
     "128":"icon_128.png"
   },
   "update_url":"http://clients2.google.com/service/update2/crx",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "homepage_url":"http://www.xiaoyaoji.com.cn",
   "browser_action": {
     "default_icon": "icon_128.png",
@@ -30,6 +30,7 @@
   "permissions": [
     "tabs",
     "alarms",
+    "webRequest",
     "notifications",
 	"*://*/*"
   ]

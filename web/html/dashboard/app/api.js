@@ -104,7 +104,7 @@ var page = {
             new Result().resolve(e.detail, gdata.currentApi.contentType);
         },
         error:  function (e) {
-            console.log("result.error");
+            console.error('error:'+e.detail);
         },
         complete:  function (e) {
             xhrComplete(gdata, e);
@@ -1206,9 +1206,6 @@ export default{
             var self = this;
             //var url = this.requestURL;
             var url = $('#requestURL').val();
-            if(url && !url.match(/http[s]?:/) && !url.match(/\/\//)){
-                url = 'http://'+url;
-            }
             var args = getRequestArgs();
             for (let name in args) {
                 let key = self.currentApi.id + ':args:' + name;
@@ -1279,6 +1276,8 @@ export default{
                 }else{
                     params.url += '?'+utils.args2Params(args);
                 }
+                params.data = null;
+                delete params.data;
             }
             switch (this.currentApi.dataType) {
                 case "FORM-DATA":
@@ -1789,8 +1788,17 @@ function initAceEditor(type,self){
         mode = 'ace/mode/xml';
     }
     setTimeout(function(){
-        let aceeditor=ace.edit("ace-editor-box");
-        window.aceeditor = aceeditor;
+        try {
+            let aceeditor=ace.edit("ace-editor-box");
+            window.aceeditor = aceeditor;
+        }catch(e) {
+            window.aceeditor ={
+                getValue:function () {return '';},
+                setTheme:function () {},
+                session:{setMode:function(){}},
+                setValue:function(){}
+            };
+        }
         aceeditor.setTheme("ace/theme/chrome");
         aceeditor.session.setMode(mode);
         aceeditor.setValue(self.requestArgsPreview);

@@ -5,6 +5,8 @@ evt.initEvent('result.success',true,false);
 evt.initEvent('result.error',true,false);
 evt.initEvent('result.complete',true,false);
 
+
+
 document.addEventListener('request', function (e) {
 
     var params = e.detail;
@@ -48,7 +50,7 @@ document.addEventListener('request', function (e) {
         document.dispatchEvent(new CustomEvent('result.success',{detail:rs}));
     };
     params.error = function(rs){
-        document.dispatchEvent(new CustomEvent('result.error',{detail:rs}));
+        document.dispatchEvent(new CustomEvent('result.error',{detail:rs.statusText}));
     };
     params.complete = function(xhr,type){
         var useTime = Date.now() - xhr.beginTime;
