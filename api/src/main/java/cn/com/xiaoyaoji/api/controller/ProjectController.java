@@ -754,7 +754,7 @@ public class ProjectController {
 
                         if (org.apache.commons.lang3.StringUtils.isNotBlank(in.getExample())) {
                             section.add(new Paragraph("例子", subtitle));
-                            section.add(new Paragraph(in.getExample()));
+                            section.add(new Paragraph(in.getExample(),apiFont));
                         }
 
                         // document.newPage();
