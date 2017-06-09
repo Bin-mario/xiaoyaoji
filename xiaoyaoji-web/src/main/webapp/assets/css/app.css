@@ -1,0 +1,369 @@
+@import "//at.alicdn.com/t/font_k0eayoqz4rj54s4i.css";
+@import "../toastr/toastr.min.css";
+@import "../pace/pace.min.css";
+.iconfont{
+    margin: 0 4px;
+    font-size: inherit;
+}
+body{
+    font: 13px/1.5 consolas,'Microsoft Yahei',tahoma,sans-serif;
+    color: #333;
+    background-color: #fff;
+    min-width: 1255px;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #fff;
+}
+
+::-webkit-scrollbar
+{
+    width: 6px;
+    background-color: #fff;
+}
+::-webkit-scrollbar:horizontal{
+    height: 6px;
+}
+::-webkit-scrollbar-thumb
+{
+    background-color: #8A8A8A;
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+article, aside, footer, header, main, nav, section,code {
+    display: block;
+}
+pre, xmp, plaintext, listing{
+    font:13px/1.5 consolas,'Microsoft Yahei',tahoma,sans-serif;
+}
+code{
+    background: #E7E7E7;
+    padding: 5px;
+    box-sizing: border-box;
+}
+li{
+    list-style: none;
+}
+div,p{
+    box-sizing: border-box;
+}
+img{
+    border: none;
+}
+body ul{
+    padding: 0;
+    margin: 0;
+}
+.cb:after{
+    clear: both;
+    content: '';
+    display: block;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.ta-c{
+    text-align: center;
+}
+a{
+    /*color: #333;*/
+    text-decoration: none;
+    cursor: pointer;
+}
+a:hover{
+    color: #0f6ecd;
+}
+a.active{
+    color: #1e87f0!important;
+}
+.mc{
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.hide{
+    display: none;
+}
+input,textarea{
+    outline: none;
+}
+
+.text{
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #C3C3C3;
+    box-sizing: border-box;
+    font-family: consolas,'Microsoft Yahei',tahoma,sans-serif
+}
+.text:focus{
+    border-color: #1e87f0;
+}
+.select{
+    width: 100%;
+    border: 1px solid #C3C3C3;
+    padding: 2px 8px;
+    box-sizing: border-box;
+    outline: none;
+    /*-webkit-appearance: none;*/
+    -webkit-border-radius: 0;
+}
+
+
+
+
+
+.form .item{
+    border-bottom: 1px solid #efefef;
+    margin:0;
+    padding:10px 0;
+}
+.form .item:after{
+    clear: both;
+    content: '';
+    display: block;
+}
+.form .item:last-child{
+    border-bottom: none;
+}
+.form .tip{
+    margin: 5px 0;
+    color: #ffa3a3;
+    display: none;
+}
+.form .hint{
+    color: #919191;
+    margin-top: 5px;
+}
+.form .error{
+    color: #ffa3a3;
+}
+.form .error .text{
+    border-color: #ffa3a3;
+}
+.form .invalid {
+    border-color: #ffa3a3;
+}
+.form .invalid~.tip{
+    color: #ffa3a3;
+    display: inherit;
+}
+.form .title{
+    font-size: 18px;
+    padding-left:15px;
+}
+.form .label{
+    text-align: right;
+    display: inline-block;
+    padding-top: 10px;
+}
+.form .full-text{
+    padding-top: 6px;
+}
+
+.div-table{
+    width: 100%;
+}
+.div-table-header li{
+    background-color: #fff;
+    padding: 8px 10px;
+    border-top:1px solid #ccc!important
+}
+.div-table .sortable-placeholder{
+    width: 100%;
+    height: 32px;
+    background-color: #ddecf4;
+}
+.div-table .icon-drag-copy{
+    cursor: move;
+}
+.div-table-line li{
+    padding: 10px 0 10px 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-left:none;
+    border-top:none;
+    outline: none;
+    position: relative;
+    height: 35px;
+}
+.div-table-line li .value{
+    overflow: hidden;
+    height: 20px;
+}
+.div-table-line li .hover{
+    display: none;
+    padding: 10px 0 3px 10px;
+    word-break: break-all;
+    z-index:10;
+    min-height: 35px;
+}
+.div-table-line li:hover .hover{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #f0f0f0;
+    display: block;
+}
+.div-table-line li:hover .value{
+    display: none;
+}
+.div-table-line li:first-child{
+    border-left: 1px solid #ccc;
+}
+.div-table-line .sub{
+    padding: 0;
+    border: none;
+    height: auto;
+}
+.div-table-line .name{
+    color: red;
+}
+.div-table.editing .input{
+    overflow: hidden;
+    padding: 0;
+}
+.div-table.editing .input .text{
+    border-color: transparent;
+}
+.div-table-line .name{
+    padding-left: 10px;
+    overflow: visible;
+    position: relative;
+}
+.div-table-line .name .iconfont{
+    color: #666;
+    font-size: 14px;
+    position: absolute;
+    left: -16px;
+    top:8px;
+    width: 16px;
+    height: 16px;
+    background-position:center;
+    background-repeat:no-repeat;
+}
+.div-table-line .name .icon-my{
+    background-image: url("http://img.alicdn.com/tps/i4/TB1sLIsGXXXXXb6XFXX1aiKJFXX-4-7.png");
+}
+.div-table-line .name .icon-my.open{
+    background-image: url("http://img.alicdn.com/tps/i3/TB1vn3AGXXXXXbFXXXXWXbjJFXX-7-4.png");
+}
+
+
+.div-table-line .div-table-line .name{
+    padding-left: 25px;
+}
+.div-table-line .div-table-line .div-table-line .name{
+    padding-left: 40px;
+}
+.div-table-line .div-table-line .div-table-line .div-table-line .name{
+    padding-left: 55px;
+}
+.div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .name{
+    padding-left: 70px;
+}
+.div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .name{
+    padding-left: 85px;
+}
+.div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .name{
+    padding-left: 100px;
+}
+.div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .name{
+    padding-left: 115px;
+}
+.div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line.name{
+    padding-left: 130px;
+}
+.div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .name{
+    padding-left: 145px;
+}
+.div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line .div-table-line.name{
+    padding-left: 160px;
+}
+.col-sm-1,.col-sm-10,.col-sm-11,.col-sm-12,.col-sm-2,.col-sm-3,.col-sm-4,.col-sm-5,.col-sm-6,.col-sm-7,.col-sm-8,.col-sm-9 { float:left;padding-left: 15px } .col-sm-12 { width: 100% } .col-sm-11 { width: 91.66666667% } .col-sm-10 { width: 83.33333333% } .col-sm-9 { width: 75% } .col-sm-8 { width: 66.66666667% } .col-sm-7 { width: 58.33333333% } .col-sm-6 { width: 50% } .col-sm-5 { width: 41.66666667% } .col-sm-4 { width: 33.33333333% } .col-sm-3 { width: 25% } .col-sm-2 { width: 16.66666667% } .col-sm-1 { width: 8.33333333% }
+ul[uk-tab]{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.uk-modal{
+    background-color: rgba(204,207,214,.45)!important;
+    box-shadow: 0 2px 15px 0 rgba(140,144,155,.5);
+    border:1px solid #cccfd6;
+    border-radius: 4px;
+}
+.uk-modal-dialog{
+    margin-top: 80px!important;
+}
+.uk-button{
+    padding: 0 15px!important;
+    line-height: 28px!important;
+    border-radius: 4px;
+}
+/*************** 登录、注册、忘记密码、找回密码 start*******************/
+
+.login-form{
+    width: 400px!important;
+    margin-top: 120px!important;
+}
+.login-form.succeed{
+    width: 600px;
+}
+.login-form .logo{
+    margin-bottom: 30px;
+}
+.login-form .text{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.login-form [type='submit']{
+    width: 100%;
+    padding: 10px 0;
+    background: #0f6ecd;
+    color: #fff;
+}
+.login-form [type='submit']:hover{
+    background-color: #0061c1;
+}
+.login-third{
+    margin: 10px 0;
+}
+.login-third i{
+    font-size: 30px;
+    margin-right: 10px;
+}
+.login-register-body .forget-succeed{
+    border:1px solid #c0ebd0;
+    background-color: #f4fbf6;
+    color: #47b26f;
+    line-height: 30px;
+    padding: 20px;
+}
+.lf-gotomail{
+    padding: 10px 25px;
+}
+.lf-gotomail:hover{
+    color: #fff;
+}
+.lr-friendly-tip{
+    margin-top: 30px;
+    color: #9e9e9e;
+}
+/*************** 登录、注册、忘记密码、找回密码 end*******************/

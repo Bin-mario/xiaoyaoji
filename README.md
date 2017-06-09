@@ -1,78 +1,62 @@
 ![LOGO](http://www.xiaoyaoji.com.cn/assets/img/logo/full.png)
+# 小幺鸡文档管理工具，支持富文本、markdown、http、websocket 及其在线测试
+## [在线演示地址demo](http://www.xiaoyaoji.com.cn/project/demo/view)
 
-### 特点
-   * 在线接口测试 目前支持 json,text,html,xml,jsonp,Websocket
-   * markdown编辑器
 
-### [在线demo](http://www.xiaoyaoji.com.cn/) （推荐使用在线系统）
-	
-## 文件夹说明
-* web 文件夹是前端静态页面 基于nodejs，webpack gulp，vuejs,jqueryjs开发完成
-* api 使用java开发，运行在tomcat7.x以上版本。maven，druid，mariadb
+### [下载最新版本](http://git.oschina.net/zhoujingjie/apiManager/releases)
 
 ## 兼容性
 * 静态页系统暂时只兼容chrome，其他浏览器未测试。
 * 后端：jdk1.7 tomcat7  mariadb5.5
 
 
-## 使用说明
-### 文件夹说明
- api : 接口
- web : 静态页面
-    - extension:浏览器扩展
-    - config.js 一些页面配置
-    - gulp.js   gulp构建器
-    - html 网页源码
-    - package.json 
-    - webpack.config.js webpack配置
-##开发版本
-### API
- * api/src下面为源码，基于maven项目构建。
- * 修改api/src/main/resources/config.properties 中的数据库配置信息，
-    * 如果需要使用第三方登录,需要配置对应的地址
-    * 如果需要使用邮件发送,需要配置sendcloud邮箱配置信息
-    * config.properties未单独做中文编码处理，为防止乱码，中文需要改为unicode
- * 导入api/sql/xiaoyaoji.sql 文件导入到mysql中，
- * 启动tomcat，浏览器运行 http://localhost:端口/index.html 能正常显示则表示可用。
-
-### 申明一下：如果只是需要离线部署，请直接看 『直接使用』下面的介绍，如果是需要二次开发，api是java代码，web是静态代码。
-
-#### API 依赖jar  org.mangoframework.core 1.2.3
-     项目及使用说明都在这：http://git.oschina.net/zhoujingjie/mangoframework
-     或者直接下载附件中的jar
-### WEB
-  * npm install 下载项目依赖包 
-  * npm run watch 编译并且监听文件改动
-  * npm run server 运行开发项目-文件夹 (用于开发过程中)
-  * 浏览器访问http://localhost:8080/ 可以看到正在开发中的项目
-
-  * npm run build 编译项目,并且生成built文件夹
-  * gulp 将built文件夹及html文件夹代码打包到dist文件夹中;
-  * npm run dist-server 运行dist文件夹下的项目(也就是编译后的项目,一般用于上线前最后测试。)
-  * 浏览器访问http://localhost:8080/ 可以看到编译打包后的项目
-
-  * 修改html/assets/js/config.js配置
-      * window._xyj_.ws 地址为ws://你的ip:端口
-      * window._xyj_.api地址为 api的地址，默认是当前工程目录，如果你的api是单独部署，则改为改api对应的 http://ip:port 
-
-### 直接使用
-
-   *  下载https://git.oschina.net/zhoujingjie/apiManager/tree/master/releases 中的最新版本的zip包(之前是放在附件中，附件上传速度太慢改为这了)
-   * 复制解压的内容到tomcat/webapps/ROOT 目录下（注意，项目只能运行在一级目录中，如：xxx.com,或者api.xxx.com ，不能是xxx.com/apimanager）
-   * 需要修改的地方
-       *  导入api/sql/xiaoyaoji-MMdd.sql 到mysql中。mysql需要5.5以上
-       *  修改/WEB-INF/classes/config.properties中的数据库配置信息。
-       *  修改 /assets/js/config.js 的配置 （如果api未单独部署则无需修改）
-           * window._xyj_.ws 地址为ws://你的ip:端口
-           * window._xyj_.api地址为 api的地址，默认是当前工程目录，如果你的api是单独部署，则改为改api对应的 http://ip:port 
+### module说明
+* xiaoyaoji-docformatter : 文档格式化
+* xiaoyaoji-web : 小幺鸡web工程
 
 
 
-## 现在部分windows机器上tomcat下出现接口404问题，解决方法是tomcat的文件夹路径不要有空格。
+### config.properties 说明
+* jdbc.xxx ：数据库的相关配置
+* file.access.url : 文件服务的访问地址
+* file.upload.provider ：文件上传提供者
+    * cn.com.xiaoyaoji.extension.file.QiniuFileProvider 七牛云文件上传
+        * file.qiniu.bucket :七牛云bucket
+        * file.qiniu.accessKey :七牛云ak
+        * file.qiniu.secretKey :七牛云sk
+    * cn.com.xiaoyaoji.extension.fileupload.DefaultFileUploadProvider 默认文件上传
+        * file.upload.dir :默认上传的文件路径 (全路径)
+         
+* 第三方登录配置
+    * 微博
+        * weibo.appkey :微博登录需要的appkey
+        * weibo.appsecret : appsecret   
+        * weibo.redirect_uri :   微博登录成功后重定向地址
+    * QQ
+        * qq.appid : qq appId
+        * qq.appkey :qq appkey 
+        * qq.redirect_uri:qq登录成功后的重定向地址
+    * GITHUB
+        * github.clientid :github clientid
+        * github.secret: github 的secret
+        * github.redirect_uri : github登录成功后的重定向地址
+* salt : 密码混淆盐
+* token.expires: 登录后会话有效期 单位秒
+* 邮件发送
+    * sendcloud.apikey : sendcloud apikey
+* 缓存
+    * cache.provider.factory: 缓存工厂
+        * cn.com.xiaoyaoji.extension.cache.factory.DefaultCacheFactory ：基于jvm的缓存
+        * cn.com.xiaoyaoji.extension.cache.factory.RedisCacheFactory   ：redis 缓存
+            * redis.host： redis host
+            * redis.port：redis端口
+            * redis.password ：redis密码
+            * redis.connection.timeout :连接超时时间
+            
+            
 
-### 效果
-![基本](img/basic.png)
-![基本](img/third1.png)
-![基本](img/third2.png)
-![基本](img/ws.png)
-    
+### 离线部署说明
+* 新建数据库-utf8mb4格式，INNODB引擎。
+* 导入sql
+* 修改/WEB-INF/classes/config.properties 的数据库与其他信息
+* 启动tomcat

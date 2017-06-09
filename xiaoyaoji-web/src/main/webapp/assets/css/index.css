@@ -1,0 +1,217 @@
+
+
+/**************************/
+.top{
+    background-color: #333;
+    color: #eeeeee;
+}
+.user-action{
+    height: 30px;
+}
+.user-action .item{
+    float: left;
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    width:50px;
+    color: #fff;
+    text-align: center;
+}
+.user-action.logged .item{
+    width: inherit;
+    margin-left: 10px;
+}
+.user-action a.active{
+    background: #000;
+}
+.user-action .thirdly{
+    width: 25px;
+}
+.user-action .thirdly i{
+    font-size: 20px;
+}
+.ua-box {
+    width: 200px;
+    box-sizing: border-box;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+    background: #fff;
+    border: 1px solid #E2E2E2;
+    padding: 5px 15px;
+    box-shadow: 0 1px 5px #9D9D9D;
+    z-index: 3;
+}
+.ua-box .text{
+    padding: 5px;
+}
+.header{
+    height: 80px;
+    line-height: 80px;
+}
+.logo{
+}
+.logo img{
+    vertical-align: middle;
+    width: 140px;
+}
+nav{
+    margin-left: 100px;
+}
+nav ul{
+}
+nav ul li{
+    float: left;
+    font-size: 20px;
+    margin-right: 70px;
+}
+
+.m-sec1,.api-sec1{
+    background: #0f6ecd url("../img/header.png") no-repeat center;
+    background-size:cover ;
+    padding: 180px 0;
+}
+@media all and (max-width:1300px ){
+    .m-sec1,.api-sec1{
+        padding: 140px;
+    }
+}
+.m-sec1-desc,.api-sec1-desc{
+    color: #fff;
+    font-size: 24px;
+}
+.m-sec1-go{
+    font-size: 30px;
+    height: 60px;
+    line-height: 60px;
+    margin-top: 50px;
+}
+.m-sec1-go a{
+    padding: 10px 80px;
+    border: 1px solid #fff;
+    color: #fff;
+    height: 100px;
+    font-size: 16px;
+    font-weight: bold;
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -ms-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s;
+}
+.m-sec1-go a:hover{
+    background: #FFF;
+    color: #0f6ecd;
+}
+
+.m-sec3{
+    font-size: 14px;
+    background: #f0f0f0;
+    padding: 80px 0;
+    color: #333;
+    line-height: 25px;
+}
+.m-sec3 .ta-c{
+    font-size: 20px;
+}
+.m-sec3 .about-list{
+    width: 240px;
+    margin-top:20px;
+}
+.m-sec3 .about-list .m-sec1-go a{
+    color: #1e87f0;
+    border-color: #1e87f0;
+}
+.m-sec-contact{
+    padding: 80px 0;
+    background-color: #0f6ecd;
+    color: #fff;
+    font-size: 14px;
+}
+.m-sec-contact ul{
+    width: 900px;
+    padding: 0;
+}
+
+.m-sec-contact li{
+    float: left;
+    width: 300px;
+    text-align: center;
+}
+.m-sec-contact li i{
+    font-size: 80px;
+    cursor: inherit;
+}
+.m-sec-contact li a{
+    color: #fff;
+    text-decoration: underline;
+}
+.user-info{
+    font-size: 16px;
+}
+.user-info .name{
+    position: relative;
+    margin-left: 20px;
+}
+.user-info .name:hover .profile{
+    display: block;
+}
+.user-info .profile{
+    display: none;
+    position: absolute;
+    width: 120px;
+    line-height: 30px;
+    background: #fff;
+    font-size: 12px;
+    box-sizing: border-box;
+    right: 0;
+    top: 80px;
+}
+.user-info .profile a{
+    padding:  0 15px;
+    display: block;
+}
+.user-info .profile a:hover{
+    background: #eee;
+}
+.user-info .profile .line{
+    width: 100%;
+    height:1px;
+    background: #ddd;
+}
+.user-info i{
+    font-size: 16px;
+}
+.m-sec2{
+    margin-top: 40px;
+}
+.m-sec2 div{
+    width: 300px;
+    height:200px;
+    box-sizing: border-box;
+    padding: 0 20px;
+}
+.m-sec2 h3{
+    font-size: 24px;
+}
+.m-sec2 .m-s-desc{
+    margin-top: 5px;
+}
+
+/***********************/
+.help-bg{
+    padding: 5px 0;
+    background-color: #DBDBDB;
+}
+.help-content{
+    width: 800px;
+}
+.help-content p{
+    margin: 5px 0;
+    padding: 0;
+}
+.help-content h3{
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+}

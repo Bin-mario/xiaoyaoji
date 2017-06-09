@@ -1,0 +1,64 @@
+.doc-content .doc-update-time{
+    position: absolute;
+    right: 10px;
+    top:10px;
+    line-height: 50px;
+}
+.doc .doc-item-section-title{
+    font-size: 14px;
+    font-weight: bold;
+    margin:15px 0 5px 0;
+}
+.doc .doc-item-section{
+    line-height: 25px;
+}
+.doc .doc-attach{
+    float: left;
+    width: 140px;
+    height: 100px;
+    overflow: hidden;
+    text-align: center;
+    margin-right: 10px;
+    background-color: #f0f0f0;
+    position: relative;
+}
+.doc .doc-attach i{
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    font-size: 16px;
+}
+.doc .doc-attach img{
+    max-width: 140px;
+    max-height: 100px;
+}
+.doc .doc-attach.file{
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+.doc .doc-attach.file a{
+    text-decoration: underline;
+    color: #00c4ff;
+}
+.doc .http-environment{
+    width: 100%;
+}
+.doc .doc-http-attach{
+    position: relative;
+    width: 100%;
+    text-align: center;
+    line-height: 100px;
+    color: #482121;
+    border: 1px dashed #ccc;
+}
+.doc .doc-http-attach input[type='file']{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    opacity: 0;
+}

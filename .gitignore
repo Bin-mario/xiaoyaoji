@@ -1,8 +1,6 @@
-web/node_modules
 api/.idea/
 *.iml
-web/built
-web/html/.idea/
-api/target/
-*.class
-/target/
+target/
+.idea/
+e.log
+e.log.1
