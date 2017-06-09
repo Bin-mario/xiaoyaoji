@@ -57,6 +57,6 @@
 
 ### 离线部署说明
 * 新建数据库-utf8mb4格式，INNODB引擎。
-* 导入sql
+* 导入sql - SQL文件在doc目录下
 * 修改/WEB-INF/classes/config.properties 的数据库与其他信息
 * 启动tomcat
