@@ -60,3 +60,6 @@
 * 导入sql - SQL文件在doc目录下
 * 修改/WEB-INF/classes/config.properties 的数据库与其他信息
 * 启动tomcat
+
+
+## 如果是由1.x版本升级的，不用导入SQL，替换文件后启动tomcat后，post方式运行http://localhost/sys/update 即可
