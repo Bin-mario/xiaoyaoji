@@ -7,7 +7,7 @@
     <groupId>cn.com.xiaoyaoji</groupId>
     <artifactId>xiaoyaoji</artifactId>
     <packaging>pom</packaging>
-    <version>2.0</version>
+    <version>2.0.1</version>
     <description>小幺鸡,简单好用的在线接口文档管理工具</description>
     <url>http://www.xiaoyaoji.com.cn</url>
     <developers>
@@ -15,6 +15,9 @@
             <name>zhoujingjie</name>
             <url>http://git.oschina.net/zhoujingjie</url>
             <email>cn_bboy@163.com</email>
+        </developer>
+        <developer>
+            <name>luofei</name>
         </developer>
     </developers>
     <modules>
@@ -47,6 +50,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
             <version>1.7.13</version>
         </dependency>
     </dependencies>

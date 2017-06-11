@@ -43,6 +43,17 @@
 * salt : 密码混淆盐
 * token.expires: 登录后会话有效期 单位秒
 * 邮件发送
+    * email.provider: 邮箱发送提供者
+        * cn.com.xiaoyaoji.extension.email.SendCloudEMailProvider : 使用sendcloud 发送
+            * sendcloud.apikey  : sendcloud apikey
+            * sendcloud.system.apiuser: apiuser
+            * sendcloud.system.from :发送人
+        * cn.com.xiaoyaoji.extension.email.DefaultEMailProvider
+            * email.from: 邮件发送人
+            * email.smtp.server: smtp服务地址
+            * email.smtp.port: stmp ssl端口
+            * email.username: 用户名
+            * email.password: 密码
     * sendcloud.apikey : sendcloud apikey
 * 缓存
     * cache.provider.factory: 缓存工厂
@@ -62,4 +73,4 @@
 * 启动tomcat
 
 
-## 如果是由1.x版本升级的，不用导入SQL，替换文件后启动tomcat后，post方式运行http://localhost/sys/update 即可
+## 如果是由1.x版本升级的，不用导入SQL，替换文件后启动tomcat后，用http post方式运行http://localhost:port/sys/update 即可
