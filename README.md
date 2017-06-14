@@ -13,6 +13,7 @@
 ### module说明
 * xiaoyaoji-docformatter : 文档格式化
 * xiaoyaoji-web : 小幺鸡web工程
+* xiaoyaoji-config: 配置模块
 
 
 
