@@ -1,2 +1,13 @@
 Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.4
+Created-By: 1.6.0_45-b06 (Sun Microsystems Inc.)
+X-Compile-Source-JDK: 1.7
+X-Compile-Target-JDK: 1.7
 
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.2
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.2.FR
+Implementation-Vendor: Apache Software Foundation

@@ -27,7 +27,7 @@
     </div>
 
     <div class="header mc cb">
-        <a href="index.html" class="logo fl"><img alt="小幺鸡" src="../assets/img/logo/full.png"></a>
+        <a href="index.html" class="logo fl"><img alt="小幺鸡" src="${assets}/img/logo/full.png"></a>
         <nav class="fl">
             <ul class="cb">
                 <li><a href="${ctx}/">主页</a> </li>
