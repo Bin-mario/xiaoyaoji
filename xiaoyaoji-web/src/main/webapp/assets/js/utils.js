@@ -297,7 +297,7 @@
 
         Array.prototype.mergeArray = function(source){
             //var target = this.slice();
-            var target = $.extend(true,{},this);
+            var target = $.extend(true,[],this);
             if(source && source.length>0){
                 var targetKey={};
                 target.forEach(function(item){
