@@ -296,7 +296,7 @@
         };
 
         Array.prototype.mergeArray = function(source){
-            var target = this;
+            var target = this.slice();
             if(source && source.length>0){
                 var targetKey={};
                 target.forEach(function(item){
