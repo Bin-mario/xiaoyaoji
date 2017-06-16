@@ -75,3 +75,6 @@
 
 
 ## 如果是由1.x版本升级的，不用导入SQL，替换文件后启动tomcat后，用http post方式运行http://localhost:port/sys/update 即可
+
+### bug
+如果大家发现了bug，可以在[Issues](http://git.oschina.net/zhoujingjie/apiManager/issues)里面提交，然后也可以直接修改bug然后提交代码
