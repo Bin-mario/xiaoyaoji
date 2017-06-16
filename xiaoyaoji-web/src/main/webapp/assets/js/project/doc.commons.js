@@ -30,6 +30,25 @@
         }
         window._initsort_=_initsort_;
 
+        function getArrayValueType(value) {
+            var type = 'array';
+            if (value.length > 0) {
+                var name = value[0].constructor.name;
+                if (name == 'Array') {
+                    type = 'array[array]';
+                } else if (name == 'Object') {
+                    type = 'array[object]';
+                } else if (name == 'String') {
+                    type = 'array[string]'
+                } else if (name == 'Number') {
+                    type = 'array[number]'
+                } else if (name == 'Boolean') {
+                    type = 'array[boolean]'
+                }
+            }
+            return type;
+        }
+
         function parseImportData(data, temp) {
             if (data.constructor.name == 'Array') {
                 var fullObj = {};
