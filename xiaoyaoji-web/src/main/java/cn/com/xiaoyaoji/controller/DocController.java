@@ -79,18 +79,19 @@ public class DocController {
         }
         int rs = ServiceFactory.instance().update(doc);
         AssertUtils.isTrue(rs > 0, "修改失败");
-        if(org.apache.commons.lang3.StringUtils.isNoneBlank(comment)) {
-            try {
-                BeanUtils.copyProperties(history, temp);
-                history.setName(doc.getName());
-                history.setComment(comment);
-                history.setUserId(user.getId());
-                history.setCreateTime(new Date());
-                history.setDocId(id);
-                ServiceFactory.instance().create(history);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                logger.error(e);
-            }
+        if(org.apache.commons.lang3.StringUtils.isBlank(comment)){
+            comment = "修改文档";
+        }
+        try {
+            BeanUtils.copyProperties(history, temp);
+            history.setName(doc.getName());
+            history.setComment(comment);
+            history.setUserId(user.getId());
+            history.setCreateTime(new Date());
+            history.setDocId(id);
+            ServiceFactory.instance().create(history);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            logger.error(e);
         }
         ProjectService.instance().updateLastUpdateTime(temp.getProjectId());
 

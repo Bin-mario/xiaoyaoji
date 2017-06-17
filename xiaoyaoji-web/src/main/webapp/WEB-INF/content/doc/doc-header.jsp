@@ -95,7 +95,7 @@
                     <h2 class="uk-modal-title">保存文档</h2>
                     <p class="uk-margin"><textarea autofocus class="uk-textarea" rows="5" v-model="submitComment"
                                                    placeholder="可以在这儿输入一些备注"></textarea></p>
-                    <p style="color: rgb(204, 204, 204);">提示:CTRL+S 可快速保存.快速保存不生成历史版本</p>
+                    <p style="color: rgb(204, 204, 204);">提示:CTRL+S 可快速保存</p>
                     <p class="uk-text-right">
                         <button class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
                         <button class="uk-button uk-button-primary uk-modal-close" type="button" v-on:click="submit">

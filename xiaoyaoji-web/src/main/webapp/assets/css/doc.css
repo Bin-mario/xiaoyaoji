@@ -158,6 +158,9 @@
     cursor: pointer;
     margin-left: 15px;
     display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .dl-docs .doc-name .item-name{
     position: relative;
