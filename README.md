@@ -78,3 +78,5 @@
 
 ### bug
 如果大家发现了bug，可以在[Issues](http://git.oschina.net/zhoujingjie/apiManager/issues)里面提交，然后也可以直接修改bug然后提交代码
+
+## 如果觉得还不错，请作者喝杯咖啡吧 ☺

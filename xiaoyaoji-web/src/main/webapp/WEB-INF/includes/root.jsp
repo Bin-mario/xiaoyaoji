@@ -8,7 +8,7 @@
 <%
     request.setAttribute("ctx",request.getContextPath());
     request.setAttribute("assets",request.getContextPath()+"/assets");
-    request.setAttribute("v","2.0");
+    request.setAttribute("v","2.0-beta3");
     //暂时加成随机数,避免缓存
     //request.setAttribute("v",System.currentTimeMillis());
     request.setAttribute("site",new _HashMap<String,String>().add("name","小幺鸡")
