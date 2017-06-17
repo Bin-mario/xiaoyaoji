@@ -112,12 +112,12 @@
         <dependency>
             <groupId>cn.com.xiaoyaoji</groupId>
             <artifactId>xiaoyaoji-docformatter</artifactId>
-            <version>2.0.1</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.com.xiaoyaoji</groupId>
             <artifactId>xiaoyaoji-config</artifactId>
-            <version>2.0.1</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.pegdown</groupId>
@@ -127,8 +127,7 @@
     </dependencies>
 
     <build>
-
-        <finalName>xiaoyaoji</finalName>
+        <finalName>xiaoyaoji-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

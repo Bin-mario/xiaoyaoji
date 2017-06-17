@@ -40,6 +40,7 @@
                 <li><a href="${ctx}/profile">个人中心</a></li>
                 <li><a href="${ctx}/profile/security">安全设置</a></li>
                 <li><a href="${ctx}/help">帮助中心</a></li>
+                <li><a href="http://git.oschina.net/zhoujingjie/apiManager" target="_blank">请作者喝咖啡</a></li>
                 <li class="uk-nav-divider"></li>
                 <li><a href="${ctx}/logout">退出登录</a></li>
             </ul>
