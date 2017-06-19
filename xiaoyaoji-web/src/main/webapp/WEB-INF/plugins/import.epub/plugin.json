@@ -1,0 +1,10 @@
+{
+  "name":"epub",
+  "key":"import.epub",
+  "description":"导入epub",
+  "author":"zhoujingjie",
+  "createTime":"2017-06-17",
+  "clazz":"",
+  "version":"1.0",
+  "type":"import"
+}
