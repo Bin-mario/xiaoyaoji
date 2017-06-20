@@ -1,6 +1,6 @@
-![LOGO](http://www.xiaoyaoji.com.cn/assets/img/logo/full.png)
+![LOGO](http://www.xiaoyaoji.cn/assets/img/logo/full.png)
 # 小幺鸡文档管理工具，支持富文本、markdown、http、websocket 及其在线测试
-## [在线演示地址demo](http://www.xiaoyaoji.com.cn/project/demo/view)
+## [在线演示地址demo](http://www.xiaoyaoji.cn/project/demo/view)
 
 
 ### [下载最新版本](http://git.oschina.net/zhoujingjie/apiManager/releases)
