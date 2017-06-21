@@ -2,6 +2,7 @@ package cn.com.xiaoyaoji.data;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -32,6 +33,12 @@ public class MyQueryRunner extends QueryRunner {
     public <T> T insert(Connection conn, String sql, ResultSetHandler<T> rsh, Object... params) throws SQLException {
         log(sql,params);
         return super.insert(conn, sql, rsh, params);
+    }
+
+    @Override
+    public int[] batch(Connection conn, String sql, Object[][] params) throws SQLException {
+        log(sql, params);
+        return super.batch(conn, sql, params);
     }
 
     private void log(String sql, Object... params){

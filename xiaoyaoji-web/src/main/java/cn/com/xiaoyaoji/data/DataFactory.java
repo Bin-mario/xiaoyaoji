@@ -1,5 +1,6 @@
 package cn.com.xiaoyaoji.data;
 
+import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.data.bean.*;
 import cn.com.xiaoyaoji.core.common.Pagination;
 import cn.com.xiaoyaoji.core.common._HashMap;
@@ -19,10 +20,7 @@ import org.apache.commons.lang3.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -816,12 +814,34 @@ public class DataFactory implements Data {
         });
     }
 
+
+    private List<Interface> getInterfaces(QueryRunner qr,Connection connection,int start,int limit) throws SQLException {
+        return qr.query(connection,"select * from interface limit ?,?",new BeanListHandler<>(Interface.class),start,limit);
+    }
+
+    private Object[] getData(Object obj){
+        List<Object> data = new ArrayList<>();
+        for(Field field : obj.getClass().getDeclaredFields()){
+            if(field.getAnnotation(Ignore.class) == null){
+                try {
+                    field.setAccessible(true);
+                    data.add(field.get(obj));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data.toArray();
+    }
+
     @Override
     public int updateSystem(String version) {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
                 synchronized (this) {
+
+
                     //判断是否已执行更新操作
                     try {
                         String version = qr.query(connection,"select version from sys limit 1",new StringResultHandler());
@@ -832,6 +852,10 @@ public class DataFactory implements Data {
                         //ignore
                         //e.printStackTrace();
                     }
+
+                    //批量更新数量
+                    int batchNum = 100;
+
 
                     //创建doc表
                     int rs =qr.update(connection,"drop table if exists  "+TableNames.DOC);
@@ -885,15 +909,7 @@ public class DataFactory implements Data {
                             "  `version` varchar(10) DEFAULT NULL\n" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
 
-                  /*  try {
-                        //修改interface_folder名称为folder
-                        rs += qr.update(connection,"rename table interface_folder to folder");
-                        //添加parentId字段
-                        rs += qr.update(connection,"alter table folder add column parentId char(12) default 0");
-                    } catch (SQLException e) {
-                        //ignore
-                        e.printStackTrace();
-                    }*/
+
                     rs +=qr.update(connection,"drop table if exists project_global");
                     rs +=qr.update(connection,"\n" +
                             "CREATE TABLE `"+TableNames.PROJECT_GLOBAL+"` (\n" +
@@ -905,14 +921,15 @@ public class DataFactory implements Data {
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
 
                     SQLBuildResult sbr = null;
-
+                    String docInsertSQL ="insert into doc (id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId) values(?,?,?,?,?,?,?,?,?)";
                     //迁移module数据到doc
                     List<Module> modules = qr.query(connection,"select * from "+TableNames.MODULES,new BeanListHandler<>(Module.class));
                     if(modules!=null && modules.size()>0){
                         //key projectId
                         Map<String,JSONArray> globalRequestArgsMap = new HashMap<>();
                         Map<String,JSONArray> globalRequestHeadersMap = new HashMap<>();
-
+                        List<Object[]> params = new ArrayList<>();
+                        String batchSQL = docInsertSQL;
                         for(Module m:modules){
                             Doc doc = new Doc();
                             doc.setId(m.getId());
@@ -923,9 +940,7 @@ public class DataFactory implements Data {
                             doc.setLastUpdateTime(m.getLastUpdateTime());
                             doc.setProjectId(m.getProjectId());
                             doc.setParentId("0");
-                            sbr = SqlUtils.generateInsertSQL(doc);
-                            rs += qr.update(connection,sbr.getSql(),sbr.getParams());
-
+                            params.add(getData(doc));
                             String requestHeaders = m.getRequestHeaders();
                             if(org.apache.commons.lang3.StringUtils.isNoneEmpty(requestHeaders)){
                                 try {
@@ -951,11 +966,20 @@ public class DataFactory implements Data {
                                 } catch (Exception e) {
                                 }
                             }
+                            //100条更新一次
+                            if(params.size()>=batchNum){
+                                qr.batch(connection, batchSQL, toObjectArr(params));
+                                params = new ArrayList<>();
+                            }
+
                         }
+
                         //初始化project_global
                         Set<String> projectIds = new HashSet<>();
                         projectIds.addAll(globalRequestArgsMap.keySet());
                         projectIds.addAll(globalRequestHeadersMap.keySet());
+                        batchSQL = "insert into "+TableNames.PROJECT_GLOBAL+" (id,environment,http,status,projectId) values(?,?,?,?,?)";
+                        params = new ArrayList<>();
                         for(String projectId:projectIds) {
                             String sql = "select environments from " + TableNames.PROJECT + " where id = ?";
                             Project temp =  qr.query(connection, sql, new BeanHandler<>(Project.class), projectId);
@@ -971,8 +995,12 @@ public class DataFactory implements Data {
                             projectGlobal.setEnvironment(temp.getEnvironments());
                             projectGlobal.setId(StringUtils.id());
                             projectGlobal.setProjectId(projectId);
-                            sbr = SqlUtils.generateInsertSQL(projectGlobal);
-                            rs += qr.update(connection,sbr.getSql(),sbr.getParams());
+                            params.add(getData(projectGlobal));
+                            if(params.size()>=batchNum){
+                                qr.batch(connection,batchSQL, toObjectArr(params));
+                                params = new ArrayList<>();
+                            }
+                            //rs += qr.update(connection,sbr.getSql(),sbr.getParams());
                         }
                     }
                     rs += qr.update(connection,"update doc set content = replace(content,':\"VALID\"','有效')");
@@ -982,6 +1010,8 @@ public class DataFactory implements Data {
                     //迁移interface_folder数据到doc
                     List<Folder> folders = qr.query(connection,"select * from "+TableNames.INTERFACE_FOLDER,new BeanListHandler<>(Folder.class));
                     if(folders!=null && folders.size()>0){
+                        String batchSQL = docInsertSQL;
+                        List<Object[]> params = new ArrayList<>();
                         for(Folder f:folders){
                             Doc doc = new Doc();
                             doc.setId(f.getId());
@@ -992,68 +1022,84 @@ public class DataFactory implements Data {
                             doc.setLastUpdateTime(new Date());
                             doc.setProjectId(f.getProjectId());
                             doc.setParentId(f.getModuleId());
-                            sbr = SqlUtils.generateInsertSQL(doc);
-                            rs += qr.update(connection,sbr.getSql(),sbr.getParams());
+                            params.add(getData(doc));
+                            if(params.size()>=batchNum){
+                                qr.batch(connection, batchSQL, toObjectArr(params));
+                                params = new ArrayList<>();
+                            }
                         }
+
                     }
 
                     //迁移interface数据到doc中
-                    List<Interface> interfaces = qr.query(connection,"select * from interface",new BeanListHandler<>(Interface.class));
-                    if(interfaces != null && interfaces.size()>0){
+                    int start = 0,limit=10000;
+                    while (true){
+                        List<Interface> interfaces= getInterfaces(qr,connection,start,limit);
+                        if(interfaces != null && interfaces.size()>0){
+                            List<Object[]> params = new ArrayList<>();
+                            String batchSQL = docInsertSQL;
+                            for(Interface in:interfaces){
+                                Doc doc = new Doc();
+                                doc.setId(in.getId());
+                                doc.setName(in.getName());
+                                doc.setSort(in.getSort()==null?0:in.getSort());
+                                String protocol = in.getProtocol();
+                                if("HTTP".equals(protocol)) {
+                                    doc.setType(DocType.SYS_HTTP.getTypeName());
+                                }else if("WEBSOCKET".equals(protocol)){
+                                    doc.setType(DocType.SYS_WEBSOCKET.getTypeName());
+                                }else{
+                                    doc.setType(DocType.SYS_DOC_MD.getTypeName());
+                                }
+                                String requestHeaders = in.getRequestHeaders();
+                                if(org.apache.commons.lang3.StringUtils.isBlank(requestHeaders)){
+                                    requestHeaders = "[]";
+                                }
+                                String requestArgs = in.getRequestArgs();
+                                if(org.apache.commons.lang3.StringUtils.isBlank(requestArgs)){
+                                    requestArgs = "[]";
+                                }
+                                String responseArgs = in.getResponseArgs();
+                                if(org.apache.commons.lang3.StringUtils.isBlank(responseArgs)){
+                                    responseArgs = "[]";
+                                }
+                                String status = in.getStatus();
+                                if("DEPRECATED".equals(status)){
+                                    status = "已废弃";
+                                }else{
+                                    status = "有效";
+                                }
+                                doc.setContent(JsonUtils.toString(new _HashMap<>()
+                                        .add("description",in.getDescription())
+                                        .add("url",in.getUrl())
+                                        .add("requestMethod",in.getRequestMethod())
+                                        .add("contentType",in.getContentType())
+                                        .add("requestHeaders", JSON.parse(requestHeaders))
+                                        .add("requestArgs", JSON.parse(requestArgs))
+                                        .add("responseArgs", JSON.parse(responseArgs))
+                                        .add("example",in.getExample())
+                                        .add("dataType",in.getDataType())
+                                        .add("status",status)
+                                ));
+                                doc.setCreateTime(in.getCreateTime());
+                                doc.setLastUpdateTime(in.getLastUpdateTime());
+                                doc.setProjectId(in.getProjectId());
+                                doc.setParentId(in.getFolderId());
+                                //rs += qr.update(connection,sbr.getSql(),sbr.getParams());
+                                //logger.debug("insert content "+ doc.getName()+" success");
+                                params.add(getData(doc));
 
-                        for(Interface in:interfaces){
-                            Doc doc = new Doc();
-                            doc.setId(in.getId());
-                            doc.setName(in.getName());
-                            doc.setSort(in.getSort()==null?0:in.getSort());
-                            String protocol = in.getProtocol();
-                            if("HTTP".equals(protocol)) {
-                                doc.setType(DocType.SYS_HTTP.getTypeName());
-                            }else if("WEBSOCKET".equals(protocol)){
-                                doc.setType(DocType.SYS_WEBSOCKET.getTypeName());
-                            }else{
-                                doc.setType(DocType.SYS_DOC_MD.getTypeName());
+                                if(params.size()>=batchNum){
+                                    qr.batch(connection,batchSQL, toObjectArr(params));
+                                    params = new ArrayList<>();
+                                }
                             }
-                            String requestHeaders = in.getRequestHeaders();
-                            if(org.apache.commons.lang3.StringUtils.isBlank(requestHeaders)){
-                                requestHeaders = "[]";
-                            }
-                            String requestArgs = in.getRequestArgs();
-                            if(org.apache.commons.lang3.StringUtils.isBlank(requestArgs)){
-                                requestArgs = "[]";
-                            }
-                            String responseArgs = in.getResponseArgs();
-                            if(org.apache.commons.lang3.StringUtils.isBlank(responseArgs)){
-                                responseArgs = "[]";
-                            }
-                            String status = in.getStatus();
-                            if("DEPRECATED".equals(status)){
-                                status = "已废弃";
-                            }else{
-                                status = "有效";
-                            }
-                            doc.setContent(JsonUtils.toString(new _HashMap<>()
-                                    .add("description",in.getDescription())
-                                    .add("url",in.getUrl())
-                                    .add("requestMethod",in.getRequestMethod())
-                                    .add("contentType",in.getContentType())
-                                    .add("requestHeaders", JSON.parse(requestHeaders))
-                                    .add("requestArgs", JSON.parse(requestArgs))
-                                    .add("responseArgs", JSON.parse(responseArgs))
-                                    .add("example",in.getExample())
-                                    .add("dataType",in.getDataType())
-                                    .add("status",status)
-                            ));
-                            doc.setCreateTime(in.getCreateTime());
-                            doc.setLastUpdateTime(in.getLastUpdateTime());
-                            doc.setProjectId(in.getProjectId());
-                            doc.setParentId(in.getFolderId());
-                            sbr = SqlUtils.generateInsertSQL(doc);
-                            rs += qr.update(connection,sbr.getSql(),sbr.getParams());
-                            logger.debug("insert content "+ doc.getName()+" success");
+
+                            start+=limit;
+                        }else {
+                            break;
                         }
                     }
-
 
 
 
@@ -1069,6 +1115,14 @@ public class DataFactory implements Data {
                 }
             }
         });
+    }
+
+    private Object[][] toObjectArr(List<Object[]> list){
+        Object[][] arrs = new Object[list.size()][];
+        for(int i=0;i<list.size();i++){
+            arrs[i] = list.get(i);
+        }
+        return arrs;
     }
 
     @Override

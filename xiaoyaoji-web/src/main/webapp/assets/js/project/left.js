@@ -73,20 +73,29 @@ $(function(){
                     });
                 }
                     //显示菜单
-                    $('.doc-name.active').parents('ul').show();
+                $('.doc-name.active').parents('ul').each(function(){
+                    $(this).removeClass('hide');
+                    $(this).prev().find(".el-tree-expand").addClass("expanded");
+                });
             },
             methods:{
                 fold:function(e){
-                    var $target = $(e.target);
+                    if(e.target instanceof HTMLAnchorElement){
+                        return true;
+                    }
+                    var $target = $(e.currentTarget);
                     if($target.hasClass('folder')){
-                        if($target.hasClass('expanded')){
-                            $target.parent().next().slideUp();
-                            $target.removeClass('expanded');
+                        var $child = $target.find('.el-tree-expand');
+                        if($child.hasClass('expanded')){
+                            $target.next().slideUp();
+                            $child.removeClass('expanded');
                         }else{
-                            $target.parent().next().slideDown();
-                            $target.addClass('expanded');
+                            $target.next().slideDown();
+                            $child.addClass('expanded');
                         }
                     }
+                    e.stopPropagation();
+                    e.preventDefault();
                 },
                 createFn:function(type,parentId){
                     this.createModal.display=true;

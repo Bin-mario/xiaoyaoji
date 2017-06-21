@@ -31,7 +31,7 @@
         <nav class="fl">
             <ul class="cb">
                 <li><a href="${ctx}/">主页</a> </li>
-                <li><a href="http://www.xiaoyaoji.com.cn/project/demo" target="_blank">在线演示</a> </li>
+                <li><a href="http://www.xiaoyaoji.cn/project/demo" target="_blank">在线演示</a> </li>
                 <li><a href="http://git.oschina.net/zhoujingjie/apiManager" rel="nofollow" target="_blank">码云</a></li>
                 <li><a href="${ctx}/help">在线帮助</a> </li>
             </ul>
