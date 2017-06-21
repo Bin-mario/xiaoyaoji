@@ -4,7 +4,7 @@ import cn.com.xiaoyaoji.core.common.Message;
 import cn.com.xiaoyaoji.data.DataFactory;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.DocHistory;
-import cn.com.xiaoyaoji.data.bean.DocType;
+import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.utils.AssertUtils;
 import cn.com.xiaoyaoji.utils.ResultUtils;
 import cn.com.xiaoyaoji.utils.StringUtils;

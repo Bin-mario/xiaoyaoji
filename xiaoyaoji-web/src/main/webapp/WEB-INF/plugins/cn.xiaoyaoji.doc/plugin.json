@@ -1,0 +1,42 @@
+[
+  {
+    "name": "http文档",
+    "clazz": "cn.xiaoyaoji.plugin.doc.HttpDocPlugin",
+    "description": "http 文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0"
+  },
+  {
+    "name": "websocket文档",
+    "clazz": "cn.xiaoyaoji.plugin.doc.WebsocketDocPlugin",
+    "description": "websocket 文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0"
+  },
+  {
+    "name": "富文本文档",
+    "clazz": "cn.xiaoyaoji.plugin.doc.RichtextDocPlugin",
+    "description": "富文本文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0"
+  },
+  {
+    "name": "markdown文档",
+    "clazz": "cn.xiaoyaoji.plugin.doc.HttpDocPlugin",
+    "description": "markdown文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0"
+  },
+  {
+    "name": "文件夹",
+    "clazz": "cn.xiaoyaoji.plugin.doc.FolderDocPlugin",
+    "description": "文件夹",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0"
+  }
+]

@@ -4,7 +4,7 @@ import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.Message;
 import cn.com.xiaoyaoji.core.common.Pagination;
 import cn.com.xiaoyaoji.core.common._HashMap;
-import cn.com.xiaoyaoji.core.view.PdfView;
+import cn.com.xiaoyaoji.view.PdfView;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.Project;
 import cn.com.xiaoyaoji.data.bean.ProjectUser;
@@ -20,11 +20,8 @@ import cn.com.xiaoyaoji.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
 

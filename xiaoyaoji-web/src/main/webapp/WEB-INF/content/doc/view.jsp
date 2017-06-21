@@ -26,7 +26,12 @@
         <jsp:include page="../project/global/project-global.jsp"/>
     </c:if>
     <c:if test="${!editProjectGlobal && doc!=null }">
-        <jsp:include page="/WEB-INF/plugins/${doc.type}/${edit?'edit':'view'}.jsp"/>
+        <c:if test="${page == null || pluginContextPath == null}">
+            <jsp:include page="/WEB-INF/includes/doc-type-not-support.jsp"/>
+        </c:if>
+        <c:if test="${page != null && pluginContextPath != null}">
+            <jsp:include page="/WEB-INF/plugins/${pluginContextPath}/web/${page}"/>
+        </c:if>
     </c:if>
 </div>
 <!-- loading start -->

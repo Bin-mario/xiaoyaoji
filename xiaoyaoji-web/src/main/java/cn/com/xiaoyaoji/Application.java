@@ -1,13 +1,11 @@
 package cn.com.xiaoyaoji;
 
-import cn.com.xiaoyaoji.core.plugin.ImportPlugin;
 import cn.com.xiaoyaoji.core.plugin.Plugin;
-import cn.com.xiaoyaoji.core.plugin.PluginType;
-import cn.com.xiaoyaoji.extension.asynctask.message.MessageBus;
-import cn.com.xiaoyaoji.extension.asynctask.message.MessageNotify;
-import cn.com.xiaoyaoji.extension.impexp.ImportManager;
-import cn.com.xiaoyaoji.utils.ClassUtils;
+import cn.com.xiaoyaoji.core.plugin.PluginClassLoader;
+import cn.com.xiaoyaoji.core.plugin.PluginInfo;
+import cn.com.xiaoyaoji.core.plugin.PluginManager;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.io.Charsets;
@@ -18,10 +16,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author zhoujingjie
@@ -46,36 +46,40 @@ public class Application {
         ConvertUtils.register(converter, Date.class);
     }
     private static void initPlugins(){
-
-        if(true)
-            return;
         try {
-            URI uri = Thread.currentThread().getContextClassLoader().getResource("/").toURI();
-            Path pluginPath = Paths.get(uri);
+            //解压插件
+            //加载插件
+            //String dir = Thread.currentThread().getContextClassLoader().getResource("").getPath()+"../.."+Config.PLUGINS_SOURCE_DIR;
+            String dir="E:\\privatespaces\\apiManager\\xiaoyaoji-web\\target\\xiaoyaoji-2.0.2\\WEB-INF\\plugins";
+            Path pluginPath = Paths.get(dir);
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(pluginPath)) {
                 for (Path path : directoryStream) {
-                    Path filePath =path.resolve("plugin.json");
-                    readPlugin(filePath.toFile());
+                    loadPlugin(path.toFile());
                 }
             } catch (IOException ex) {
                 logger.error(ex.getMessage(),ex);
             }
-
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
 
     }
 
-    private static void readPlugin(File pluginJsonFile){
-        try(InputStream in = new FileInputStream(pluginJsonFile)) {
+    private static void loadPlugin(File pluginDir) throws MalformedURLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+        String dir = pluginDir.getAbsolutePath();
+        URL[] urls = new URL[]{
+                new File(dir+"/classes/").toURI().toURL(),
+                new File(dir+"/libs/").toURI().toURL(),
+                new File(dir+"/libs/").toURI().toURL()
+        };
+        URLClassLoader classLoader = new URLClassLoader(urls,Thread.currentThread().getContextClassLoader());
+        try(InputStream in = new FileInputStream(dir+"/plugin.json")) {
             String content = IOUtils.toString(in, Charsets.UTF_8);
-            Plugin plugin = JSON.parseObject(content, Plugin.class);
-            if(plugin.getType().equals(PluginType.DOC.name())){
-                ImportPlugin im = ClassUtils.newInstance(plugin.getClazz(),ImportPlugin.class);
-                ImportManager.instance().register(im);
+            List<PluginInfo> pluginInfos = JSON.parseObject(content, new TypeReference<List<PluginInfo>>(){});
+            for(PluginInfo pluginInfo:pluginInfos) {
+                Plugin plugin = (Plugin) classLoader.loadClass(pluginInfo.getClazz()).newInstance();
+                PluginManager.getInstance().register(plugin);
             }
-            //todo 其他插件
         }catch (IOException e){
             logger.error(e.getMessage(),e);
         }

@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@ page import="cn.com.xiaoyaoji.core.global.GlobalProperties" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Doc" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Project" %>
 <%@ page import="cn.com.xiaoyaoji.service.ProjectService" %>
@@ -21,8 +20,8 @@
         String firstDocId = docs.get(0).getId();
         request.setAttribute("docId", firstDocId);
     }
-    request.setAttribute("createSupports", GlobalProperties.getCreateDocuments());
-    request.setAttribute("importDocuments", GlobalProperties.getImportDocuments());
+    //request.setAttribute("createSupports", GlobalProperties.getCreateDocuments());
+    //request.setAttribute("importDocuments", GlobalProperties.getImportDocuments());
 %>
 <div class="doc-left" id="docLeft">
     <c:if test="${edit}">

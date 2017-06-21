@@ -27,7 +27,7 @@
     </bean>
 
     <!-- 视图解析 -->
-    <bean class="cn.com.xiaoyaoji.core.resolver.AppViewResolver">
+    <bean class="cn.com.xiaoyaoji.resolver.AppViewResolver">
         <property name="prefix" value="/WEB-INF/content"/>
         <property name="suffix" value=".jsp"/>
         <property name="contentType" value="text/html;charset=UTF-8"/>
@@ -44,7 +44,7 @@
     </bean>
 
 
-    <bean class="cn.com.xiaoyaoji.core.resolver.ExceptionResolver">
+    <bean class="cn.com.xiaoyaoji.resolver.ExceptionResolver">
         <property name="defaultErrorView" value="/error"/>
         <property name="exceptionAttribute" value="exception"/>
         <property name="statusCodes">
@@ -67,7 +67,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <bean class="cn.com.xiaoyaoji.core.interceptor.AuthorityInterceptor"/>
+            <bean class="cn.com.xiaoyaoji.interceptor.AuthorityInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 
@@ -75,10 +75,10 @@
     <!-- 注解扫描 -->
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
         <mvc:message-converters>
-            <bean class="cn.com.xiaoyaoji.core.converter.JsonMessageConverter"/>
+            <bean class="cn.com.xiaoyaoji.converter.JsonMessageConverter"/>
         </mvc:message-converters>
         <mvc:argument-resolvers>
-            <bean class="cn.com.xiaoyaoji.core.resolver.UserArgumentsResolver"/>
+            <bean class="cn.com.xiaoyaoji.resolver.UserArgumentsResolver"/>
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
     <!-- controller扫描 -->

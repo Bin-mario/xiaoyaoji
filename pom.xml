@@ -7,9 +7,10 @@
     <groupId>cn.com.xiaoyaoji</groupId>
     <artifactId>xiaoyaoji</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.1</version>
-    <description>小幺鸡,简单好用的在线接口文档管理工具</description>
-    <url>http://www.xiaoyaoji.com.cn</url>
+    <version>2.0.2</version>
+    <description>小幺鸡,简单好用的在线文档管理工具</description>
+    <url>http://www.xiaoyaoji.cn</url>
+
     <developers>
         <developer>
             <name>zhoujingjie</name>
@@ -24,6 +25,9 @@
         <module>xiaoyaoji-docformatter</module>
         <module>xiaoyaoji-web</module>
         <module>xiaoyaoji-config</module>
+        <module>xiaoyaoji-plugin-import</module>
+        <module>xiaoyaoji-core</module>
+        <module>xiaoyaoji-plugin-doc</module>
     </modules>
     <dependencies>
         <dependency>

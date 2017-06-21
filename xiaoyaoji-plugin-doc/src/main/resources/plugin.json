@@ -1,0 +1,8 @@
+[{
+  "name":"http",
+  "clazz":"cn.xiaoyaoji.plugin.doc.HttpDocPlugin",
+  "description":"http 文档",
+  "author":"zhoujingjie",
+  "createTime":"2017/06/21",
+  "version":"2.0"
+}]
