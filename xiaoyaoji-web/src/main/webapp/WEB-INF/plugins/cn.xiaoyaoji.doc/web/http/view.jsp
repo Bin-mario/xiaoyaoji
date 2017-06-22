@@ -361,12 +361,12 @@
         </div>
     </div>
 </div>
-<jsp:include page="../../includes/doc/table/request-args.jsp"/>
-<jsp:include page="../../includes/doc/table/request-headers.jsp"/>
-<jsp:include page="../../includes/doc/table/response-args.jsp"/>
+<jsp:include page="../includes/request-args.jsp"/>
+<jsp:include page="../includes/request-headers.jsp"/>
+<jsp:include page="../includes/response-args.jsp"/>
 
 <script>
     var doc = ${doc},projectGlobal=${projectGlobal};
 </script>
 <link rel="stylesheet" type="text/css" href="${assets}/jsonformat/jsonFormater.css"/>
-<script src="${ctx}/plugin?contextPath=cn.xiaoyaoji.doc&path=http/view.js"></script>
+<script src="${ctx}/plugin?id=cn.xiaoyaoji.doc&path=http/view.js&v=${pluginInfo.version}"></script>

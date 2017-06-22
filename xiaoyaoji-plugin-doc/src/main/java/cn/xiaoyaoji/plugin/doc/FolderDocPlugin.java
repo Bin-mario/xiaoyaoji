@@ -1,31 +1,26 @@
 package cn.xiaoyaoji.plugin.doc;
 
-import cn.com.xiaoyaoji.core.common.DocType;
-import cn.com.xiaoyaoji.core.plugin.AbstractDocPlugin;
+import cn.com.xiaoyaoji.core.plugin.DocEvPlugin;
 
 /**
  * @author zhoujingjie
  *         created on 2017/6/21
  */
-public class FolderDocPlugin extends AbstractDocPlugin{
+public class FolderDocPlugin implements DocEvPlugin{
+
 
     @Override
-    public boolean support(String docType) {
-        return DocType.SYS_FOLDER.getTypeName().equals(docType);
-    }
-
-    @Override
-    public String getEditModePage() {
+    public String getEditPage() {
         return "folder/edit.jsp";
     }
 
     @Override
-    public String getViewModePage() {
+    public String getViewPage() {
         return "folder/view.jsp";
     }
 
     @Override
-    public String contextPath() {
+    public String getContextPath() {
         return "cn.xiaoyaoji.doc";
     }
 }

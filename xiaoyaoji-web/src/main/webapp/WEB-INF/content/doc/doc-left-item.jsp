@@ -11,7 +11,7 @@
             <span class="dl-background"></span>
             <span class="el-tree-expand ${item.children.size() ==0 ?'is-leaf':''}"></span>
             <a class="item-name" href="${ctx}/doc/${item.id}${edit?'/edit':''}">${item.name}</a href="${ctx}/doc/${item.id}">
-            <c:if test="${item.type=='sys.folder' && edit}">
+            <c:if test="${edit}">
                 <i class="iconfont fr icon-angeldownblock" v-on:click.stop="contextMenu"></i>
             </c:if>
         </div>

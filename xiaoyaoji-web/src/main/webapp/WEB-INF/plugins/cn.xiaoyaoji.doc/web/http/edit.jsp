@@ -253,8 +253,8 @@
 <script>
     var doc = ${doc},projectGlobal=${projectGlobal};
 </script>
-<jsp:include page="/WEB-INF/includes/doc/table/request-args.jsp"/>
-<jsp:include page="/WEB-INF/includes/doc/table/request-headers.jsp"/>
-<jsp:include page="/WEB-INF/includes/doc/table/response-args.jsp"/>
-<jsp:include page="/WEB-INF/includes/doc/table/response-headers.jsp"/>
-<script src="${ctx}/plugin?contextPath=cn.xiaoyaoji.doc&path=http/edit.js"></script>
+<jsp:include page="../includes/request-args.jsp"/>
+<jsp:include page="../includes/request-headers.jsp"/>
+<jsp:include page="../includes/response-args.jsp"/>
+<jsp:include page="../includes/response-headers.jsp"/>
+<script src="${ctx}/plugin?id=cn.xiaoyaoji.doc&path=http/edit.js&v=${pluginInfo.version}"></script>

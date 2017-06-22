@@ -4,19 +4,17 @@ import cn.com.xiaoyaoji.core.plugin.DocEvPlugin;
 
 /**
  * @author zhoujingjie
- *         created on 2017/6/21
+ *         created on 2017/6/22
  */
-public class MarkdownDocPlugin implements DocEvPlugin{
-
-
+public class ThirdpartyDocPlugin implements DocEvPlugin {
     @Override
     public String getEditPage() {
-        return "markdown/edit.jsp";
+        return "thirdparty/edit.jsp";
     }
 
     @Override
     public String getViewPage() {
-        return "markdown/view.jsp";
+        return "thirdparty/view.jsp";
     }
 
     @Override

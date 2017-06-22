@@ -1,6 +1,6 @@
 requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
     ctx + '/assets/clipboard/clipboard.min.js',
-    ctx + '/plugin?plugin=/sys.http/lib/chrome-extension.js',
+    ctx + '/plugin?id=cn.xiaoyaoji.doc&path=includes/chrome-extension.js',
     ctx + '/assets/ace/src-min/ace.js',
     ctx + '/assets/xml2json/2json.js',
     ctx + '/assets/xml2json/2xml.js'

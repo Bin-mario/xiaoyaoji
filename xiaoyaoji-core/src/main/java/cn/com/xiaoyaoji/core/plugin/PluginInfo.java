@@ -5,15 +5,24 @@ package cn.com.xiaoyaoji.core.plugin;
  * @author zhoujingjie
  *         created on 2017/5/18
  */
-public class PluginInfo {
+public class PluginInfo{
+    private String id;
     private String name;
     private String description;
     private String author;
     private String createTime;
     private String clazz;
     private String version;
-    private String contextPath;
+    private String event;
+    private Plugin plugin;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -63,11 +72,19 @@ public class PluginInfo {
         this.version = version;
     }
 
-    public String getContextPath() {
-        return contextPath;
+    public String getEvent() {
+        return event;
     }
 
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    public void setPlugin(Plugin plugin) {
+        this.plugin = plugin;
     }
 }

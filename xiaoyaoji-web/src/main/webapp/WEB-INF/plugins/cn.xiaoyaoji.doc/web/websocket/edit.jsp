@@ -158,10 +158,10 @@
         </div>
     </div>
 </div>
-<jsp:include page="/WEB-INF/includes/doc/table/request-args.jsp"/>
-<jsp:include page="/WEB-INF/includes/doc/table/response-args.jsp"/>
+<jsp:include page="../includes/request-args.jsp"/>
+<jsp:include page="../includes/response-args.jsp"/>
 
 <script>
     var doc = ${doc},projectGlobal=${projectGlobal};
 </script>
-<script src="${ctx}/plugin?plugin=/sys.websocket/edit.js"></script>
+<script src="${ctx}/plugin?id=cn.xiaoyaoji.doc&path=websocket/edit.js&v=${pluginInfo.version}"></script>

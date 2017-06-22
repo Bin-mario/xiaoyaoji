@@ -11,36 +11,36 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class PluginManager {
 
-    private Map<PluginType,List<Plugin>> plugins;
+    private Map<Event,List<PluginInfo>> pluginInfos;
     public static PluginManager instance;
     static {
         instance = new PluginManager();
     }
 
     private PluginManager(){
-        plugins = new HashMap<>();
+        pluginInfos = new HashMap<>();
     }
 
     public static PluginManager getInstance(){
         return instance;
     }
 
-    public void register(Plugin plugin){
-        List<Plugin> temp = plugins.get(plugin.getPluginType());
+    public void register(PluginInfo pluginInfo){
+        Event e = Event.parse(pluginInfo.getEvent());
+        List<PluginInfo> temp = pluginInfos.get(e);
         if(temp == null){
             temp = new CopyOnWriteArrayList<>();
-            plugins.put(plugin.getPluginType(),temp);
+            pluginInfos.put(e,temp);
         }
-        temp.add(plugin);
+        temp.add(pluginInfo);
     }
 
-    public List<Plugin> getPlugins(PluginType pluginType){
-        List<Plugin> temp = this.plugins.get(pluginType);
+    public List<PluginInfo> getPlugins(Event event){
+        List<PluginInfo> temp = this.pluginInfos.get(event);
         if(temp == null){
             temp = new CopyOnWriteArrayList<>();
-            this.plugins.put(pluginType,temp);
+            this.pluginInfos.put(event,temp);
         }
         return temp;
     }
-
 }

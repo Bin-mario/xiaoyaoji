@@ -21,12 +21,12 @@ public class PluginController {
 
     @Ignore
     @RequestMapping
-    public void load(@RequestParam String path,@RequestParam String contextPath,
+    public void load(@RequestParam String path,@RequestParam String id,
                      HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         path = path.replace("..","");
-        contextPath = contextPath.replace("..","");
+        id = id.replace("..","");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-        request.getRequestDispatcher(Config.PLUGINS_SOURCE_DIR+contextPath+"/web/"+path).forward(request,response);
+        request.getRequestDispatcher(Config.PLUGINS_SOURCE_DIR+id+"/web/"+path).forward(request,response);
     }
 }

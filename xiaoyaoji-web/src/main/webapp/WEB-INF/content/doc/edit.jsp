@@ -18,11 +18,11 @@
         <jsp:include page="../project/global/project-global.jsp"/>
     </c:if>
     <c:if test="${!editProjectGlobal && doc!=null}">
-        <c:if test="${page == null || pluginContextPath == null}">
+        <c:if test="${pluginInfo == null}">
             <jsp:include page="/WEB-INF/includes/doc-type-not-support.jsp"/>
         </c:if>
-        <c:if test="${page != null && pluginContextPath != null}">
-            <jsp:include page="/WEB-INF/plugins/${pluginContextPath}/web/${page}"/>
+        <c:if test="${pluginInfo != null}">
+            <jsp:include page="/WEB-INF/plugins/${pluginInfo.plugin.contextPath}/web/${pluginInfo.plugin.editPage}"/>
         </c:if>
     </c:if>
 </div>

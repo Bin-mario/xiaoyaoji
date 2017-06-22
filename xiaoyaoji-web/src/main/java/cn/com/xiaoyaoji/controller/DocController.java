@@ -4,8 +4,7 @@ import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.core.common.Message;
 import cn.com.xiaoyaoji.core.common._HashMap;
-import cn.com.xiaoyaoji.core.plugin.DocPlugin;
-import cn.com.xiaoyaoji.core.plugin.DocPluginManager;
+import cn.com.xiaoyaoji.core.plugin.*;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.DocHistory;
 import cn.com.xiaoyaoji.data.bean.Project;
@@ -194,15 +193,13 @@ public class DocController {
             editPermission = ServiceFactory.instance().checkUserHasProjectEditPermission(user.getId(), doc.getProjectId());
         }
 
-        String page = null,contextPath=null;
-        DocPlugin docPlugin = DocPluginManager.getInstance().getPlugin(doc.getType());
-        if (docPlugin != null) {
-            if(editing){
-                page = docPlugin.getEditModePage();
-            }else {
-                page = docPlugin.getViewModePage();
+        List<PluginInfo> pluginInfos = PluginManager.getInstance().getPlugins(Event.DOC_EV);
+        PluginInfo pluginInfo = null;
+        for(PluginInfo info:pluginInfos){
+            if(doc.getType().equals(info.getId())){
+                pluginInfo = info;
+                break;
             }
-            contextPath =docPlugin.contextPath();
         }
 
         return new ModelAndView("/doc/view")
@@ -211,8 +208,7 @@ public class DocController {
                 .addObject("user", user)
                 .addObject("editPermission", editPermission)
                 .addObject("projectGlobal", ProjectService.instance().getProjectGlobal(doc.getProjectId()))
-                .addObject("page",page)
-                .addObject("pluginContextPath",contextPath)
+                .addObject("pluginInfo",pluginInfo)
                 ;
     }
 

@@ -1,33 +1,26 @@
 package cn.xiaoyaoji.plugin.doc;
 
-import cn.com.xiaoyaoji.core.common.DocType;
-import cn.com.xiaoyaoji.core.plugin.AbstractDocPlugin;
-import cn.com.xiaoyaoji.core.plugin.AbstractPlugin;
-import cn.com.xiaoyaoji.core.plugin.PluginType;
+import cn.com.xiaoyaoji.core.plugin.DocEvPlugin;
 
 /**
  * @author zhoujingjie
  *         created on 2017/6/21
  */
-public class HttpDocPlugin extends AbstractDocPlugin{
+public class HttpDocPlugin implements DocEvPlugin{
+
 
     @Override
-    public boolean support(String docType) {
-        return DocType.SYS_HTTP.getTypeName().equals(docType);
-    }
-
-    @Override
-    public String getEditModePage() {
+    public String getEditPage() {
         return "http/edit.jsp";
     }
 
     @Override
-    public String getViewModePage() {
+    public String getViewPage() {
         return "http/view.jsp";
     }
 
     @Override
-    public String contextPath() {
+    public String getContextPath() {
         return "cn.xiaoyaoji.doc";
     }
 }

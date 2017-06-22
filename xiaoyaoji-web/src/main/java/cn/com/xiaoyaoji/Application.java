@@ -1,7 +1,6 @@
 package cn.com.xiaoyaoji;
 
 import cn.com.xiaoyaoji.core.plugin.Plugin;
-import cn.com.xiaoyaoji.core.plugin.PluginClassLoader;
 import cn.com.xiaoyaoji.core.plugin.PluginInfo;
 import cn.com.xiaoyaoji.core.plugin.PluginManager;
 import com.alibaba.fastjson.JSON;
@@ -59,6 +58,8 @@ public class Application {
             } catch (IOException ex) {
                 logger.error(ex.getMessage(),ex);
             }
+
+
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
@@ -78,7 +79,8 @@ public class Application {
             List<PluginInfo> pluginInfos = JSON.parseObject(content, new TypeReference<List<PluginInfo>>(){});
             for(PluginInfo pluginInfo:pluginInfos) {
                 Plugin plugin = (Plugin) classLoader.loadClass(pluginInfo.getClazz()).newInstance();
-                PluginManager.getInstance().register(plugin);
+                pluginInfo.setPlugin(plugin);
+                PluginManager.getInstance().register(pluginInfo);
             }
         }catch (IOException e){
             logger.error(e.getMessage(),e);
