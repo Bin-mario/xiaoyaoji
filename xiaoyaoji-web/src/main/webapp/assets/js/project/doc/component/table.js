@@ -13,7 +13,7 @@
                 this.$on('sortUpdate',function(o){
                     function findParent(arr){
                         for(var i=0;i<arr.length;i++){
-                            if(arr[i].id == o.id){
+                            if(arr[i].id === o.id){
                                 return arr;
                             }
                             if(arr[i].children && arr[i].children.length>0){
@@ -40,7 +40,7 @@
                     console.log(this)
                 },
                 insertRow:function(item){
-                    if(this.name.indexOf('Args')){
+                    if(!this.name || this.name.indexOf('Args')){
                         item.children.push({id:utils.generateUID(),require: 'true',type:'string', children: []});
                     }else{
                         item.children.push({id:utils.generateUID(),require: 'true', children: []});

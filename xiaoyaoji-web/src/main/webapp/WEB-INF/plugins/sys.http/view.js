@@ -140,7 +140,6 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
 
         var params = {
             url: url,
-            cache: false,
             headers: headers,
             type: this.content.requestMethod,
             data: args,
