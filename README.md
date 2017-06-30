@@ -67,11 +67,14 @@
             
             
 
-### 离线部署说明
-* 新建数据库-utf8mb4格式，INNODB引擎。
+### 离线部署说明 (标准的JavaWeb项目)
+* 下载jdk1.7+ 并配置环境变量 [JDK8下载地址](http://www.oracle.com/technetwork/cn/java/javase/downloads/jdk8-downloads-2133151-zhs.html) [JAVA环境变量设置](https://www.java.com/zh_CN/download/help/path.xml)
+* 下载Tomcat7.0+  [TOMCAT8下载地址](http://tomcat.apache.org/download-80.cgi)
+* [下载最新版本](http://git.oschina.net/zhoujingjie/apiManager/releases) 解压到tomcat_home/webapps/ROOT目录下
+* 新建MYSQL数据库-编码格式utf8mb4格式，INNODB引擎。
 * 导入sql - SQL文件在doc目录下
-* 修改/WEB-INF/classes/config.properties 的数据库与其他信息
-* 启动tomcat
+* 修改tomcat_home/webapps/ROOT/WEB-INF/classes/config.properties 的数据库与其他信息
+* 启动tomcat，使用chrome浏览器访问http://localhost:8080
 
 
 ## 如果是由1.x版本升级的，不用导入SQL，替换文件后启动tomcat后，用http post方式运行http://localhost:port/sys/update 即可
@@ -79,4 +82,11 @@
 ### bug
 如果大家发现了bug，可以在[Issues](http://git.oschina.net/zhoujingjie/apiManager/issues)里面提交，然后也可以直接修改bug然后提交代码
 
+
 ## 如果觉得还不错，请作者喝杯咖啡吧 ☺
+
+## 分支说明
+* 默认分支是dev，开发版本的，开发版本的可能会出现编译错误等各种异常情况
+* 如果想自己下载编译，请下载其他分支
+
+

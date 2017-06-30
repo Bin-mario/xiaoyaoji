@@ -117,15 +117,15 @@
             },
             window: {
                 qq: function () {
-                    var url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&state=login&client_id=101333549&redirect_uri=http://www.xiaoyaoji.com.cn/api/callback/qq';
+                    var url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&state=login&client_id=101333549&redirect_uri=http://www.xiaoyaoji.cn/callback/qq';
                     window.open(url, 'qqwindow', 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
                 },
                 weibo: function () {
-                    var url = 'https://api.weibo.com/oauth2/authorize?client_id=290920638&redirect_uri=http://www.xiaoyaoji.com.cn/api/callback/weibo&state=login';
+                    var url = 'https://api.weibo.com/oauth2/authorize?client_id=290920638&redirect_uri=http://www.xiaoyaoji.cn/callback/weibo&state=login';
                     window.open(url, 'qqwindow', 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
                 },
                 github: function () {
-                    var url = "https://github.com/login/oauth/authorize?client_id=4c8973629deb3d577bd3&redirect_uri=http://www.xiaoyaoji.com.cn/api/callback/github&scope=user&state=login";
+                    var url = "https://github.com/login/oauth/authorize?client_id=4c8973629deb3d577bd3&redirect_uri=http://www.xiaoyaoji.cn/callback/github&scope=user&state=login";
                     window.open(url, 'qqwindow', 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
                 }
             },
@@ -136,7 +136,9 @@
                     }
                     window.initialized = true;
                     window.addEventListener('message', function (e) {
-                        if (e.origin == 'http://www.xiaoyaoji.com.cn' || e.origin == 'https://www.xiaoyaoji.com.cn') {
+                        if (e.origin == 'http://www.xiaoyaoji.com.cn' || e.origin == 'https://www.xiaoyaoji.com.cn'
+                            || e.origin == 'http://www.xiaoyaoji.cn'  || e.origin == 'https://www.xiaoyaoji.cn'
+                        ) {
                             var data = e.data;
                             data = JSON.parse(data);
                             utils.post('/login/' + data.type + '.json', data, function (rs) {

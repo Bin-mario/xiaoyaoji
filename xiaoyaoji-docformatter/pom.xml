@@ -1,42 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<artifactId>xiaoyaoji</artifactId>
-		<groupId>cn.com.xiaoyaoji</groupId>
-		<version>2.0.1</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-
-	<artifactId>xiaoyaoji-docformatter</artifactId>
-	<repositories>
-		<repository>
-			<id>itext</id>
-			<name>iText Repository - releases</name>
-			<url>https://repo.itextsupport.com/releases</url>
-		</repository>
-	</repositories>
-	<!--<repositories> -->
-	<!--<repository> -->
-	<!--<id>ali</id> -->
-	<!--<name>ali nexus</name> -->
-	<!--<url>http://maven.aliyun.com/nexus/content/groups/public</url> -->
-	<!--</repository> -->
-	<!--</repositories> -->
-	<dependencies>
-		<!--<dependency>-->
-			<!--<groupId>com.itextpdf</groupId>-->
-			<!--<artifactId>itext7-core</artifactId>-->
-			<!--<version>7.0.2</version>-->
-			<!--<type>pom</type>-->
-		<!--</dependency>-->
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itextpdf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.itextpdf.tool</groupId>
-			<artifactId>xmlworker</artifactId>
-		</dependency>
-	</dependencies>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>xiaoyaoji</artifactId>
+        <groupId>cn.com.xiaoyaoji</groupId>
+        <version>2.0.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>xiaoyaoji-docformatter</artifactId>
+    <repositories>
+        <repository>
+            <id>itext</id>
+            <name>iText Repository - releases</name>
+            <url>https://repo.itextsupport.com/releases</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf.tool</groupId>
+            <artifactId>xmlworker</artifactId>
+        </dependency>
+    </dependencies>
 </project>

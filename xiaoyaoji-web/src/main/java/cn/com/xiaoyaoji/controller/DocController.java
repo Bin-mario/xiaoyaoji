@@ -1,9 +1,14 @@
 package cn.com.xiaoyaoji.controller;
 
 import cn.com.xiaoyaoji.core.annotations.Ignore;
-import cn.com.xiaoyaoji.core.common._HashMap;
-import cn.com.xiaoyaoji.data.bean.*;
+import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.core.common.Message;
+import cn.com.xiaoyaoji.core.common._HashMap;
+import cn.com.xiaoyaoji.core.plugin.*;
+import cn.com.xiaoyaoji.data.bean.Doc;
+import cn.com.xiaoyaoji.data.bean.DocHistory;
+import cn.com.xiaoyaoji.data.bean.Project;
+import cn.com.xiaoyaoji.data.bean.User;
 import cn.com.xiaoyaoji.service.DocService;
 import cn.com.xiaoyaoji.service.ProjectService;
 import cn.com.xiaoyaoji.service.ServiceFactory;
@@ -36,27 +41,26 @@ public class DocController {
      * @return
      */
     @PostMapping
-    public String createDoc(User user,Doc doc) {
+    public String createDoc(User user, Doc doc) {
         AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectEditPermission(user.getId(), doc.getProjectId()), "无操作权限");
         if(org.apache.commons.lang3.StringUtils.isBlank(doc.getParentId())){
             doc.setParentId(DOC_DEFAULT_PARENTID);
         }
         doc.setId(StringUtils.id());
-        if(org.apache.commons.lang3.StringUtils.isBlank(doc.getName())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(doc.getName())) {
             doc.setName("默认文档");
         }
-        if(org.apache.commons.lang3.StringUtils.isBlank(doc.getType())){
+        if (org.apache.commons.lang3.StringUtils.isBlank(doc.getType())) {
             doc.setType(DocType.SYS_DOC_RICH_TEXT.getTypeName());
         }
         doc.setLastUpdateTime(new Date());
         doc.setCreateTime(new Date());
-        AssertUtils.notNull(doc.getProjectId(),"missing projectId");
-        AssertUtils.notNull(doc.getParentId(),"missing parentId");
+        AssertUtils.notNull(doc.getProjectId(), "missing projectId");
+        AssertUtils.notNull(doc.getParentId(), "missing parentId");
         int rs = ServiceFactory.instance().create(doc);
         AssertUtils.isTrue(rs > 0, "增加失败");
         return doc.getId();
     }
-
 
 
     /**
@@ -66,9 +70,9 @@ public class DocController {
      * @return
      */
     @PostMapping("{id}")
-    public int update(@PathVariable("id") String id, Doc doc, User user,String comment) {
+    public int update(@PathVariable("id") String id, Doc doc, User user, String comment) {
         AssertUtils.notNull(id, "missing id");
-        Doc temp = ServiceFactory.instance().getById(id,Doc.class);
+        Doc temp = ServiceFactory.instance().getById(id, Doc.class);
         AssertUtils.notNull(temp, "文档不存在或已删除");
         DocHistory history = new DocHistory();
         temp.setId(null);
@@ -76,12 +80,12 @@ public class DocController {
         AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectEditPermission(user.getId(), temp.getProjectId()), "无操作权限");
         doc.setLastUpdateTime(new Date());
         doc.setCreateTime(null);
-        if(org.apache.commons.lang3.StringUtils.isBlank(doc.getName())){
+        if (org.apache.commons.lang3.StringUtils.isBlank(doc.getName())) {
             doc.setName(null);
         }
         int rs = ServiceFactory.instance().update(doc);
         AssertUtils.isTrue(rs > 0, "修改失败");
-        if(org.apache.commons.lang3.StringUtils.isBlank(comment)){
+        if (org.apache.commons.lang3.StringUtils.isBlank(comment)) {
             comment = "修改文档";
         }
         try {
@@ -102,11 +106,12 @@ public class DocController {
 
     /**
      * 获取历史修改记录
+     *
      * @param docId
      * @return
      */
     @RequestMapping("/history/{docId}")
-    public Object getHistory(@PathVariable String docId){
+    public Object getHistory(@PathVariable String docId) {
         return ServiceFactory.instance().getDocHistorys(docId);
     }
 
@@ -132,9 +137,9 @@ public class DocController {
 
     @PostMapping("sort")
     public Object sort(@RequestParam("id") String id,
-                       @RequestParam("parentId")String parentId,
-                       @RequestParam("sorts")String sorts
-                       ) {
+                       @RequestParam("parentId") String parentId,
+                       @RequestParam("sorts") String sorts
+    ) {
         AssertUtils.notNull(id, "参数为空");
         AssertUtils.notNull(parentId, "参数为空");
         AssertUtils.notNull(sorts, "参数为空");
@@ -153,6 +158,7 @@ public class DocController {
 
     /**
      * 预览文档
+     *
      * @param docId
      * @param docHistoryId
      * @param user
@@ -161,42 +167,56 @@ public class DocController {
     @GetMapping("{docId}")
     @Ignore
     public ModelAndView docView(@PathVariable String docId,
-                                @RequestParam(value = "docHistoryId",required = false)String docHistoryId,User user){
+                                @RequestParam(value = "docHistoryId", required = false) String docHistoryId, User user,
+                                boolean editing
+                                ) {
         AssertUtils.notNull(docId, "参数丢失");
-        Doc doc=null;
-        if(org.apache.commons.lang3.StringUtils.isNotBlank(docHistoryId)){
+        Doc doc = null;
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(docHistoryId)) {
             doc = DocService.instance().getByHistoryId(docHistoryId);
-            AssertUtils.isTrue(doc.getId().equals(docId),"数据无效");
-        }else {
+            AssertUtils.isTrue(doc.getId().equals(docId), "数据无效");
+        } else {
             doc = DocService.instance().getDoc(docId);
         }
-        AssertUtils.notNull(doc,"文档不可见或已删除");
+        AssertUtils.notNull(doc, "文档不可见或已删除");
         //获取project
         Project project = ServiceFactory.instance().getProject(doc.getProjectId());
-        AssertUtils.notNull(project,"项目不存在或者无访问权限");
+        AssertUtils.notNull(project, "项目不存在或者无访问权限");
 
-        if(org.apache.commons.lang3.StringUtils.isBlank(doc.getType())){
+        if (org.apache.commons.lang3.StringUtils.isBlank(doc.getType())) {
             doc.setType(DocType.SYS_DOC_RICH_TEXT.getTypeName());
         }
 
-        ServiceTool.checkUserHasAccessPermission(project,user);
+        ServiceTool.checkUserHasAccessPermission(project, user);
 
         boolean editPermission = false;
-        if(user!=null) {
+        if (user != null) {
             //访问权限
             editPermission = ServiceFactory.instance().checkUserHasProjectEditPermission(user.getId(), doc.getProjectId());
         }
+
+        List<PluginInfo> pluginInfos = PluginManager.getInstance().getPlugins(Event.DOC_EV);
+        PluginInfo pluginInfo = null;
+        for(PluginInfo info:pluginInfos){
+            if(doc.getType().equals(info.getId())){
+                pluginInfo = info;
+                break;
+            }
+        }
+
         return new ModelAndView("/doc/view")
-                .addObject("project",project)
-                .addObject("doc",doc)
-                .addObject("user",user)
-                .addObject("editPermission",editPermission)
+                .addObject("project", project)
+                .addObject("doc", doc)
+                .addObject("user", user)
+                .addObject("editPermission", editPermission)
                 .addObject("projectGlobal", ProjectService.instance().getProjectGlobal(doc.getProjectId()))
+                .addObject("pluginInfo",pluginInfo)
                 ;
     }
 
     /**
      * 编辑文档
+     *
      * @param docId
      * @param docHistoryId
      * @param user
@@ -204,18 +224,18 @@ public class DocController {
      */
     @GetMapping("{docId}/edit")
     public ModelAndView docEdit(@PathVariable String docId,
-                                @RequestParam(value = "docHistoryId",required = false)String docHistoryId,User user){
-        ModelAndView view =  docView(docId,docHistoryId,user)
-                .addObject("edit",true);
+                                @RequestParam(value = "docHistoryId", required = false) String docHistoryId, User user) {
+        ModelAndView view = docView(docId, docHistoryId, user,true)
+                .addObject("edit", true);
         view.setViewName("/doc/edit");
         return view;
     }
 
     @GetMapping("/search")
-    public Object search(@RequestParam String text,@RequestParam("projectId")String projectId,User user){
-        ServiceTool.checkUserHasAccessPermission(projectId,user);
-        List<Doc> docs = DocService.instance().searchDocs(text,projectId);
+    public Object search(@RequestParam String text, @RequestParam("projectId") String projectId, User user) {
+        ServiceTool.checkUserHasAccessPermission(projectId, user);
+        List<Doc> docs = DocService.instance().searchDocs(text, projectId);
         return new _HashMap<>()
-                .add("docs",docs);
+                .add("docs", docs);
     }
 }

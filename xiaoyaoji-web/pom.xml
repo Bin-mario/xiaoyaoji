@@ -5,7 +5,7 @@
     <parent>
         <artifactId>xiaoyaoji</artifactId>
         <groupId>cn.com.xiaoyaoji</groupId>
-        <version>2.0.1</version>
+        <version>2.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
@@ -111,25 +111,26 @@
         </dependency>
         <dependency>
             <groupId>cn.com.xiaoyaoji</groupId>
+            <artifactId>xiaoyaoji-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.com.xiaoyaoji</groupId>
             <artifactId>xiaoyaoji-docformatter</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.com.xiaoyaoji</groupId>
             <artifactId>xiaoyaoji-config</artifactId>
-            <version>${project.version}</version>
+            <version>2.0.1</version>
         </dependency>
+
         <dependency>
             <groupId>org.pegdown</groupId>
             <artifactId>pegdown</artifactId>
             <version>1.6.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>nl.siegmann.epublib</groupId>
-            <artifactId>epublib-core</artifactId>
-            <version>3.1</version>
-        </dependency>
     </dependencies>
 
     <build>

@@ -1,11 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@ page import="cn.com.xiaoyaoji.core.global.GlobalProperties" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Doc" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Project" %>
 <%@ page import="cn.com.xiaoyaoji.service.ProjectService" %>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="java.util.List" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginManager" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.Event" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginInfo" %>
 <%--
   User: zhoujingjie
   Date: 17/4/16
@@ -21,8 +23,8 @@
         String firstDocId = docs.get(0).getId();
         request.setAttribute("docId", firstDocId);
     }
-    request.setAttribute("createSupports", GlobalProperties.getCreateDocuments());
-    request.setAttribute("importDocuments", GlobalProperties.getImportDocuments());
+    request.setAttribute("docEvPluginInfos", PluginManager.getInstance().getPlugins(Event.DOC_EV));
+    //request.setAttribute("importDocuments", GlobalProperties.getImportDocuments());
 %>
 <div class="doc-left" id="docLeft">
     <c:if test="${edit}">
@@ -30,9 +32,9 @@
             <div class="fl dl-doc-action">
                 <a><i class="el-icon-plus"></i>新建</a>
                 <ul class="dl-menus hide">
-                    <c:forEach items="${createSupports}" var="sup">
-                        <li uk-toggle="target: #docCreateModal" v-on:click="createFn('${sup.type}',0)">
-                            <div data-type="${sup.type}" class="dl-menu-name">${sup.name}</div>
+                    <c:forEach items="${docEvPluginInfos}" var="item">
+                        <li uk-toggle="target: #docCreateModal" v-on:click="createFn('${item.id}',0)">
+                            <div data-type="${item.id}" class="dl-menu-name">${item.name}</div>
                         </li>
                     </c:forEach>
                 </ul>
@@ -86,12 +88,12 @@
 
     <ul class="dl-menus" id="dl-menus" v-on:click.stop v-cloak v-show="menu.show"
         v-bind:style="{top:menu.top+'px',left:menu.left+'px'}">
-        <li v-if="menu.isFolder">
+        <li>
             <div class="dl-menu-name folder">新建</div>
             <ul class="dl-menus sub">
-                <c:forEach items="${createSupports}" var="sup">
-                    <li uk-toggle="target: #docCreateModal" v-on:click="createFn('${sup.type}')">
-                        <div data-type="${sup.type}" class="dl-menu-name">${sup.name}</div>
+                <c:forEach items="${docEvPluginInfos}" var="item">
+                    <li uk-toggle="target: #docCreateModal" v-on:click="createFn('${item.id}')">
+                        <div data-type="${item.id}" class="dl-menu-name">${item.name}</div>
                     </li>
                 </c:forEach>
             </ul>
@@ -112,9 +114,9 @@
         <%--<li>
             <div class="dl-menu-name">移动</div>
         </li>--%>
-        <li>
+        <%--<li>
             <div class="dl-menu-name">复制</div>
-        </li>
+        </li>--%>
         <li v-on:click="updateName($event)" uk-toggle="target: #docCreateModal">
             <div class="dl-menu-name">重命名</div>
         </li>

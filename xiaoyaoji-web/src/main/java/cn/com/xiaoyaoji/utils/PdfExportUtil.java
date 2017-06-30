@@ -1,7 +1,7 @@
 package cn.com.xiaoyaoji.utils;
 
 import cn.com.xiaoyaoji.data.bean.Doc;
-import cn.com.xiaoyaoji.data.bean.DocType;
+import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.data.bean.Project;
 import cn.com.xiaoyaoji.data.bean.ProjectGlobal;
 import cn.com.xiaoyaoji.docformatter.paragraph2.*;

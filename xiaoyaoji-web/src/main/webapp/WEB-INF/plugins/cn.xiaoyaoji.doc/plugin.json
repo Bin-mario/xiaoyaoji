@@ -1,0 +1,62 @@
+[
+  {
+    "id":"sys.http",
+    "name": "http文档",
+    "clazz": "cn.xiaoyaoji.plugin.doc.HttpDocPlugin",
+    "description": "http 文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0",
+    "event":"doc.ev"
+  },
+  {
+    "id":"sys.websocket",
+    "name": "websocket文档",
+    "clazz": "cn.xiaoyaoji.plugin.doc.WebsocketDocPlugin",
+    "description": "websocket 文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0",
+    "event":"doc.ev"
+  },
+  {
+    "id": "sys.doc.richtext",
+    "name": "富文本",
+    "clazz": "cn.xiaoyaoji.plugin.doc.RichtextDocPlugin",
+    "description": "富文本文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0",
+    "event":"doc.ev"
+  },
+  {
+    "id": "sys.doc.md",
+    "name": "markdown",
+    "clazz": "cn.xiaoyaoji.plugin.doc.HttpDocPlugin",
+    "description": "markdown文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0",
+    "event":"doc.ev"
+  },
+  {
+    "id": "sys.folder",
+    "name": "文件夹",
+    "clazz": "cn.xiaoyaoji.plugin.doc.FolderDocPlugin",
+    "description": "文件夹",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0",
+    "event":"doc.ev"
+  },
+  {
+    "id":"sys.thirdparty",
+    "name": "第三方链接",
+    "clazz": "cn.xiaoyaoji.plugin.doc.FolderDocPlugin",
+    "description": "第三方链接",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.0",
+    "event":"doc.ev"
+  }
+]
