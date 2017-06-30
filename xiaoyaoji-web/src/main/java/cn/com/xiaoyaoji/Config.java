@@ -10,4 +10,5 @@ public class Config {
 
     public static final String SALT = ConfigUtils.getSalt();
 
+    public static final String VERSION = "2.0.0";
 }

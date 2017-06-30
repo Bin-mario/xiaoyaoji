@@ -1,16 +1,40 @@
 package cn.com.xiaoyaoji.service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import cn.com.xiaoyaoji.data.Data;
-import cn.com.xiaoyaoji.data.DataFactory;
-import cn.com.xiaoyaoji.data.bean.*;
+import org.apache.log4j.Logger;
+
+import cn.com.xiaoyaoji.Config;
 import cn.com.xiaoyaoji.core.common.Pagination;
+import cn.com.xiaoyaoji.data.DataFactory;
+import cn.com.xiaoyaoji.data.bean.Attach;
+import cn.com.xiaoyaoji.data.bean.Doc;
+import cn.com.xiaoyaoji.data.bean.DocHistory;
+import cn.com.xiaoyaoji.data.bean.Folder;
+import cn.com.xiaoyaoji.data.bean.Interface;
+import cn.com.xiaoyaoji.data.bean.Module;
+import cn.com.xiaoyaoji.data.bean.Project;
+import cn.com.xiaoyaoji.data.bean.ProjectLog;
+import cn.com.xiaoyaoji.data.bean.ProjectUser;
+import cn.com.xiaoyaoji.data.bean.Share;
+import cn.com.xiaoyaoji.data.bean.TableNames;
+import cn.com.xiaoyaoji.data.bean.Team;
+import cn.com.xiaoyaoji.data.bean.Thirdparty;
+import cn.com.xiaoyaoji.data.bean.User;
 import cn.com.xiaoyaoji.extension.file.FileUtils;
 import cn.com.xiaoyaoji.utils.ResultUtils;
 import cn.com.xiaoyaoji.utils.StringUtils;
-import org.apache.log4j.Logger;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * @author: zhoujingjie
@@ -20,6 +44,12 @@ public class ServiceFactory {
     private static Logger logger = Logger.getLogger(ServiceFactory.class);
     private static ServiceFactory instance;
 
+    public static final String DOC_DEFAULT_PARENTID = "0";
+    
+    private static final String EXPORT_KEY_DOCS = "docs";
+    private static final String EXPORT_KEY_VER = "version";
+	private static final String IMPORT_KEY_DOC_CHILDREN = "children";
+    
     static {
         instance = new ServiceFactory();
     }
@@ -337,5 +367,55 @@ public class ServiceFactory {
 
     public List<Doc> getDocsByProjectId(String projectId, boolean full) {
         return ResultUtils.list(DataFactory.instance().getDocsByProjectId(projectId, full));
+    }
+    
+    public String exportJson(String projectId){
+    	
+    	Project project = getProject(projectId);
+    	JSONObject json = (JSONObject) JSON.toJSON(project);
+    	List<Doc> docs = ProjectService.instance().getProjectDocs(projectId, true);;
+    	json.put(EXPORT_KEY_DOCS, docs);
+    	json.put(EXPORT_KEY_VER, Config.VERSION);
+    	return json.toJSONString();
+    }
+    
+    public String importJson(User user, String json){
+    	
+    	JSONObject obj = JSON.parseObject(json);
+    	String version = obj.getString(EXPORT_KEY_VER);
+    	if(version == null) {
+    		//TODO
+    		return null;
+    	}
+		Project project = JSON.toJavaObject(obj, Project.class);
+		if (org.springframework.util.StringUtils.isEmpty(project.getId())){
+			project.setId(StringUtils.id());
+			createProject(project);
+		} else {
+			ServiceTool.checkUserHasAccessPermission(project, user);
+			update(project);
+		}
+		importDoc(project.getId(), DOC_DEFAULT_PARENTID, obj.getJSONArray(EXPORT_KEY_DOCS));
+		return project.getId();
+    }
+    
+    private void importDoc(String projectId, String parentId, JSONArray docArr){
+    	
+    	for(int i=0; i < docArr.size(); i++){
+    		JSONObject obj = docArr.getJSONObject(i);
+    		Doc doc = JSON.toJavaObject(obj, Doc.class);
+    		doc.setProjectId(projectId);
+    		doc.setParentId(parentId);
+    		if (org.springframework.util.StringUtils.isEmpty(doc.getId())){
+    			doc.setId(StringUtils.id());
+    			create(doc);
+    		} else {
+    			update(doc);
+    		}
+    		JSONArray children = obj.getJSONArray(IMPORT_KEY_DOC_CHILDREN);
+    		if (children != null && !children.isEmpty()){
+    			importDoc(projectId, doc.getId(), children);
+    		}
+    	}
     }
 }

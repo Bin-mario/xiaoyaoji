@@ -17,12 +17,14 @@ import cn.com.xiaoyaoji.utils.AssertUtils;
 import cn.com.xiaoyaoji.utils.ConfigUtils;
 import cn.com.xiaoyaoji.utils.PdfExportUtil;
 import cn.com.xiaoyaoji.utils.StringUtils;
+
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.util.Date;
@@ -40,6 +42,8 @@ import java.util.List;
 public class ProjectController {
     private static Logger logger = Logger.getLogger(ProjectController.class);
 
+    private static final String EXPORT_SUPPORTED_TYPE_PDF = "PDF";
+    private static final String EXPORT_SUPPORTED_TYPE_JSON = "JSON";
 
     @GetMapping("/{id}/info")
     public ModelAndView detailInfo(@PathVariable("id") String id,User user) {
@@ -127,16 +131,35 @@ public class ProjectController {
     @Ignore
     @GetMapping(value = "/{id}/export/{type}")
     public Object export(@PathVariable("id") String id, @PathVariable String type, User user) {
-        if(!type.equals("pdf")){
-            return new ModelAndView("/error").addObject("errorMsg","暂时不支持该类型导出");
-        }
-        Project project = ServiceFactory.instance().getProject(id);
-        AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-        ServiceTool.checkUserHasAccessPermission(project,user);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PdfExportUtil.export(project, baos);
-        byte[] bytes = baos.toByteArray();
-        return new PdfView(bytes,project.getName()+".pdf");
+
+    	Project project = ServiceFactory.instance().getProject(id);
+		AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
+		ServiceTool.checkUserHasAccessPermission(project,user);
+        switch (type) {
+		case EXPORT_SUPPORTED_TYPE_PDF:
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			PdfExportUtil.export(project, baos);
+			byte[] bytes = baos.toByteArray();
+			return new PdfView(bytes,project.getName()+".pdf");
+		case EXPORT_SUPPORTED_TYPE_JSON:
+			ServiceFactory.instance().exportJson(id);
+		default:
+			return new ModelAndView("/error").addObject("errorMsg","暂时不支持该类型导出");
+		}
+    }
+    
+    @Ignore
+    @GetMapping(value = "/import/{type}")
+    public Object projectImport(@PathVariable String type, User user, @RequestBody String content) {
+    	
+    	switch (type) {
+    	case EXPORT_SUPPORTED_TYPE_JSON:
+    		String projectId = ServiceFactory.instance().importJson(user, content);
+    		AssertUtils.notNull(projectId, "Content parese error.");
+    		return new _HashMap<>().add("projectId", projectId);
+    	default:
+    		return new ModelAndView("/error").addObject("errorMsg","暂时不支持该类型导入");
+    	}
     }
 
 

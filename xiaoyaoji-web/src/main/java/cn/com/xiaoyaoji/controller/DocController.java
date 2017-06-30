@@ -19,6 +19,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 
+import static cn.com.xiaoyaoji.service.ServiceFactory.DOC_DEFAULT_PARENTID;
+
 /**
  * @author: zhoujingjie
  * @Date: 16/7/13
@@ -37,7 +39,7 @@ public class DocController {
     public String createDoc(User user,Doc doc) {
         AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectEditPermission(user.getId(), doc.getProjectId()), "无操作权限");
         if(org.apache.commons.lang3.StringUtils.isBlank(doc.getParentId())){
-            doc.setParentId("0");
+            doc.setParentId(DOC_DEFAULT_PARENTID);
         }
         doc.setId(StringUtils.id());
         if(org.apache.commons.lang3.StringUtils.isBlank(doc.getName())) {
