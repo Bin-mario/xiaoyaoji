@@ -32,5 +32,6 @@
 
 
 ## 如果觉得还不错，请作者喝杯咖啡吧 ☺
-
+[微信](http://0d077ef9e74d8.cdn.sohucs.com/pV4oizD_png)
+[支付宝](http://0d077ef9e74d8.cdn.sohucs.com/pV4ojyC_png)
 
