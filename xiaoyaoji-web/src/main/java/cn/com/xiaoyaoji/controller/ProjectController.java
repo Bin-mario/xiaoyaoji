@@ -1,27 +1,38 @@
 package cn.com.xiaoyaoji.controller;
 
+import cn.com.xiaoyaoji.Config;
 import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.Message;
 import cn.com.xiaoyaoji.core.common.Pagination;
 import cn.com.xiaoyaoji.core.common._HashMap;
-import cn.com.xiaoyaoji.view.PdfView;
+import cn.com.xiaoyaoji.core.plugin.Plugin;
+import cn.com.xiaoyaoji.core.plugin.PluginInfo;
+import cn.com.xiaoyaoji.core.plugin.PluginManager;
+import cn.com.xiaoyaoji.core.plugin.doc.DocExportPlugin;
+import cn.com.xiaoyaoji.core.plugin.doc.DocImportPlugin;
+import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.Project;
 import cn.com.xiaoyaoji.data.bean.ProjectUser;
 import cn.com.xiaoyaoji.data.bean.User;
-import cn.com.xiaoyaoji.extension.asynctask.message.MessageBus;
 import cn.com.xiaoyaoji.service.DocService;
+import cn.com.xiaoyaoji.service.ProjectService;
 import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.service.ServiceTool;
 import cn.com.xiaoyaoji.utils.AssertUtils;
 import cn.com.xiaoyaoji.utils.ConfigUtils;
 import cn.com.xiaoyaoji.utils.PdfExportUtil;
-import cn.com.xiaoyaoji.utils.StringUtils;
-
+import cn.com.xiaoyaoji.view.PdfView;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -35,16 +46,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
-    private static Logger logger = Logger.getLogger(ProjectController.class);
-
     private static final String EXPORT_SUPPORTED_TYPE_PDF = "PDF";
     private static final String EXPORT_SUPPORTED_TYPE_JSON = "JSON";
+    private static final String EXPORT_KEY_DOCS = "docs";
+    private static final String EXPORT_KEY_VER = "version";
+    private static final String IMPORT_KEY_DOC_CHILDREN = "children";
+    private static Logger logger = Logger.getLogger(ProjectController.class);
 
     @GetMapping("/{id}/info")
-    public ModelAndView detailInfo(@PathVariable("id") String id,User user) {
+    public ModelAndView detailInfo(@PathVariable("id") String id, User user) {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-        ServiceTool.checkUserIsOwner(project,user);
+        ServiceTool.checkUserIsOwner(project, user);
         return new ModelAndView("/project/info")
                 .addObject("project", project)
                 .addObject("pageName", "info")
@@ -52,10 +65,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}/member")
-    public ModelAndView detailMember(@PathVariable("id") String id,User user) {
+    public ModelAndView detailMember(@PathVariable("id") String id, User user) {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-        ServiceTool.checkUserIsMember(project,user);
+        ServiceTool.checkUserIsMember(project, user);
 
         List<User> users = ServiceFactory.instance().getUsersByProjectId(id);
         return new ModelAndView("/project/member")
@@ -67,10 +80,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}/function")
-    public ModelAndView detailFunction(@PathVariable("id") String id,User user) {
+    public ModelAndView detailFunction(@PathVariable("id") String id, User user) {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-        ServiceTool.checkUserIsOwner(project,user);
+        ServiceTool.checkUserIsOwner(project, user);
 
         List<User> users = ServiceFactory.instance().getUsersByProjectId(id);
         return new ModelAndView("/project/function")
@@ -82,10 +95,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}/transfer")
-    public ModelAndView baseTransfer(@PathVariable("id") String id,User user) {
+    public ModelAndView baseTransfer(@PathVariable("id") String id, User user) {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-        ServiceTool.checkUserIsOwner(project,user);
+        ServiceTool.checkUserIsOwner(project, user);
         List<User> users = ServiceFactory.instance().getUsersByProjectId(id);
         return new ModelAndView("/project/transfer")
                 .addObject("pageName", "transfer")
@@ -96,10 +109,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}/quit")
-    public ModelAndView baseRelease(@PathVariable("id") String id,User user) {
+    public ModelAndView baseRelease(@PathVariable("id") String id, User user) {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-        ServiceTool.checkUserIsMember(project,user);
+        ServiceTool.checkUserIsMember(project, user);
         return new ModelAndView("/project/quit")
                 .addObject("pageName", "quit")
                 .addObject("project", project);
@@ -107,63 +120,61 @@ public class ProjectController {
 
     @Ignore
     @GetMapping("/{id}/export")
-    public ModelAndView baseExport(@PathVariable("id") String id,User user) {
+    public ModelAndView baseExport(@PathVariable("id") String id, User user) {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-        ServiceTool.checkUserHasAccessPermission(project,user);
+        ServiceTool.checkUserHasAccessPermission(project, user);
         return new ModelAndView("/project/export")
-                .addObject("project",project)
+                .addObject("project", project)
                 .addObject("pageName", "export");
     }
 
     /**
      * 导出
+     *
      * @param id   项目id
      * @param type 导出的类型
      * @param user 当前登录用户
      * @return pdfview
      */
     @Ignore
-    @GetMapping(value = "/{id}/export/{type}")
-    public Object export(@PathVariable("id") String id, @PathVariable String type, User user) {
+    @GetMapping(value = "/{id}/export/{pluginId}")
+    @ResponseBody
+    public void export(@PathVariable("id") String id, @PathVariable String pluginId, User user, HttpServletResponse response) throws IOException {
 
-    	Project project = ServiceFactory.instance().getProject(id);
-		AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-		ServiceTool.checkUserHasAccessPermission(project,user);
-        switch (type) {
-		case EXPORT_SUPPORTED_TYPE_PDF:
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			PdfExportUtil.export(project, baos);
-			byte[] bytes = baos.toByteArray();
-			return new PdfView(bytes,project.getName()+".pdf");
-		case EXPORT_SUPPORTED_TYPE_JSON:
-			ServiceFactory.instance().exportJson(id);
-		default:
-			return new ModelAndView("/error").addObject("errorMsg","暂时不支持该类型导出");
-		}
-    }
-    
-    @Ignore
-    @GetMapping(value = "/import/{type}")
-    public Object projectImport(@PathVariable String type, User user, @RequestBody String content) {
-    	
-    	switch (type) {
-    	case EXPORT_SUPPORTED_TYPE_JSON:
-    		String projectId = ServiceFactory.instance().importJson(user, content);
-    		AssertUtils.notNull(projectId, "Content parese error.");
-    		return new _HashMap<>().add("projectId", projectId);
-    	default:
-    		return new ModelAndView("/error").addObject("errorMsg","暂时不支持该类型导入");
-    	}
+        Project project = ServiceFactory.instance().getProject(id);
+        AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
+        ServiceTool.checkUserHasAccessPermission(project, user);
+
+        PluginInfo<DocExportPlugin> docExportPluginPluginInfo = PluginManager.getInstance().getExportPlugin(pluginId);
+        AssertUtils.notNull(docExportPluginPluginInfo,"不支持该操作");
+        docExportPluginPluginInfo.getPlugin().doExport(id,response,docExportPluginPluginInfo);
     }
 
+    /**
+     * 导入json
+     * @param user
+     * @param content
+     * @return
+     */
+    @PostMapping(value = "/import/{pluginId}")
+    public Object projectImport(@PathVariable String pluginId, User user,
+                                @RequestParam("file") MultipartFile file,
+                                @RequestParam(value = "projectId",required = false) String projectId,
+                                @RequestParam(value = "parentId",required = false) String parentId
+                                ) throws IOException {
+        PluginInfo<DocImportPlugin> docImportPluginPluginInfo = PluginManager.getInstance().getImportPlugin(pluginId);
+        AssertUtils.notNull(docImportPluginPluginInfo,"不支持该操作");
+        docImportPluginPluginInfo.getPlugin().doImport(file.getName(),file.getInputStream(),user.getId(),projectId,parentId);
+        return true;
+    }
 
 
     @GetMapping("/{id}/import")
-    public ModelAndView baseImport(@PathVariable("id") String id,User user) {
+    public ModelAndView baseImport(@PathVariable("id") String id, User user) {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
-        ServiceTool.checkUserIsOwner(project,user);
+        ServiceTool.checkUserIsOwner(project, user);
         return new ModelAndView("/project/import")
                 .addObject("pageName", "import")
                 .addObject("project", project);
@@ -192,14 +203,14 @@ public class ProjectController {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, "项目不存在或者无访问权限");
         String docId = DocService.instance().getFirstDocId(id);
-        if(docId == null){
+        if (docId == null) {
             docId = DocService.instance().createDefaultDoc(id).getId();
         }
         //重定向到第一个
-        return new ModelAndView("redirect:/doc/"+docId+"/edit")
-                ;
+        return new ModelAndView("redirect:/doc/" + docId + "/edit");
 
     }
+
     @Ignore
     @GetMapping("{id}")
     public ModelAndView projectView(@PathVariable("id") String id) {
@@ -207,15 +218,13 @@ public class ProjectController {
         Project project = ServiceFactory.instance().getProject(id);
         AssertUtils.notNull(project, "项目不存在或者无访问权限");
         String docId = DocService.instance().getFirstDocId(id);
-        if(docId == null){
+        if (docId == null) {
             docId = DocService.instance().createDefaultDoc(id).getId();
         }
         //重定向到第一个
-        return new ModelAndView("redirect:/doc/"+docId)
+        return new ModelAndView("redirect:/doc/" + docId)
                 ;
     }
-
-
 
 
     @GetMapping("/{id}/shares")
@@ -256,7 +265,7 @@ public class ProjectController {
         project.setLastUpdateTime(new Date());
         AssertUtils.notNull(project.getPermission(), "missing permission");
         AssertUtils.notNull(project.getName(), "missing name");
-        int rs = ServiceFactory.instance().createProject(project);
+        int rs = ProjectService.instance().createProject(project);
         Doc doc = DocService.instance().createDefaultDoc(project.getId());
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
         return new _HashMap<>()
@@ -358,7 +367,6 @@ public class ProjectController {
         pu.setProjectId(id);
         int rs = ServiceFactory.instance().create(pu);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        MessageBus.instance().push("PROJECT.INVITE", pu.getProjectId(), new String[]{pu.getUserId()});
         return pu.getId();
     }
 
@@ -385,7 +393,6 @@ public class ProjectController {
         pu.setStatus(ProjectUser.Status.PENDING);
         int rs = ServiceFactory.instance().create(pu);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        MessageBus.instance().push("PROJECT.INVITE", pu.getProjectId(), new String[]{pu.getUserId()});
         return pu.getId();
     }
 
@@ -415,7 +422,6 @@ public class ProjectController {
         pu.setStatus(ProjectUser.Status.REFUSED);
         int rs = ServiceFactory.instance().create(pu);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
-        MessageBus.instance().push("PROJECT.INVITE.REFUSE", pu.getProjectId(), pu.getUserId());
         return rs;
     }
 

@@ -4,7 +4,7 @@ import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.Constants;
 import cn.com.xiaoyaoji.core.exception.NotLoginException;
 import cn.com.xiaoyaoji.data.bean.User;
-import cn.com.xiaoyaoji.extension.cache.CacheUtils;
+import cn.com.xiaoyaoji.util.CacheUtils;
 import cn.com.xiaoyaoji.utils.ConfigUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;

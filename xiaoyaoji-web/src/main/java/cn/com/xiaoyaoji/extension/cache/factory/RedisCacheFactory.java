@@ -1,7 +1,8 @@
 package cn.com.xiaoyaoji.extension.cache.factory;
 
-import cn.com.xiaoyaoji.extension.cache.provider.CacheProvider;
+import cn.com.xiaoyaoji.integration.cache.CacheProvider;
 import cn.com.xiaoyaoji.extension.cache.provider.RedisCacheProvider;
+import cn.com.xiaoyaoji.integration.cache.CacheFactory;
 import cn.com.xiaoyaoji.utils.ConfigUtils;
 
 /**

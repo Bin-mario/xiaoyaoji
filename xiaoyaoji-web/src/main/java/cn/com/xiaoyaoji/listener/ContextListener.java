@@ -1,8 +1,6 @@
 package cn.com.xiaoyaoji.listener;
 
 import cn.com.xiaoyaoji.Application;
-import cn.com.xiaoyaoji.extension.asynctask.AsyncTaskBus;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -13,11 +11,11 @@ import javax.servlet.ServletContextListener;
 public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        Application.started();
+
+        Application.started(sce.getServletContext());
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        AsyncTaskBus.instance().stop();
     }
 }

@@ -20,8 +20,8 @@
             <ul class="cb">
                 <li onclick="location.href='${ctx}/project/${project.id}/export/pdf'" id="export-pdf"><i class="iconfont icon-pdf"></i>
                     <p>导出PDF</p></li>
-                <%--<li v-on:click="json"><i class="iconfont icon-jsonfile"></i>
-                    <p>导出JSON</p></li>--%>
+                <li onclick="window.open('${ctx}/project/${project.id}/export/cn.xiaoyaoji.export.mjson');"><i class="iconfont icon-jsonfile"></i>
+                    <p>导出JSON</p></li>
                 <!--<li><i class="iconfont icon-sql"></i> <p>导出SQL</p></li>-->
             </ul>
         </div>

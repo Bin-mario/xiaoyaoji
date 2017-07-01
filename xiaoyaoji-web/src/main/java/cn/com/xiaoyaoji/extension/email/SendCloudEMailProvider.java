@@ -1,8 +1,8 @@
 package cn.com.xiaoyaoji.extension.email;
 
 import cn.com.xiaoyaoji.core.common._HashMap;
+import cn.com.xiaoyaoji.core.util.HttpUtils;
 import cn.com.xiaoyaoji.utils.ConfigUtils;
-import cn.com.xiaoyaoji.utils.HttpUtils;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.log4j.Logger;

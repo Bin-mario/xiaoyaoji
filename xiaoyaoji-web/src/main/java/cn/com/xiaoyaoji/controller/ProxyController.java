@@ -1,6 +1,6 @@
 package cn.com.xiaoyaoji.controller;
 
-import cn.com.xiaoyaoji.utils.HttpUtils;
+import cn.com.xiaoyaoji.core.util.HttpUtils;
 import org.apache.commons.httpclient.NameValuePair;
 import org.springframework.web.bind.annotation.*;
 

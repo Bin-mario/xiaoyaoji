@@ -2,12 +2,7 @@ package cn.com.xiaoyaoji.controller;
 
 import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.Constants;
-import cn.com.xiaoyaoji.data.bean.Project;
-import cn.com.xiaoyaoji.data.bean.User;
-import cn.com.xiaoyaoji.core.common.Pagination;
-import cn.com.xiaoyaoji.core.common._HashMap;
-import cn.com.xiaoyaoji.extension.cache.CacheUtils;
-import cn.com.xiaoyaoji.service.ServiceFactory;
+import cn.com.xiaoyaoji.util.CacheUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * @author zhoujingjie

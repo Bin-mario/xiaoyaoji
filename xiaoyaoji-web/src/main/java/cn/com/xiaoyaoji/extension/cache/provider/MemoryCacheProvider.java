@@ -1,9 +1,9 @@
 package cn.com.xiaoyaoji.extension.cache.provider;
 
-import cn.com.xiaoyaoji.utils.JsonUtils;
+import cn.com.xiaoyaoji.core.util.JsonUtils;
+import cn.com.xiaoyaoji.integration.cache.CacheProvider;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +26,7 @@ public class MemoryCacheProvider implements CacheProvider {
             dataMap.put(token, value);
         }
         if(!(data instanceof String)){
-            data =JsonUtils.toString(data);
+            data = JsonUtils.toString(data);
         }
         value.setExpires(new Date(new Date().getTime() + expires * 1000));
         value.putData(key,data);

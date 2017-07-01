@@ -13,6 +13,9 @@ import java.util.Map;
  * @date 2016-05-24
  */
 public class JsonView extends AbstractView {
+    public JsonView() {
+    }
+
 
     /**
      * Subclasses must implement this method to actually render the view.

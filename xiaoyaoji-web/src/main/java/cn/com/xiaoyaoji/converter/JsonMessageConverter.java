@@ -1,7 +1,7 @@
 package cn.com.xiaoyaoji.converter;
 
 import cn.com.xiaoyaoji.core.common.Result;
-import cn.com.xiaoyaoji.utils.JsonUtils;
+import cn.com.xiaoyaoji.core.util.JsonUtils;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpInputMessage;

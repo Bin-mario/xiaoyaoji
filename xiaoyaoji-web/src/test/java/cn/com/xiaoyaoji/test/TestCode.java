@@ -1,6 +1,6 @@
 package cn.com.xiaoyaoji.test;
 
-import cn.com.xiaoyaoji.utils.StringUtils;
+import cn.com.xiaoyaoji.core.util.StringUtils;
 import org.junit.Test;
 
 import java.util.HashMap;

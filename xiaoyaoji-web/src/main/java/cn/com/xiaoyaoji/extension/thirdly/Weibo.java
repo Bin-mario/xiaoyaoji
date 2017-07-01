@@ -1,9 +1,9 @@
 package cn.com.xiaoyaoji.extension.thirdly;
 
+import cn.com.xiaoyaoji.core.util.HttpUtils;
 import cn.com.xiaoyaoji.extension.thirdly.weibo.AccessToken;
 import cn.com.xiaoyaoji.extension.thirdly.weibo.User;
 import cn.com.xiaoyaoji.extension.thirdly.weibo.WeiboException;
-import cn.com.xiaoyaoji.utils.HttpUtils;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.log4j.Logger;

@@ -1,5 +1,6 @@
 package cn.com.xiaoyaoji.extension.file;
 
+import cn.com.xiaoyaoji.integration.file.AbstractFileProvider;
 import cn.com.xiaoyaoji.utils.ConfigUtils;
 
 import java.io.ByteArrayInputStream;
@@ -15,7 +16,7 @@ import java.nio.file.StandardCopyOption;
  * @author zhoujingjie
  *         created on 2017/5/18
  */
-public class DefaultFileProvider implements FileProvider {
+public class DefaultFileProvider extends AbstractFileProvider {
     /**
      * 上传
      *

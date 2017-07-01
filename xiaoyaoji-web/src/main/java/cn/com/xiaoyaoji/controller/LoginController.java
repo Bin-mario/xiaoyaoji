@@ -5,8 +5,8 @@ import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.core.common._HashMap;
 import cn.com.xiaoyaoji.extension.thirdly.Github;
 import cn.com.xiaoyaoji.utils.ConfigUtils;
-import cn.com.xiaoyaoji.extension.cache.CacheUtils;
-import cn.com.xiaoyaoji.utils.StringUtils;
+import cn.com.xiaoyaoji.util.CacheUtils;
+import cn.com.xiaoyaoji.utils.PasswordUtils;
 
 import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.data.bean.Thirdparty;
@@ -46,7 +46,7 @@ public class LoginController {
     public Object login(@RequestParam String email, @RequestParam String password, HttpServletResponse response) {
         AssertUtils.notNull(email, "用户名为空");
         AssertUtils.notNull(password, "密码为空");
-        password = StringUtils.password(password);
+        password = PasswordUtils.password(password);
         User user = ServiceFactory.instance().login(email, password);
         AssertUtils.notNull(user, "用户名或密码错误");
         if (user.getStatus().equals(User.Status.INVALID)) {

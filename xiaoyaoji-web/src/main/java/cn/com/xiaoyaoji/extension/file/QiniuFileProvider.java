@@ -1,5 +1,6 @@
 package cn.com.xiaoyaoji.extension.file;
 
+import cn.com.xiaoyaoji.integration.file.AbstractFileProvider;
 import cn.com.xiaoyaoji.utils.ConfigUtils;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -16,7 +17,7 @@ import java.io.IOException;
  * @author zhoujingjie
  *         created on 2017/5/18
  */
-public class QiniuFileProvider implements FileProvider {
+public class QiniuFileProvider extends AbstractFileProvider {
     private static Logger logger = Logger.getLogger(QiniuFileProvider.class);
     /**
      * 上传
@@ -43,6 +44,8 @@ public class QiniuFileProvider implements FileProvider {
             throw new IOException(r.bodyString());
         }
     }
+
+
 
     /**
      * 删除文件

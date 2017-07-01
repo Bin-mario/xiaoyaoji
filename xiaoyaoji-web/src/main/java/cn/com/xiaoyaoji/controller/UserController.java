@@ -5,17 +5,20 @@ import cn.com.xiaoyaoji.core.common.Constants;
 import cn.com.xiaoyaoji.core.common.Message;
 import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.core.common._HashMap;
+import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.DataFactory;
 import cn.com.xiaoyaoji.data.bean.FindPassword;
 import cn.com.xiaoyaoji.data.bean.Thirdparty;
 import cn.com.xiaoyaoji.data.bean.User;
-import cn.com.xiaoyaoji.extension.cache.CacheUtils;
+import cn.com.xiaoyaoji.util.CacheUtils;
 import cn.com.xiaoyaoji.extension.email.EMailUtils;
 import cn.com.xiaoyaoji.extension.file.FileUtils;
 import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.service.UserService;
 import cn.com.xiaoyaoji.utils.*;
 import cn.com.xiaoyaoji.extension.file.MetaData;
+import cn.com.xiaoyaoji.utils.AssertUtils;
+import cn.com.xiaoyaoji.utils.ConfigUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,7 +66,7 @@ public class UserController {
         AssertUtils.notNull(user.getEmail(), "请输入邮箱");
         // 检查账号是否已存在
         AssertUtils.isTrue(!ServiceFactory.instance().checkEmailExists(user.getEmail()), Message.EMAIL_EXISTS);
-        user.setPassword(StringUtils.password(user.getPassword()));
+        user.setPassword(PasswordUtils.password(user.getPassword()));
         user.setType(User.Type.USER);
         user.setCreatetime(new Date());
         user.setId(StringUtils.id());
@@ -119,7 +122,7 @@ public class UserController {
     public Object updatePassword(User user, @RequestParam String password) {
         User temp = new User();
         temp.setId(user.getId());
-        temp.setPassword(StringUtils.password(password));
+        temp.setPassword(PasswordUtils.password(password));
         AssertUtils.notNull(password, "密码为空");
         int rs = ServiceFactory.instance().update(temp);
         AssertUtils.isTrue(rs > 0, "操作失败");
@@ -138,6 +141,7 @@ public class UserController {
         AssertUtils.notNull(id, "无效请求");
         AssertUtils.notNull(password, "密码为空");
         AssertUtils.isTrue(StringUtils.isEmail(email), "邮箱格式错误");
+        password = PasswordUtils.password(password);
         int rs = ServiceFactory.instance().findPassword(id, email, password);
         AssertUtils.isTrue(rs > 0, "操作失败");
         return 1;

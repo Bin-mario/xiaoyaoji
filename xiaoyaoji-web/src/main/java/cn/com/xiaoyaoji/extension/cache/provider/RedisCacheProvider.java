@@ -1,5 +1,6 @@
 package cn.com.xiaoyaoji.extension.cache.provider;
 
+import cn.com.xiaoyaoji.integration.cache.CacheProvider;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;

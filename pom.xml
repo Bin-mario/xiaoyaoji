@@ -7,7 +7,7 @@
     <groupId>cn.com.xiaoyaoji</groupId>
     <artifactId>xiaoyaoji</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.2</version>
+    <version>2.0.1.1</version>
     <description>小幺鸡,简单好用的在线文档管理工具</description>
     <url>http://www.xiaoyaoji.cn</url>
 
@@ -23,11 +23,10 @@
     </developers>
     <modules>
         <module>xiaoyaoji-docformatter</module>
-        <module>xiaoyaoji-web</module>
+        <module>xiaoyaoji-biz</module>
         <module>xiaoyaoji-config</module>
-        <module>xiaoyaoji-plugin-import</module>
-        <module>xiaoyaoji-core</module>
-        <module>xiaoyaoji-plugin-doc</module>
+        <module>xiaoyaoji-plugins</module>
+        <module>xiaoyaoji-web</module>
     </modules>
     <dependencies>
         <dependency>
@@ -120,7 +119,21 @@
                 <artifactId>xmlworker</artifactId>
                 <version>5.5.11</version>
             </dependency>
-
+            <dependency>
+                <groupId>cn.com.xiaoyaoji</groupId>
+                <artifactId>xiaoyaoji-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.xiaoyaoji</groupId>
+                <artifactId>xiaoyaoji-biz</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.xiaoyaoji</groupId>
+                <artifactId>xiaoyaoji-docformatter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

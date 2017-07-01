@@ -1,5 +1,6 @@
 package cn.com.xiaoyaoji.extension.file;
 
+
 import cn.com.xiaoyaoji.core.common.FileType;
 
 /**

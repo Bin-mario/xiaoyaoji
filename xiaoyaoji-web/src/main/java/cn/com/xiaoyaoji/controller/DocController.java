@@ -5,6 +5,7 @@ import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.core.common.Message;
 import cn.com.xiaoyaoji.core.common._HashMap;
 import cn.com.xiaoyaoji.core.plugin.*;
+import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.DocHistory;
 import cn.com.xiaoyaoji.data.bean.Project;
@@ -14,7 +15,6 @@ import cn.com.xiaoyaoji.service.ProjectService;
 import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.service.ServiceTool;
 import cn.com.xiaoyaoji.utils.AssertUtils;
-import cn.com.xiaoyaoji.utils.StringUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
-
-import static cn.com.xiaoyaoji.service.ServiceFactory.DOC_DEFAULT_PARENTID;
 
 /**
  * @author: zhoujingjie
@@ -44,7 +42,7 @@ public class DocController {
     public String createDoc(User user, Doc doc) {
         AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectEditPermission(user.getId(), doc.getProjectId()), "无操作权限");
         if(org.apache.commons.lang3.StringUtils.isBlank(doc.getParentId())){
-            doc.setParentId(DOC_DEFAULT_PARENTID);
+            doc.setParentId("0");
         }
         doc.setId(StringUtils.id());
         if (org.apache.commons.lang3.StringUtils.isBlank(doc.getName())) {

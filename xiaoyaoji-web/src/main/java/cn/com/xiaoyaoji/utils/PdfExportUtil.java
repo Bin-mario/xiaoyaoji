@@ -33,7 +33,7 @@ public class PdfExportUtil {
 
     public static boolean export(Project project, OutputStream stream) {
 
-        AssertUtils.notNull("pdf export error:project or output stream cannot be null.", project, stream);
+        //AssertUtils.notNull("pdf export error:project or output stream cannot be null.", project, stream);
         Document document = new Document();
         try {
             PdfWriter.getInstance(document, stream);
