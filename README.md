@@ -9,22 +9,28 @@
 * 静态页系统暂时只兼容chrome，其他浏览器未测试。
 * 后端：jdk1.7 tomcat7  mariadb5.5
 
+## [配置方式](http://git.oschina.net/zhoujingjie/apiManager/wikis/Home)
 
-### module说明
+
+## module说明
 * xiaoyaoji-docformatter : 文档格式化
 * xiaoyaoji-web : 小幺鸡web工程
 * xiaoyaoji-config: 配置模块
 
-### [配置方式](http://git.oschina.net/zhoujingjie/apiManager/wikis/Home)
 
-### bug
+
+## bug
 如果大家发现了bug，可以在[Issues](http://git.oschina.net/zhoujingjie/apiManager/issues)里面提交，然后也可以直接修改bug然后提交代码
 
 
-## 如果觉得还不错，请作者喝杯咖啡吧 ☺
 
 ## 分支说明
 * 默认分支是dev，开发版本的，开发版本的可能会出现编译错误等各种异常情况
 * 如果想自己下载编译，请下载其他分支
+
+
+
+
+## 如果觉得还不错，请作者喝杯咖啡吧 ☺
 
 
