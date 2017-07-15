@@ -60,20 +60,59 @@ body{
 .home-projects .uk-dropdown li span{
     margin-right: 10px;
 }
-.home-body .new-project{
-    margin-top:50px;
-}
 .home-body .new-project-btn{
+    margin: 0 auto;
+    width: 200px;
+    padding-top:50px;
+    padding-bottom:50px;
+}
+.home-body .new-project-btn:hover .np-btns{
+    display: block;
+}
+.home-body .new-project-btn-holder{
     text-align: center;
-    width: 70px;
-    height: 70px;
-    line-height: 70px;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
     border-radius: 100%;
     color: #fff;
     background-color: #d23f31;
     font-size: 40px;
-    margin: 0 auto;
+    display: inline-block;
     cursor: pointer;
+}
+.home-body .np-btns{
+    position: absolute;
+    margin-top: -110px;
+    margin-left: -26px;
+    background: rgba(255, 255, 255, 0.68);
+    width: 100%;
+    left: 0;
+    display: none;
+}
+.home-body .new-project-btns{
+    width: 200px;
+    margin: 0 auto;
+}
+.home-body .new-project-btns .np-btns-item{
+    text-align: right;
+    width: 140px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+.home-body .new-project-btns .np-text{
+    background-color: #fff;
+    padding: 3px 5px;
+    box-shadow: 0px 1px 1px #999999;
+    border-radius: 2px;
+    color: #777;
+}
+.home-body .new-project-btns .nb-btn{
+    display: inline-block;
+    border-radius:100%;
+    background-color: dodgerblue;
+    color: #fff;
+    padding: 8px;
 }
 .home-body .no-project{
     margin-top: 100px;
@@ -317,3 +356,20 @@ body{
     height: 100%;
 }
 
+.home-imports li{
+    position: relative;
+    width: 130px;
+}
+.home-imports li .plugin-icon{
+    height: 50px;
+}
+.home-imports li .upload{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left:0;
+    z-index: 333;
+    opacity:0;
+    cursor: pointer;
+}

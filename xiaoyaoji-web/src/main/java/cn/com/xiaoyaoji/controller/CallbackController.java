@@ -1,12 +1,12 @@
 package cn.com.xiaoyaoji.controller;
 
 import cn.com.xiaoyaoji.core.annotations.Ignore;
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.extension.thirdly.Github;
 import cn.com.xiaoyaoji.extension.thirdly.QQ;
 import cn.com.xiaoyaoji.extension.thirdly.Weibo;
 import cn.com.xiaoyaoji.extension.thirdly.github.User;
 import cn.com.xiaoyaoji.extension.thirdly.qq.AccessToken;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

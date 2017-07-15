@@ -1,8 +1,8 @@
 package cn.com.xiaoyaoji.util;
 
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.data.bean.User;
 import cn.com.xiaoyaoji.integration.cache.CacheManager;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
 import com.alibaba.fastjson.JSON;
 
 import java.util.UUID;

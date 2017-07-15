@@ -3,6 +3,7 @@ package cn.com.xiaoyaoji.resolver;
 import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.core.common._HashMap;
 import cn.com.xiaoyaoji.core.exception.NotLoginException;
+import cn.com.xiaoyaoji.core.exception.ServiceException;
 import cn.com.xiaoyaoji.view.JsonView;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,7 +40,7 @@ public class ExceptionResolver extends SimpleMappingExceptionResolver {
             response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
             ModelAndView mv = new ModelAndView(new JsonView());
             String errorMsg = ex.getMessage();
-            if(!(ex instanceof IllegalArgumentException)){
+            if(!(ex instanceof IllegalArgumentException) && !(ex instanceof ServiceException)){
                 errorMsg = "系统错误";
             }
             if (ex instanceof NotLoginException) {

@@ -3,8 +3,9 @@ package cn.com.xiaoyaoji.controller;
 import cn.com.xiaoyaoji.core.common.Constants;
 import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.core.common._HashMap;
+import cn.com.xiaoyaoji.core.util.AssertUtils;
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.extension.thirdly.Github;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
 import cn.com.xiaoyaoji.util.CacheUtils;
 import cn.com.xiaoyaoji.utils.PasswordUtils;
 
@@ -15,7 +16,6 @@ import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.extension.thirdly.QQ;
 import cn.com.xiaoyaoji.extension.thirdly.Weibo;
 import cn.com.xiaoyaoji.extension.thirdly.qq.UserInfo;
-import cn.com.xiaoyaoji.utils.AssertUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

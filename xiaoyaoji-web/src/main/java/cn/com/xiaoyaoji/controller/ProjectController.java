@@ -1,15 +1,15 @@
 package cn.com.xiaoyaoji.controller;
 
-import cn.com.xiaoyaoji.Config;
 import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.Message;
 import cn.com.xiaoyaoji.core.common.Pagination;
 import cn.com.xiaoyaoji.core.common._HashMap;
-import cn.com.xiaoyaoji.core.plugin.Plugin;
 import cn.com.xiaoyaoji.core.plugin.PluginInfo;
 import cn.com.xiaoyaoji.core.plugin.PluginManager;
 import cn.com.xiaoyaoji.core.plugin.doc.DocExportPlugin;
 import cn.com.xiaoyaoji.core.plugin.doc.DocImportPlugin;
+import cn.com.xiaoyaoji.core.util.AssertUtils;
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.Project;
@@ -19,19 +19,12 @@ import cn.com.xiaoyaoji.service.DocService;
 import cn.com.xiaoyaoji.service.ProjectService;
 import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.service.ServiceTool;
-import cn.com.xiaoyaoji.utils.AssertUtils;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
-import cn.com.xiaoyaoji.utils.PdfExportUtil;
-import cn.com.xiaoyaoji.view.PdfView;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -133,7 +126,6 @@ public class ProjectController {
      * 导出
      *
      * @param id   项目id
-     * @param type 导出的类型
      * @param user 当前登录用户
      * @return pdfview
      */
@@ -142,7 +134,7 @@ public class ProjectController {
     @ResponseBody
     public void export(@PathVariable("id") String id, @PathVariable String pluginId, User user, HttpServletResponse response) throws IOException {
 
-        Project project = ServiceFactory.instance().getProject(id);
+        Project project = ProjectService.instance().getProject(id);
         AssertUtils.notNull(project, Message.PROJECT_NOT_FOUND);
         ServiceTool.checkUserHasAccessPermission(project, user);
 
@@ -154,11 +146,10 @@ public class ProjectController {
     /**
      * 导入json
      * @param user
-     * @param content
      * @return
      */
-    @PostMapping(value = "/import/{pluginId}")
-    public Object projectImport(@PathVariable String pluginId, User user,
+    @PostMapping(value = "/import")
+    public Object projectImport(String pluginId, User user,
                                 @RequestParam("file") MultipartFile file,
                                 @RequestParam(value = "projectId",required = false) String projectId,
                                 @RequestParam(value = "parentId",required = false) String parentId

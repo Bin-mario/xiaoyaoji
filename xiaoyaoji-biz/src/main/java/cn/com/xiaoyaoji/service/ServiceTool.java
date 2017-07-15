@@ -1,9 +1,9 @@
 package cn.com.xiaoyaoji.service;
 
+import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.data.bean.Project;
 import cn.com.xiaoyaoji.data.bean.User;
 import cn.com.xiaoyaoji.util.CacheUtils;
-import cn.com.xiaoyaoji.utils.AssertUtils;
 
 /**
  * @author zhoujingjie

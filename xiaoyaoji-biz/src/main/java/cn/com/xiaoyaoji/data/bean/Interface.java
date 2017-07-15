@@ -2,6 +2,9 @@ package cn.com.xiaoyaoji.data.bean;
 
 import cn.com.xiaoyaoji.core.annotations.Alias;
 import cn.com.xiaoyaoji.core.annotations.Ignore;
+import cn.com.xiaoyaoji.core.common.DocType;
+import cn.com.xiaoyaoji.core.common._HashMap;
+import cn.com.xiaoyaoji.core.util.JsonUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
@@ -207,5 +210,37 @@ public class Interface {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public Doc toDoc(){
+        Doc doc = new Doc();
+        doc.setId(getId());
+        doc.setName(getName());
+        doc.setSort(getSort());
+        if("HTTP".equals(getProtocol())) {
+            doc.setType(DocType.SYS_HTTP.getTypeName());
+        }else if("WEBSOCKET".equals(getProtocol())){
+            doc.setType(DocType.SYS_WEBSOCKET.getTypeName());
+        }else{
+            doc.setType(DocType.SYS_DOC_MD.getTypeName());
+        }
+
+        doc.setCreateTime(getCreateTime());
+        doc.setLastUpdateTime(getLastUpdateTime());
+        doc.setProjectId(getProjectId());
+        doc.setParentId(getFolderId());
+        doc.setContent(JsonUtils.toString(new _HashMap<>()
+                .add("description",getDescription())
+                .add("url",getUrl())
+                .add("requestMethod",getRequestMethod())
+                .add("contentType",getContentType())
+                .add("requestHeaders", JSON.parse(getRequestHeaders()))
+                .add("requestArgs", JSON.parse(getRequestArgs()))
+                .add("responseArgs", JSON.parse(getResponseArgs()))
+                .add("example",getExample())
+                .add("dataType",getDataType())
+                .add("status",getStatus())
+        ));
+        return doc;
     }
 }

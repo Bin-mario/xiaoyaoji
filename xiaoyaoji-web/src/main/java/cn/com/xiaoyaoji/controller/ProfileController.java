@@ -1,7 +1,7 @@
 package cn.com.xiaoyaoji.controller;
 
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.data.bean.User;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;

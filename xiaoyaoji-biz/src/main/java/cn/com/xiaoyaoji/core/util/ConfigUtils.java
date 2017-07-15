@@ -1,4 +1,7 @@
-package cn.com.xiaoyaoji.utils;
+package cn.com.xiaoyaoji.core.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -8,13 +11,14 @@ import java.util.Properties;
  * @Date: 16/5/2
  */
 public class ConfigUtils {
+    private static Logger logger = LoggerFactory.getLogger(ConfigUtils.class);
     private static Properties properties;
     static {
         properties = new Properties();
         try {
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
     public static String getProperty(String key){

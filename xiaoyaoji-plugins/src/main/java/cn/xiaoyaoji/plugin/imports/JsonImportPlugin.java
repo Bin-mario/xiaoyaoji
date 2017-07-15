@@ -1,11 +1,11 @@
 package cn.xiaoyaoji.plugin.imports;
 
 import cn.com.xiaoyaoji.core.common.Constants;
+import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.core.exception.ServiceException;
 import cn.com.xiaoyaoji.core.plugin.doc.DocImportPlugin;
 import cn.com.xiaoyaoji.core.util.StringUtils;
-import cn.com.xiaoyaoji.data.bean.Doc;
-import cn.com.xiaoyaoji.data.bean.Project;
+import cn.com.xiaoyaoji.data.bean.*;
 import cn.com.xiaoyaoji.service.ProjectService;
 import cn.com.xiaoyaoji.service.ServiceFactory;
 import com.alibaba.fastjson.JSON;
@@ -15,13 +15,13 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 /**
  * @author zhoujingjie
  *         created on 2017/7/1
  */
 public class JsonImportPlugin implements DocImportPlugin {
-
     private static final String EXPORT_KEY_DOCS = "docs";
     private static final String EXPORT_KEY_VER = "version";
     private static final String IMPORT_KEY_DOC_CHILDREN = "children";
@@ -37,15 +37,19 @@ public class JsonImportPlugin implements DocImportPlugin {
         }
         String version = obj.getString(EXPORT_KEY_VER);
         if(version == null) {
-            throw new ServiceException("暂不支持该文件导入");
+            import1x(obj,userId);
+        }else{
+            import2x(obj,userId);
         }
-        Project project = JSON.toJavaObject(obj, Project.class);
-        project.setId(StringUtils.id());
-        project.setUserId(userId);
-        ProjectService.instance().createProject(project);
-        importDoc(project.getId(), DEFAULT_PARENT_ID, obj.getJSONArray(EXPORT_KEY_DOCS));
+
     }
 
+    /**
+     * 2.x版本导入
+     * @param projectId
+     * @param parentId
+     * @param docArr
+     */
     private void importDoc(String projectId, String parentId, JSONArray docArr){
         for(int i=0; i < docArr.size(); i++){
             JSONObject obj = docArr.getJSONObject(i);
@@ -60,4 +64,87 @@ public class JsonImportPlugin implements DocImportPlugin {
             }
         }
     }
+
+
+    private void import2x(JSONObject obj,String userId){
+        Project project = JSON.toJavaObject(obj, Project.class);
+        project.setId(StringUtils.id());
+        project.setUserId(userId);
+        project.setCreateTime(new Date());
+        project.setLastUpdateTime(new Date());
+        ProjectService.instance().createProject(project);
+        importDoc(project.getId(), DEFAULT_PARENT_ID, obj.getJSONArray(EXPORT_KEY_DOCS));
+    }
+
+    /**
+     * 1.x版本导入
+     * @param obj
+     * @param userId
+     */
+    private void import1x(JSONObject obj,String userId){
+        Project project = JSON.toJavaObject(obj.getJSONObject("project"), Project.class);
+        project.setId(StringUtils.id());
+        project.setUserId(userId);
+        project.setCreateTime(new Date());
+        project.setLastUpdateTime(new Date());
+        ProjectService.instance().createProject(project);
+
+        String projectId = project.getId();
+
+        String env = project.getEnvironments();
+        if(org.apache.commons.lang3.StringUtils.isNotBlank(env)){
+            ProjectService.instance().createProjectGlobal(project.getId(),env);
+        }
+        if(org.apache.commons.lang3.StringUtils.isNotBlank(project.getDetails())){
+            Doc doc = new Doc();
+            doc.setProjectId(projectId);
+            doc.setId(StringUtils.id());
+            doc.setParentId("0");
+            doc.setName("项目描述");
+            doc.setSort(0);
+            doc.setCreateTime(new Date());
+            doc.setLastUpdateTime(new Date());
+            doc.setContent(project.getDetails());
+            doc.setType(DocType.SYS_DOC_MD.getTypeName());
+            ServiceFactory.instance().create(doc);
+        }
+
+        JSONArray modules = obj.getJSONArray("modules");
+        if(modules!=null && modules.size()>0){
+            for(int i=0;i<modules.size();i++){
+                Module module = modules.getObject(i, Module.class);
+                Doc doc = module.toDoc();
+                doc.setId(StringUtils.id());
+                doc.setProjectId(projectId);
+                doc.setSort(i);
+                ServiceFactory.instance().create(doc);
+
+                if(module.getFolders()!=null){
+                    int index=0;
+                    for(Folder folder : module.getFolders()){
+                        Doc temp = folder.toDoc();
+                        temp.setId(StringUtils.id());
+                        temp.setParentId(doc.getId());
+                        temp.setProjectId(projectId);
+                        temp.setSort(index++);
+                        ServiceFactory.instance().create(temp);
+
+                        if(folder.getChildren()!=null){
+                            for(Interface in:folder.getChildren()){
+                                Doc temp2 = in.toDoc();
+                                temp2.setId(StringUtils.id());
+                                temp2.setParentId(temp.getId());
+                                temp2.setProjectId(projectId);
+                                ServiceFactory.instance().create(temp2);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+
+    }
+
 }

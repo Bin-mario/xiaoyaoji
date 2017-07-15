@@ -1,37 +1,15 @@
 package cn.com.xiaoyaoji.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import cn.com.xiaoyaoji.core.common.Pagination;
 import cn.com.xiaoyaoji.core.util.ResultUtils;
 import cn.com.xiaoyaoji.core.util.StringUtils;
+import cn.com.xiaoyaoji.data.DataFactory;
+import cn.com.xiaoyaoji.data.bean.*;
 import cn.com.xiaoyaoji.integration.file.FileManager;
 import org.apache.log4j.Logger;
 
-import cn.com.xiaoyaoji.core.common.Pagination;
-import cn.com.xiaoyaoji.data.DataFactory;
-import cn.com.xiaoyaoji.data.bean.Attach;
-import cn.com.xiaoyaoji.data.bean.Doc;
-import cn.com.xiaoyaoji.data.bean.DocHistory;
-import cn.com.xiaoyaoji.data.bean.Folder;
-import cn.com.xiaoyaoji.data.bean.Interface;
-import cn.com.xiaoyaoji.data.bean.Module;
-import cn.com.xiaoyaoji.data.bean.Project;
-import cn.com.xiaoyaoji.data.bean.ProjectLog;
-import cn.com.xiaoyaoji.data.bean.ProjectUser;
-import cn.com.xiaoyaoji.data.bean.Share;
-import cn.com.xiaoyaoji.data.bean.TableNames;
-import cn.com.xiaoyaoji.data.bean.Team;
-import cn.com.xiaoyaoji.data.bean.Thirdparty;
-import cn.com.xiaoyaoji.data.bean.User;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author: zhoujingjie
@@ -169,11 +147,6 @@ public class ServiceFactory {
         return DataFactory.instance().deleteProjectUser(projectId,userId);
     }
 
-    public List<Folder> getFoldersByProjectId(String projectId) {
-        //return ResultUtils.list(DataFactory.instance().getFoldersByProjectId(projectId));
-        //todo
-        return null;
-    }
 
     public List<Doc> getDocsByProjectId(String projectId) {
         return ResultUtils.list(DataFactory.instance().getDocsByProjectId(projectId));
@@ -208,18 +181,8 @@ public class ServiceFactory {
         return DataFactory.instance().checkUserHasProjectEditPermission(userId,projectId);
     }
 
-    public int importFromRap(Project project, List<Module> modules, List<Folder> folders, List<Interface> interfaces) {
-        return DataFactory.instance().importFromRap(project,modules,folders,interfaces);
-    }
-
     public void initUserThirdlyBinds(User user) {
         DataFactory.instance().initUserThirdlyBinds(user);
-    }
-
-    public int copyFolder(String folderId, String moduleId) {
-        //return DataFactory.instance().copyFolder(folderId,moduleId);
-        return 0;
-        //todo
     }
 
     public int unbindUserThirdPartyRelation(String userId, String type) {
@@ -236,25 +199,6 @@ public class ServiceFactory {
         return DataFactory.instance().createProject(project);
     }
 
-    public String getProjectName(String projectId) {
-        return DataFactory.instance().getProjectName(projectId);
-    }
-    public String getInterfaceFolderName(String folderId) {
-        //return DataFactory.instance().getInterfaceFolderName(folderId);
-        return null;
-        //todo
-    }
-    public String getModuleName(String moduleId) {
-        //return DataFactory.instance().getModuleName(moduleId);
-        return null;
-    }
-    public String getInterfaceName(String interfaceId) {
-        return DataFactory.instance().getInterfaceName(interfaceId);
-    }
-
-    public String getProjectEditable(String projectId, String userId) {
-        return DataFactory.instance().getProjectEditable(projectId,userId);
-    }
 
     public int updateProjectUserEditable(String projectId, String userId, String editable) {
         return DataFactory.instance().updateProjectUserEditable(projectId,userId,editable);
@@ -264,27 +208,6 @@ public class ServiceFactory {
         return DataFactory.instance().updateCommonlyUsedProject(projectId,userId,isCommonlyUsed);
     }
 
-    public Share getShare(String id) {
-        return DataFactory.instance().getById(Share.class,id);
-    }
-
-    public List<Module> getModules(String[] moduleIds) {
-        //return ResultUtils.list(DataFactory.instance().getModules(moduleIds));
-        return null;
-        //todo
-    }
-
-    public List<Folder> getFoldersByModuleIds(String[] moduleIds) {
-        //todo
-        //return ResultUtils.list(DataFactory.instance().getFoldersByModuleIds(moduleIds));
-        return null;
-    }
-
-    public List<Doc> getInterfacesByModuleIds(String[] moduleIds) {
-        //return ResultUtils.list(DataFactory.instance().getContentsByModuleIds(moduleIds));
-        //todo
-        return null;
-    }
 
     public List<Share> getSharesByProjectId(String projectId) {
         List<Share> shares =  ResultUtils.list(DataFactory.instance().getSharesByProjectId(projectId));
@@ -311,15 +234,6 @@ public class ServiceFactory {
         return ResultUtils.list(DataFactory.instance().getProjectLogs(pagination));
     }
 
-    public int importFromMJSON(Project project, List<Module> moduleList) {
-        return DataFactory.instance().importFromMJSON(project,moduleList);
-    }
-
-    public int moveFolder(String folderId,String newModuleId) {
-        //return DataFactory.instance().moveFolder(folderId, newModuleId);
-        return 0;
-        //todo
-    }
 
     public List<Attach> getAttachsByRelatedId(String relatedId) {
         return ResultUtils.list(DataFactory.instance().getAttachsByRelatedId(relatedId));

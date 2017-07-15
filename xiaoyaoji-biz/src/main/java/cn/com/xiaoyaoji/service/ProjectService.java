@@ -1,6 +1,8 @@
 package cn.com.xiaoyaoji.service;
 
+import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.core.util.ResultUtils;
+import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.DataFactory;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.Project;
@@ -83,5 +85,28 @@ public class ProjectService {
         return DataFactory.instance().createProject(project);
     }
 
+    public ProjectGlobal createProjectGlobal(String projectId,String environment){
+        return createProjectGlobal(projectId,environment,null);
+    }
+
+    public ProjectGlobal createProjectGlobal(String projectId,String environment,String http){
+        ProjectGlobal pg = new ProjectGlobal();
+        pg.setId(StringUtils.id());
+        pg.setProjectId(projectId);
+        if(environment == null) {
+            pg.setEnvironment("[]");
+        }else{
+            pg.setEnvironment(environment);
+        }
+        if(http == null) {
+            pg.setHttp("{}");
+        }else{
+            pg.setHttp(http);
+        }
+        pg.setStatus("[{\"name\":\"有效\",\"value\":\"ENABLE\",\"t\":1493901719144},{\"name\":\"废弃\",\"value\":\"DEPRECATED\",\"t\":1493901728060}]");
+        int rs = DataFactory.instance().insert(pg);
+        AssertUtils.isTrue(rs>0,"创建ProjectGlobal失败");
+        return pg;
+    }
 }
 

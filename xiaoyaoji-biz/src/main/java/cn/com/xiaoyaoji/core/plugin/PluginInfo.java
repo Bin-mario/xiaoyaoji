@@ -14,6 +14,8 @@ public class PluginInfo<T extends Plugin>{
     private String clazz;
     private String version;
     private String event;
+    private String icon;
+    private String iconBig;
     private T plugin;
 
     public String getId() {
@@ -86,5 +88,21 @@ public class PluginInfo<T extends Plugin>{
 
     public void setPlugin(T plugin) {
         this.plugin = plugin;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getIconBig() {
+        return iconBig;
+    }
+
+    public void setIconBig(String iconBig) {
+        this.iconBig = iconBig;
     }
 }

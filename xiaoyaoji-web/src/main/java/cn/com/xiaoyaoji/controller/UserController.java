@@ -5,6 +5,8 @@ import cn.com.xiaoyaoji.core.common.Constants;
 import cn.com.xiaoyaoji.core.common.Message;
 import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.core.common._HashMap;
+import cn.com.xiaoyaoji.core.util.AssertUtils;
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.DataFactory;
 import cn.com.xiaoyaoji.data.bean.FindPassword;
@@ -17,8 +19,6 @@ import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.service.UserService;
 import cn.com.xiaoyaoji.utils.*;
 import cn.com.xiaoyaoji.extension.file.MetaData;
-import cn.com.xiaoyaoji.utils.AssertUtils;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

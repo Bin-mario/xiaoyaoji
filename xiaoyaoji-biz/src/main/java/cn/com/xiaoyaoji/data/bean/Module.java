@@ -2,6 +2,7 @@ package cn.com.xiaoyaoji.data.bean;
 
 import cn.com.xiaoyaoji.core.annotations.Alias;
 import cn.com.xiaoyaoji.core.annotations.Ignore;
+import cn.com.xiaoyaoji.core.common.DocType;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
@@ -102,4 +103,16 @@ public class Module {
         this.requestArgs = requestArgs;
     }
 
+    public Doc toDoc(){
+        Doc doc = new Doc();
+        doc.setId(getId());
+        doc.setName(getName());
+        doc.setSort(1);
+        doc.setType(DocType.SYS_FOLDER.getTypeName());
+        doc.setCreateTime(getCreateTime());
+        doc.setLastUpdateTime(getLastUpdateTime());
+        doc.setProjectId(getProjectId());
+        doc.setParentId("0");
+        return doc;
+    }
 }

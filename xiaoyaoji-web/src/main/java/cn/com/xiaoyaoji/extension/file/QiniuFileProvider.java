@@ -1,7 +1,7 @@
 package cn.com.xiaoyaoji.extension.file;
 
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.integration.file.AbstractFileProvider;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;

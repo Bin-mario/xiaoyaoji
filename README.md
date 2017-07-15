@@ -30,6 +30,31 @@
 
 
 
+## 插件开发
+* 目前插件类型有导入，导出，文档三种类型
+* 可以参照xiaoyaoji-pdf 或者 xiaoyaoji-plugins 模块
+### 文档插件
+1. 实现cn.com.xiaoyaoji.core.plugin.doc.DocEvPlugin接口
+2  插件目录
+ --- xiaoyaoji-plugins
+  
+ ------ src
+  
+ --------- main
+  
+ -------------- java 
+ 
+ ------------------ com.xxxxx
+  
+ -------------- plugins-resources
+  
+ ------------------ web （静态页面）
+  
+ ------------------ plugin.json  
+    
+
+
+
 
 ## 如果觉得还不错，请作者喝杯咖啡吧 ☺
 ![微信](http://0d077ef9e74d8.cdn.sohucs.com/pV4oizD_png)

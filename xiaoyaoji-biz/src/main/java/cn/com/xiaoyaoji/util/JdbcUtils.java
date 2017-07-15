@@ -3,7 +3,7 @@ package cn.com.xiaoyaoji.util;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import cn.com.xiaoyaoji.utils.ConfigUtils;
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import org.apache.commons.dbutils.DbUtils;
 
 import com.alibaba.druid.pool.DruidDataSource;

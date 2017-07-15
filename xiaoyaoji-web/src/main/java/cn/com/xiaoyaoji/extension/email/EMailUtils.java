@@ -1,6 +1,6 @@
 package cn.com.xiaoyaoji.extension.email;
 
-import cn.com.xiaoyaoji.utils.ConfigUtils;
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 

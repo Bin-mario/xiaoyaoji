@@ -1,6 +1,6 @@
 package cn.com.xiaoyaoji.extension.email;
 
-import cn.com.xiaoyaoji.utils.ConfigUtils;
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import org.apache.commons.mail.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

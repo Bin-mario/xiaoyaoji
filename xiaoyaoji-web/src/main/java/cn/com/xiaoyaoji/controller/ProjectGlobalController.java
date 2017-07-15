@@ -1,13 +1,12 @@
 package cn.com.xiaoyaoji.controller;
 
+import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.data.DataFactory;
 import cn.com.xiaoyaoji.data.bean.Project;
 import cn.com.xiaoyaoji.data.bean.ProjectGlobal;
 import cn.com.xiaoyaoji.data.bean.User;
 import cn.com.xiaoyaoji.service.ProjectService;
-import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.service.ServiceTool;
-import cn.com.xiaoyaoji.utils.AssertUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,7 +20,7 @@ public class ProjectGlobalController {
 
     @GetMapping("{projectId}")
     public ModelAndView index(@PathVariable String projectId){
-        Project project =  ServiceFactory.instance().getProject(projectId);
+        Project project =  ProjectService.instance().getProject(projectId);
         AssertUtils.notNull(project,"项目不存在或已删除");
         ProjectGlobal pg = ProjectService.instance().getProjectGlobal(projectId);
         return new ModelAndView("/doc/edit").addObject("projectGlobal",pg)

@@ -1,6 +1,7 @@
 package cn.com.xiaoyaoji.service.domain;
 
-import cn.com.xiaoyaoji.utils.BeanUtils;
+
+import cn.com.xiaoyaoji.core.util.BeanUtils;
 
 import java.util.Date;
 

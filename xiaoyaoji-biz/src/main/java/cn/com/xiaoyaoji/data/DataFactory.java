@@ -2,17 +2,16 @@ package cn.com.xiaoyaoji.data;
 
 import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.DocType;
+import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.core.util.JsonUtils;
 import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.bean.*;
 import cn.com.xiaoyaoji.core.common.Pagination;
-import cn.com.xiaoyaoji.core.common._HashMap;
 import cn.com.xiaoyaoji.core.exception.SystemErrorException;
 import cn.com.xiaoyaoji.data.handler.IntegerResultHandler;
 import cn.com.xiaoyaoji.data.handler.StringResultHandler;
 import cn.com.xiaoyaoji.integration.file.FileManager;
 import cn.com.xiaoyaoji.util.JdbcUtils;
-import cn.com.xiaoyaoji.utils.AssertUtils;
 import cn.com.xiaoyaoji.utils.SqlUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -572,41 +571,6 @@ public class DataFactory implements Data {
     }
 
     @Override
-    public int importFromRap(final Project project, final List<Module> modules, final List<Folder> folders, final List<Interface> interfaces) {
-        return process(new Handler<Integer>() {
-            @Override
-            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                SQLBuildResult sb = SqlUtils.generateInsertSQL(project);
-                int rs = qr.update(connection, sb.getSql(), sb.getParams());
-                ProjectUser pu = new ProjectUser();
-                pu.setId(StringUtils.id());
-                pu.setCreateTime(new Date());
-                pu.setStatus(ProjectUser.Status.ACCEPTED);
-                pu.setUserId(project.getUserId());
-                pu.setProjectId(project.getId());
-                sb = SqlUtils.generateInsertSQL(pu);
-                rs += qr.update(connection, sb.getSql(), sb.getParams());
-                for (Module m : modules) {
-                    sb = SqlUtils.generateInsertSQL(m);
-                    rs += qr.update(connection, sb.getSql(), sb.getParams());
-                    System.out.println("rs:" + rs + " +module");
-                }
-                for (Folder f : folders) {
-                    sb = SqlUtils.generateInsertSQL(f);
-                    rs += qr.update(connection, sb.getSql(), sb.getParams());
-                    System.out.println("rs:" + rs + " +folder");
-                }
-                for (Interface in : interfaces) {
-                    sb = SqlUtils.generateInsertSQL(in);
-                    rs += qr.update(connection, sb.getSql(), sb.getParams());
-                    System.out.println("rs:" + rs + " +in");
-                }
-                return rs;
-            }
-        });
-    }
-
-    @Override
     public void initUserThirdlyBinds(final User user) {
         process(new Handler<Object>() {
             @Override
@@ -753,67 +717,6 @@ public class DataFactory implements Data {
             }
         });
     }
-
-    @Override
-    public int importFromMJSON(final Project project, final List<Module> moduleList) {
-        return process(new Handler<Integer>() {
-            @Override
-            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                //初始化项目
-                project.setId(StringUtils.id());
-                project.setCreateTime(new Date());
-                SQLBuildResult sql = SqlUtils.generateInsertSQL(project);
-                int rs = qr.update(connection,sql.getSql(),sql.getParams());
-
-                ProjectUser projectUser = new ProjectUser();
-                projectUser.setCreateTime(new Date());
-                projectUser.setStatus(ProjectUser.Status.ACCEPTED);
-                projectUser.setProjectId(project.getId());
-                projectUser.setCommonlyUsed(ProjectUser.CommonlyUsed.NO);
-                projectUser.setUserId(project.getUserId());
-                projectUser.setEditable(ProjectUser.Editable.YES);
-                projectUser.setId(StringUtils.id());
-                sql = SqlUtils.generateInsertSQL(projectUser);
-                rs = qr.update(connection,sql.getSql(),sql.getParams());
-
-                //初始化模块
-                for(Module m:moduleList){
-                    m.setProjectId(project.getId());
-                    m.setCreateTime(new Date());
-                    m.setId(StringUtils.id());
-                    sql = SqlUtils.generateInsertSQL(m);
-                    rs += qr.update(connection,sql.getSql(),sql.getParams());
-
-                    //初始化文件夹
-                    int fi = 1;
-                    for(Folder f: m.getFolders()){
-                        f.setProjectId(project.getId());
-                        f.setModuleId(m.getId());
-                        f.setSort(fi++);
-                        f.setCreateTime(new Date());
-                        f.setId(StringUtils.id());
-                        sql = SqlUtils.generateInsertSQL(f);
-                        rs += qr.update(connection,sql.getSql(),sql.getParams());
-
-                        //初始化接口
-                        int i=1;
-                        for(Doc doc :f.getChildren()){
-                            doc.setSort(i++);
-                            doc.setId(StringUtils.id());
-                            doc.setProjectId(project.getId());
-                            doc.setCreateTime(new Date());
-                            doc.setLastUpdateTime(new Date());
-                            sql = SqlUtils.generateInsertSQL(doc);
-                            rs += qr.update(connection,sql.getSql(),sql.getParams());
-
-                        }
-                    }
-                }
-                return rs;
-            }
-        });
-    }
-
 
     private List<Interface> getInterfaces(QueryRunner qr,Connection connection,int start,int limit) throws SQLException {
         return qr.query(connection,"select * from interface limit ?,?",new BeanListHandler<>(Interface.class),start,limit);
@@ -1039,11 +942,29 @@ public class DataFactory implements Data {
                             List<Object[]> params = new ArrayList<>();
                             String batchSQL = docInsertSQL;
                             for(Interface in:interfaces){
-                                Doc doc = new Doc();
-                                doc.setId(in.getId());
-                                doc.setName(in.getName());
-                                doc.setSort(in.getSort()==null?0:in.getSort());
                                 String protocol = in.getProtocol();
+
+                                if(org.apache.commons.lang3.StringUtils.isBlank(in.getRequestHeaders())){
+                                    in.setRequestHeaders("[]");
+                                }
+                                if(org.apache.commons.lang3.StringUtils.isBlank(in.getRequestArgs())){
+                                    in.setRequestArgs("[]");
+                                }
+                                if(org.apache.commons.lang3.StringUtils.isBlank(in.getResponseArgs())){
+                                    in.setResponseArgs("[]");
+                                }
+                                if("DEPRECATED".equals(in.getStatus())){
+                                    in.setStatus("已废弃");
+                                }else{
+                                    in.setStatus("有效");
+                                }
+
+                                Doc doc = in.toDoc();
+                                doc.setId(in.getId());
+                                if(doc.getSort() == null){
+                                    doc.setSort(0);
+                                }
+
                                 if("HTTP".equals(protocol)) {
                                     doc.setType(DocType.SYS_HTTP.getTypeName());
                                 }else if("WEBSOCKET".equals(protocol)){
@@ -1051,42 +972,6 @@ public class DataFactory implements Data {
                                 }else{
                                     doc.setType(DocType.SYS_DOC_MD.getTypeName());
                                 }
-                                String requestHeaders = in.getRequestHeaders();
-                                if(org.apache.commons.lang3.StringUtils.isBlank(requestHeaders)){
-                                    requestHeaders = "[]";
-                                }
-                                String requestArgs = in.getRequestArgs();
-                                if(org.apache.commons.lang3.StringUtils.isBlank(requestArgs)){
-                                    requestArgs = "[]";
-                                }
-                                String responseArgs = in.getResponseArgs();
-                                if(org.apache.commons.lang3.StringUtils.isBlank(responseArgs)){
-                                    responseArgs = "[]";
-                                }
-                                String status = in.getStatus();
-                                if("DEPRECATED".equals(status)){
-                                    status = "已废弃";
-                                }else{
-                                    status = "有效";
-                                }
-                                doc.setContent(JsonUtils.toString(new _HashMap<>()
-                                        .add("description",in.getDescription())
-                                        .add("url",in.getUrl())
-                                        .add("requestMethod",in.getRequestMethod())
-                                        .add("contentType",in.getContentType())
-                                        .add("requestHeaders", JSON.parse(requestHeaders))
-                                        .add("requestArgs", JSON.parse(requestArgs))
-                                        .add("responseArgs", JSON.parse(responseArgs))
-                                        .add("example",in.getExample())
-                                        .add("dataType",in.getDataType())
-                                        .add("status",status)
-                                ));
-                                doc.setCreateTime(in.getCreateTime());
-                                doc.setLastUpdateTime(in.getLastUpdateTime());
-                                doc.setProjectId(in.getProjectId());
-                                doc.setParentId(in.getFolderId());
-                                //rs += qr.update(connection,sbr.getSql(),sbr.getParams());
-                                //logger.debug("insert content "+ doc.getName()+" success");
                                 params.add(getData(doc));
 
                                 if(params.size()>=batchNum){
@@ -1133,12 +1018,7 @@ public class DataFactory implements Data {
                 ProjectGlobal pg = qr.query(connection,"select * from "+TableNames.PROJECT_GLOBAL+" where projectId=?",new BeanHandler<>(ProjectGlobal.class),projectId);
                 if(pg == null){
                     //会有并发问题
-                    pg = new ProjectGlobal();
-                    pg.setId(StringUtils.id());
-                    pg.setProjectId(projectId);
-                    pg.setEnvironment("[]");
-                    pg.setHttp("{}");
-                    pg.setStatus("[{\"name\":\"有效\",\"value\":\"ENABLE\",\"t\":1493901719144},{\"name\":\"废弃\",\"value\":\"DEPRECATED\",\"t\":1493901728060}]");
+                    pg = generateProjectGlobal(projectId);
                     SQLBuildResult sbr = SqlUtils.generateInsertSQL(pg);
                     if(qr.update(connection,sbr.getSql(),sbr.getParams())== 0){
                         throw new SystemErrorException("创建project_global失败");
@@ -1147,6 +1027,17 @@ public class DataFactory implements Data {
                 return pg;
             }
         });
+    }
+
+
+    public ProjectGlobal generateProjectGlobal(String projectId){
+        ProjectGlobal pg = new ProjectGlobal();
+        pg.setId(StringUtils.id());
+        pg.setProjectId(projectId);
+        pg.setEnvironment("[]");
+        pg.setHttp("{}");
+        pg.setStatus("[{\"name\":\"有效\",\"value\":\"ENABLE\",\"t\":1493901719144},{\"name\":\"废弃\",\"value\":\"DEPRECATED\",\"t\":1493901728060}]");
+        return pg;
     }
 
     @Override

@@ -2,6 +2,7 @@ package cn.com.xiaoyaoji.data.bean;
 
 import cn.com.xiaoyaoji.core.annotations.Alias;
 import cn.com.xiaoyaoji.core.annotations.Ignore;
+import cn.com.xiaoyaoji.core.common.DocType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +22,7 @@ public class Folder {
     private Integer sort;
     private String parentId;
     @Ignore
-    private List<Doc> children = new ArrayList<>();
+    private List<Interface> children = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -55,11 +56,11 @@ public class Folder {
         this.moduleId = moduleId;
     }
 
-    public List<Doc> getChildren() {
+    public List<Interface> getChildren() {
         return children;
     }
 
-    public void setChildren(List<Doc> children) {
+    public void setChildren(List<Interface> children) {
         this.children = children;
     }
 
@@ -85,5 +86,18 @@ public class Folder {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public Doc toDoc(){
+        Doc doc = new Doc();
+        doc.setId(getId());
+        doc.setName(getName());
+        doc.setSort(1);
+        doc.setType(DocType.SYS_FOLDER.getTypeName());
+        doc.setCreateTime(getCreateTime());
+        doc.setLastUpdateTime(new Date());
+        doc.setProjectId(getProjectId());
+        doc.setParentId(getModuleId());
+        return doc;
     }
 }

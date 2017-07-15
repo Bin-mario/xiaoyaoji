@@ -1,8 +1,7 @@
 package cn.com.xiaoyaoji.extension.file;
 
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.integration.file.AbstractFileProvider;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

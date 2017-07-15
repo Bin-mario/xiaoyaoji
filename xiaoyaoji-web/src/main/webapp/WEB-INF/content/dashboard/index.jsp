@@ -1,3 +1,7 @@
+<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginManager" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.Event" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginInfo" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   User: zhoujingjie
@@ -5,6 +9,10 @@
   Time: 13:15
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    List<PluginInfo> importPlugins= PluginManager.getInstance().getPlugins(Event.DOC_IMPORT);
+    request.setAttribute("importPlugins",importPlugins);
+%>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -71,7 +79,27 @@
         </c:if>
 
         <div class="new-project">
-            <div class="new-project-btn" uk-toggle="target: #createModal"><b>+</b></div>
+            <div class="new-project-btn ta-c">
+                <div class="np-btns">
+                <div class="new-project-btns">
+                    <div class="np-btns-item" uk-toggle="target: #importModal">
+                        <span class="np-text">导入/上传</span>
+                        <div class="nb-btn" style="background-color: #00bcd5">
+                            <span class="uk-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" ratio="1"><path fill="none" stroke="#000" stroke-width="1.1" d="M6.5,14.61 L3.75,14.61 C1.96,14.61 0.5,13.17 0.5,11.39 C0.5,9.76 1.72,8.41 3.31,8.2 C3.38,5.31 5.75,3 8.68,3 C11.19,3 13.31,4.71 13.89,7.02 C14.39,6.8 14.93,6.68 15.5,6.68 C17.71,6.68 19.5,8.45 19.5,10.64 C19.5,12.83 17.71,14.6 15.5,14.6 L12.5,14.6"></path><polyline fill="none" stroke="#000" points="7.25 11.75 9.5 9.5 11.75 11.75"></polyline><path fill="none" stroke="#000" d="M9.5,18 L9.5,9.5"></path></svg></span>
+                        </div>
+                    </div>
+                    <div class="np-btns-item" uk-toggle="target: #createModal">
+                        <span class="np-text">新增</span>
+                        <div class="nb-btn" style="background-color: #f24029">
+                            <span class="uk-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" ratio="1"><rect x="9" y="1" width="1" height="17"></rect><rect x="1" y="9" width="17" height="1"></rect></svg></span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <span class="new-project-btn-holder">
+                    <b>+</b>
+                </span>
+            </div>
         </div>
     </div>
 
@@ -112,6 +140,33 @@
             <div class="uk-modal-footer uk-text-right">
                 <button class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
                 <button class="uk-button uk-button-primary" type="button" v-on:click="newProject">创建</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="importModal" v-cloak uk-modal>
+        <div class="uk-modal-dialog">
+
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">导入/上传</h2>
+            </div>
+
+            <div class="uk-modal-body">
+                <ul class="home-imports">
+                    <c:forEach items="${importPlugins}" var="item">
+                    <li class="ta-c">
+                        <div>
+                            <img class="plugin-icon" src="${item.icon}"/><br/>
+                            <span>${item.name}</span>
+                        </div>
+                        <input type="file" v-on:change="importFile('${item.id}',$event)" class="upload">
+                    </li>
+                    </c:forEach>
+                </ul>
+                <div class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
+                </div>
             </div>
 
         </div>

@@ -2,12 +2,12 @@ package cn.com.xiaoyaoji.service;
 
 import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.core.common.Message;
+import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.core.util.ResultUtils;
 import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.DataFactory;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.DocHistory;
-import cn.com.xiaoyaoji.utils.AssertUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 

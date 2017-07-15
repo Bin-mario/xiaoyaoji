@@ -1,4 +1,4 @@
-package cn.com.xiaoyaoji.utils;
+package cn.com.xiaoyaoji.core.util;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

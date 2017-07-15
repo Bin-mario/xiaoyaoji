@@ -1,10 +1,10 @@
 package cn.com.xiaoyaoji.extension.thirdly;
 
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.core.util.HttpUtils;
 import cn.com.xiaoyaoji.extension.thirdly.qq.AccessToken;
 import cn.com.xiaoyaoji.extension.thirdly.qq.QQException;
 import cn.com.xiaoyaoji.extension.thirdly.qq.UserInfo;
-import cn.com.xiaoyaoji.utils.ConfigUtils;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 
@@ -28,7 +28,7 @@ public class QQ {
 
     public AccessToken getAccessToken(String code, String redirectURI){
         String rs = HttpUtils.get("https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id="
-                +ConfigUtils.getQQAppId()
+                + ConfigUtils.getQQAppId()
                 +"&client_secret="+ConfigUtils.getQQAppKey()
                 +"&code="+code
                 +"&redirect_uri="+redirectURI

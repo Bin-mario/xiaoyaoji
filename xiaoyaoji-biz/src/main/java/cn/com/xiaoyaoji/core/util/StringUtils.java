@@ -1,6 +1,5 @@
 package cn.com.xiaoyaoji.core.util;
 
-import cn.com.xiaoyaoji.utils.BaseX;
 
 import java.math.BigInteger;
 import java.util.Random;

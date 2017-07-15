@@ -27,7 +27,12 @@ public class Project {
     private String status;
     //权限
     private String permission;
-    //环境 json
+
+    /**
+     * //环境 json
+     * @see ProjectGlobal
+     */
+    @Deprecated
     private String environments;
     //详细说明
     private String details;
@@ -54,31 +59,7 @@ public class Project {
         String PUBLIC="PUBLIC";
         String PRIVATE="PRIVATE";
     }
-    public interface Action{
-        String CREATE_PROJECT="project.create";
-        String UPDATE_PROJECT="project.update";
-        String DELETE_PROJECT="project.delete";
-        String TRANSFER_PROJECT="project.transfer";
-        String EXPORT_PROJECT="project.export";
 
-        String CREATE_FOLDER="folder.create";
-        String UPDATE_FOLDER="folder.update";
-        String DELETE_FOLDER="folder.delete";
-        String MOVE_FOLDER="folder.move";
-        String COPY_FOLDER="folder.copy";
-
-
-        String MOVE_INTERFACE="interface.move";
-        String COPY_INTERFACE="interface.copy";
-        String CREATE_INTERFACE="interface.create";
-        String UPDATE_INTERFACE="interface.update";
-        String DELETE_INTERFACE="interface.delete";
-
-
-        String CREATE_MODULE="module.create";
-        String UPDATE_MODULE="module.update";
-        String DELETE_MODULE="module.delete";
-    }
 
     public String getId() {
         return id;

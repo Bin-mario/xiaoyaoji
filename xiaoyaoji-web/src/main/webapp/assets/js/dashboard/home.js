@@ -12,6 +12,20 @@ $(function(){
                 $('button[uk-close]>svg').remove();
             },
             methods:{
+                importFile:function(pluginId,e){
+                    if(e.target.files.length === 0){
+                        toastr.error('请选择文件');
+                        return;
+                    }
+                    var file = e.target.files[0];
+                    var fd = new FormData();
+                    fd.append('file', file);
+                    fd.append('pluginId', pluginId);
+                    utils.fileloader('/project/import', fd,
+                        function (rs) {
+                            location.reload();
+                        });
+                },
                 newProject:function(){
                     utils.post('/project',{name:this.name,description:this.description,permission:this.permission},function(rs){
                         location.href=ctx+'/doc/'+rs.data.docId+'/edit';

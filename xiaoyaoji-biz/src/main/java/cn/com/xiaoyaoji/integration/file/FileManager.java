@@ -1,6 +1,6 @@
 package cn.com.xiaoyaoji.integration.file;
 
-import cn.com.xiaoyaoji.utils.ConfigUtils;
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import org.apache.log4j.Logger;
 
 /**

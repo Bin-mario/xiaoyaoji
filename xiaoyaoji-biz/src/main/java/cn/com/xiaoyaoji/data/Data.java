@@ -66,8 +66,6 @@ public interface Data {
 
     boolean checkUserHasProjectEditPermission(String userId, String projectId);
 
-    int importFromRap(Project project, List<Module> modules, List<Folder> folders, List<Interface> interfaces);
-
     void initUserThirdlyBinds(User user);
 
     int removeUserThirdPartyRelation(String userId, String type);
@@ -92,9 +90,6 @@ public interface Data {
 
     List<ProjectLog> getProjectLogs(Pagination pagination);
 
-    int importFromMJSON(Project project, List<Module> moduleList);
-
-    //void test();
     int updateSystem(String version);
 
     ProjectGlobal getProjectGlobal(String projectId);
