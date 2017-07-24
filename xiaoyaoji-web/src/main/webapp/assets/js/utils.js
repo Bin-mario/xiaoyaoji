@@ -130,35 +130,6 @@
                 }
             },
             login: {
-                init: function () {
-                    if (window.initialized) {
-                        return true;
-                    }
-                    window.initialized = true;
-                    window.addEventListener('message', function (e) {
-                        if (e.origin == 'http://www.xiaoyaoji.com.cn' || e.origin == 'https://www.xiaoyaoji.com.cn'
-                            || e.origin == 'http://www.xiaoyaoji.cn'  || e.origin == 'https://www.xiaoyaoji.cn'
-                        ) {
-                            var data = e.data;
-                            data = JSON.parse(data);
-                            utils.post('/login/' + data.type + '.json', data, function (rs) {
-                                utils.login.success(rs.data.token, rs.data.user, null);
-                            });
-                        }
-                    });
-                },
-                qq: function () {
-                    utils.window.qq();
-                    utils.login.init();
-                },
-                weibo: function () {
-                    utils.window.weibo();
-                    utils.login.init();
-                },
-                github: function () {
-                    utils.window.github();
-                    utils.login.init();
-                },
                 submit: function (url, data) {
                     utils.post(url, data, function (rs) {
                         localStorage.clear();

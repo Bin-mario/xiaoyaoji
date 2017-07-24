@@ -1,4 +1,4 @@
-package cn.com.xiaoyaoji.extension.thirdly.weibo;
+package cn.xiaoyaoji.plugin.login.weibo;
 
 /**
  * @author zhoujingjie

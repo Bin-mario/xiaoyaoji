@@ -1,7 +1,10 @@
 package cn.com.xiaoyaoji.controller;
 
-import cn.com.xiaoyaoji.Config;
 import cn.com.xiaoyaoji.core.annotations.Ignore;
+import cn.com.xiaoyaoji.core.plugin.PluginInfo;
+import cn.com.xiaoyaoji.core.plugin.PluginManager;
+import cn.com.xiaoyaoji.util.PluginUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +30,27 @@ public class PluginController {
         id = id.replace("..","");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-        request.getRequestDispatcher(Config.PLUGINS_SOURCE_DIR+id+"/web/"+path).forward(request,response);
+        PluginInfo info = PluginManager.getInstance().getPluginInfo(id);
+        if(info == null){
+            response.setStatus(503);
+            response.getWriter().write("plugin not found");
+        }else {
+            request.getRequestDispatcher(PluginUtils.getPluginSourceDir() + info.getRuntimeFolder() + "/web/" + path).forward(request, response);
+        }
+    }
+
+
+    @Ignore
+    @RequestMapping("/assets/{id}")
+    public void assets(@RequestParam String path,@PathVariable("id") String pluginId,
+                       HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        path = path.replace("..","");
+        PluginInfo info = PluginManager.getInstance().getPluginInfo(pluginId);
+        if(info == null){
+            response.setStatus(503);
+            response.getWriter().write("plugin not found");
+        }else {
+            request.getRequestDispatcher(PluginUtils.getPluginSourceDir() + info.getRuntimeFolder() + path).forward(request, response);
+        }
     }
 }

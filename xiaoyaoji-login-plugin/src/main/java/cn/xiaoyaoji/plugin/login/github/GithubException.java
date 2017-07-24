@@ -1,12 +1,13 @@
-package cn.com.xiaoyaoji.extension.thirdly.github;
+package cn.xiaoyaoji.plugin.login.github;
 
-import cn.com.xiaoyaoji.extension.thirdly.exception.ThirdlyException;
+
+import cn.xiaoyaoji.plugin.login.exception.ThirdlyException;
 
 /**
  * @author: zhoujingjie
  * @Date: 16/9/2
  */
-public class GithubException extends ThirdlyException{
+public class GithubException extends ThirdlyException {
     public GithubException() {
     }
 

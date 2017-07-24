@@ -18,9 +18,4 @@ public class WebsocketDocPlugin implements DocEvPlugin{
     public String getViewPage() {
         return "websocket/view.jsp";
     }
-
-    @Override
-    public String getContextPath() {
-        return "cn.xiaoyaoji.plugin";
-    }
 }

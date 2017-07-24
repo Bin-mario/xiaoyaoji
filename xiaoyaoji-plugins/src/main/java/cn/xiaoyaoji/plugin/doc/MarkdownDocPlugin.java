@@ -19,8 +19,4 @@ public class MarkdownDocPlugin implements DocEvPlugin{
         return "markdown/view.jsp";
     }
 
-    @Override
-    public String getContextPath() {
-        return "cn.xiaoyaoji.plugin";
-    }
 }

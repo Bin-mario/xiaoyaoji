@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>xiaoyaoji-plugins</artifactId>
-
+    <artifactId>xiaoyaoji-login-plugin</artifactId>
     <dependencies>
         <dependency>
             <groupId>cn.com.xiaoyaoji</groupId>
@@ -18,7 +17,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -26,7 +24,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptor>${project.basedir}/bin.xml</descriptor>
-                    <finalName>cn.xiaoyaoji.plugin</finalName>
+                    <finalName>cn.xiaoyaoji.login</finalName>
                 </configuration>
                 <executions>
                     <execution>

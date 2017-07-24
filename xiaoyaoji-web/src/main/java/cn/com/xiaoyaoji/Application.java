@@ -4,6 +4,7 @@ import cn.com.xiaoyaoji.core.common.Constants;
 import cn.com.xiaoyaoji.core.plugin.Plugin;
 import cn.com.xiaoyaoji.core.plugin.PluginInfo;
 import cn.com.xiaoyaoji.core.plugin.PluginManager;
+import cn.com.xiaoyaoji.util.PluginUtils;
 import cn.com.xiaoyaoji.utils.ZipUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -35,11 +36,8 @@ public class Application {
         //todo 功能模块化
 
         try {
-            String pluginsDir =Config.PLUGINS_DIR;
-            if(StringUtils.isBlank(pluginsDir)){
-                pluginsDir = servletContext.getResource("/WEB-INF/plugins").toURI().getPath();
-            }
-            String outputURI =servletContext.getResource(Config.PLUGINS_SOURCE_DIR).toURI().getPath();
+            String pluginsDir = PluginUtils.getPluginDir();
+            String outputURI =servletContext.getResource(PluginUtils.getPluginSourceDir()).toURI().getPath();
             extractPlugins(pluginsDir,outputURI);
 
             loadPlugins(outputURI);
@@ -155,6 +153,7 @@ public class Application {
             for(PluginInfo pluginInfo:pluginInfos) {
                 Plugin plugin = (Plugin) classLoader.loadClass(pluginInfo.getClazz()).newInstance();
                 pluginInfo.setPlugin(plugin);
+                pluginInfo.setRuntimeFolder(pluginDir.getName());
                 PluginManager.getInstance().register(pluginInfo);
             }
         }catch (Exception e){

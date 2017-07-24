@@ -17,8 +17,4 @@ public class ThirdpartyDocPlugin implements DocEvPlugin {
         return "thirdparty/view.jsp";
     }
 
-    @Override
-    public String getContextPath() {
-        return "cn.xiaoyaoji.plugin";
-    }
 }

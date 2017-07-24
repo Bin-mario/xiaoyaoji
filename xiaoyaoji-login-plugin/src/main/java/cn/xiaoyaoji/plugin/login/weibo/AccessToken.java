@@ -1,10 +1,10 @@
-package cn.com.xiaoyaoji.extension.thirdly.weibo;
+package cn.xiaoyaoji.plugin.login.weibo;
 
 /**
  * @author: zhoujingjie
  * @Date: 16/9/2
  */
-public class AccessToken extends cn.com.xiaoyaoji.extension.thirdly.AccessToken{
+public class AccessToken extends cn.xiaoyaoji.plugin.login.AccessToken {
     private int expires_in;
     private String uid;
 

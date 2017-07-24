@@ -22,7 +22,7 @@
             <jsp:include page="/WEB-INF/includes/doc-type-not-support.jsp"/>
         </c:if>
         <c:if test="${pluginInfo != null}">
-            <jsp:include page="/WEB-INF/plugins/${pluginInfo.plugin.contextPath}/web/${pluginInfo.plugin.editPage}"/>
+            <jsp:include page="/WEB-INF/plugins/${pluginInfo.runtimeFolder}/web/${pluginInfo.plugin.editPage}"/>
         </c:if>
     </c:if>
 </div>

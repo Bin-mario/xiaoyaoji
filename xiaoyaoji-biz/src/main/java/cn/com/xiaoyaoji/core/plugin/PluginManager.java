@@ -75,5 +75,38 @@ public class PluginManager {
         return temp;
     }
 
+    public List<PluginInfo<LoginPlugin>> getLoginPlugins(){
+        List<PluginInfo> pluginInfos = getPlugins(Event.LOGIN);
+        List<PluginInfo<LoginPlugin>> temp = new ArrayList<>(pluginInfos.size());
+        for(PluginInfo item:pluginInfos){
+            temp.add(item);
+        }
+        return temp;
+    }
 
+    @SuppressWarnings("unchecked")
+    public <T extends Plugin> PluginInfo<T> getPlugin(String pluginId,Event event){
+        List<PluginInfo> plugins = getPlugins(event);
+        for(PluginInfo<T> pluginInfo:plugins){
+            if(pluginInfo.getId().equals(pluginId)){
+                return pluginInfo;
+            }
+        }
+        return null;
+    }
+
+    public PluginInfo<LoginPlugin> getLoginPlugin(String pluginId){
+        return getPlugin(pluginId,Event.LOGIN);
+    }
+
+
+    public PluginInfo getPluginInfo(String pluginId) {
+        for(List<PluginInfo> list: pluginInfos.values()){
+            for(PluginInfo item:list){
+                if(item.getId().equals(pluginId))
+                    return item;
+            }
+        }
+        return null;
+    }
 }

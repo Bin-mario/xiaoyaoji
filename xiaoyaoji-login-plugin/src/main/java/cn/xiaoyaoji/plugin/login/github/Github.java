@@ -1,9 +1,10 @@
-package cn.com.xiaoyaoji.extension.thirdly;
+package cn.xiaoyaoji.plugin.login.github;
 
 import cn.com.xiaoyaoji.core.util.HttpUtils;
-import cn.com.xiaoyaoji.extension.thirdly.github.Email;
-import cn.com.xiaoyaoji.extension.thirdly.github.GithubException;
-import cn.com.xiaoyaoji.extension.thirdly.github.User;
+import cn.xiaoyaoji.plugin.login.AccessToken;
+import cn.xiaoyaoji.plugin.login.github.Email;
+import cn.xiaoyaoji.plugin.login.github.GithubException;
+import cn.xiaoyaoji.plugin.login.github.User;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.httpclient.Header;
@@ -18,7 +19,7 @@ import java.util.List;
 public class Github {
 
 
-    public AccessToken getAccessToken(String client_id,String client_secret,String code,String redirect_uri){
+    public AccessToken getAccessToken(String client_id, String client_secret, String code, String redirect_uri){
         String url ="https://github.com/login/oauth/access_token";
         NameValuePair[] pairs = new NameValuePair[]{
            new NameValuePair("client_id",client_id),

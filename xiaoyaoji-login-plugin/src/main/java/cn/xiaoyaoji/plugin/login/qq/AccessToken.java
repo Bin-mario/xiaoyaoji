@@ -1,10 +1,10 @@
-package cn.com.xiaoyaoji.extension.thirdly.qq;
+package cn.xiaoyaoji.plugin.login.qq;
 
 /**
  * @author zhoujingjie
  * @date 2016-07-28
  */
-public class AccessToken extends cn.com.xiaoyaoji.extension.thirdly.AccessToken{
+public class AccessToken extends cn.xiaoyaoji.plugin.login.AccessToken{
     private String refresh_token;
     private long expires_in;
 

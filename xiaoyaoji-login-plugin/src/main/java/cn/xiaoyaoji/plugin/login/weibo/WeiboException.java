@@ -1,6 +1,7 @@
-package cn.com.xiaoyaoji.extension.thirdly.weibo;
+package cn.xiaoyaoji.plugin.login.weibo;
 
-import cn.com.xiaoyaoji.extension.thirdly.exception.ThirdlyException;
+
+import cn.xiaoyaoji.plugin.login.exception.ThirdlyException;
 
 /**
  * @author zhoujingjie

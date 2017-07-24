@@ -1,10 +1,10 @@
-package cn.com.xiaoyaoji.extension.thirdly;
+package cn.xiaoyaoji.plugin.login.qq;
 
 import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.core.util.HttpUtils;
-import cn.com.xiaoyaoji.extension.thirdly.qq.AccessToken;
-import cn.com.xiaoyaoji.extension.thirdly.qq.QQException;
-import cn.com.xiaoyaoji.extension.thirdly.qq.UserInfo;
+import cn.xiaoyaoji.plugin.login.qq.AccessToken;
+import cn.xiaoyaoji.plugin.login.qq.QQException;
+import cn.xiaoyaoji.plugin.login.qq.UserInfo;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 

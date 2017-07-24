@@ -25,6 +25,13 @@ public class ConfigUtils {
         return properties.getProperty(key);
     }
 
+    public static String getProperty(String key,String defaultValue){
+        String value = getProperty(key);
+        if(value == null)
+            return defaultValue;
+        return value;
+    }
+
 
     public static String getFileAccessURL(){
         return properties.getProperty("file.access.url");

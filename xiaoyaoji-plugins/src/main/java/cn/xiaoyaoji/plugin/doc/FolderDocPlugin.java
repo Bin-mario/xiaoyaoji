@@ -19,8 +19,4 @@ public class FolderDocPlugin implements DocEvPlugin{
         return "folder/view.jsp";
     }
 
-    @Override
-    public String getContextPath() {
-        return "cn.xiaoyaoji.plugin";
-    }
 }

@@ -18,8 +18,4 @@ public class RichtextDocPlugin implements DocEvPlugin {
         return "richtext/view.jsp";
     }
 
-    @Override
-    public String getContextPath() {
-        return "cn.xiaoyaoji.plugin";
-    }
 }

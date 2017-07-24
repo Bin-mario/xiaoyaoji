@@ -14,9 +14,10 @@ public class PluginInfo<T extends Plugin>{
     private String clazz;
     private String version;
     private String event;
-    private String icon;
-    private String iconBig;
+    private Icon icon;
     private T plugin;
+    //运行时文件夹
+    private String runtimeFolder;
 
     public String getId() {
         return id;
@@ -90,19 +91,19 @@ public class PluginInfo<T extends Plugin>{
         this.plugin = plugin;
     }
 
-    public String getIcon() {
+    public Icon getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(Icon icon) {
         this.icon = icon;
     }
 
-    public String getIconBig() {
-        return iconBig;
+    public String getRuntimeFolder() {
+        return runtimeFolder;
     }
 
-    public void setIconBig(String iconBig) {
-        this.iconBig = iconBig;
+    public void setRuntimeFolder(String runtimeFolder) {
+        this.runtimeFolder = runtimeFolder;
     }
 }

@@ -13,5 +13,4 @@ public interface DocEvPlugin extends Plugin {
 
     String getViewPage();
 
-    String getContextPath();
 }

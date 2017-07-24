@@ -10,8 +10,4 @@ import cn.com.xiaoyaoji.core.util.ConfigUtils;
 public class Config {
 
     public static final String SALT = ConfigUtils.getSalt();
-    //插件打包、解压位置
-    public static final String PLUGINS_DIR=ConfigUtils.getProperty("xyj.plugin.dir");
-    //解压后的位置，只能是在到webapps下
-    public static final String PLUGINS_SOURCE_DIR="/WEB-INF/plugins/";
 }

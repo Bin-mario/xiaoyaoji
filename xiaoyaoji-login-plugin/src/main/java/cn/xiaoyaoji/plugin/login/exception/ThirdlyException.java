@@ -1,4 +1,4 @@
-package cn.com.xiaoyaoji.extension.thirdly.exception;
+package cn.xiaoyaoji.plugin.login.exception;
 
 /**
  * @author zhoujingjie

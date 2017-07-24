@@ -8,7 +8,7 @@ public enum Event {
     DOC_EV("doc.ev"),
     DOC_EXPORT("doc.export"),
     DOC_IMPORT("doc.import"),
-    LOGIN_THIRDPARTY("login.thirdparty")
+    LOGIN("login")
     ;
 
     String value;

@@ -36,14 +36,21 @@ require(['utils','vue', 'vueEx'], function (utils, Vue) {
                 }).catch(function(){
                 })
             },
-            qq: function () {
-                utils.login.qq();
-            },
-            weibo: function () {
-                utils.login.weibo();
-            },
-            github: function () {
-                utils.login.github();
+            thirdparty:function(pluginId,callback){
+                var url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&state=login&client_id=101333549&redirect_uri='+callback;
+                window.open(url, pluginId, 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
+
+                if (window.initialized) {
+                    return true;
+                }
+                window.initialized = true;
+                window.addEventListener('message', function (e) {
+                    var data = e.data;
+                    data = JSON.parse(data);
+                    utils.post('/login/plugin/' + pluginId, data, function (rs) {
+                        utils.login.success(rs.data.token, rs.data.user, null);
+                    });
+                });
             }
         }
     });

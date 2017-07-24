@@ -1,6 +1,7 @@
-package cn.com.xiaoyaoji.extension.thirdly.qq;
+package cn.xiaoyaoji.plugin.login.qq;
 
-import cn.com.xiaoyaoji.extension.thirdly.exception.ThirdlyException;
+
+import cn.xiaoyaoji.plugin.login.exception.ThirdlyException;
 
 /**
  * @author zhoujingjie

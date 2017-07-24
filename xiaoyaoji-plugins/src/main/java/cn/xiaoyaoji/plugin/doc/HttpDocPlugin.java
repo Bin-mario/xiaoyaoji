@@ -19,8 +19,4 @@ public class HttpDocPlugin implements DocEvPlugin{
         return "http/view.jsp";
     }
 
-    @Override
-    public String getContextPath() {
-        return "cn.xiaoyaoji.plugin";
-    }
 }

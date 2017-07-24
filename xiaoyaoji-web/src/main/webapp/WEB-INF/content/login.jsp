@@ -1,9 +1,13 @@
-<%--
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginManager" %><%--
   User: zhoujingjie
   Date: 17/4/4
   Time: 13:12
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    request.setAttribute("loginPlugins",PluginManager.getInstance().getLoginPlugins());
+%>
 <!--[if lt IE 9]> <script>location.href='unsupport.html?refer='+encodeURIComponent(location.href)</script> <![endif]-->
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -43,7 +47,9 @@
     </form>
     <div class="long-line"></div>
     <div class="login-third ta-c">
-        <a v-on:click="qq"><i class="iconfont icon-qq"></i></a>
+        <c:forEach items="${loginPlugins}" var="item">
+            <a v-on:click="thirdparty('${item.id}')"><img src="${ctx}/plugin/assets/${item.id}/${item.icon.icon32x32}" title="${item.description}"/></a>
+        </c:forEach>
         <a v-on:click="weibo"><i class="iconfont icon-weibo"></i></a>
         <a v-on:click="github"><i class="iconfont icon-github"></i></a>
     </div>

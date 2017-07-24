@@ -1,4 +1,4 @@
-package cn.com.xiaoyaoji.extension.thirdly;
+package cn.xiaoyaoji.plugin.login;
 
 /**
  * @author: zhoujingjie

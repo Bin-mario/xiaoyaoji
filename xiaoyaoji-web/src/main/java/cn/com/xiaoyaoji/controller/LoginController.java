@@ -1,28 +1,26 @@
 package cn.com.xiaoyaoji.controller;
 
+import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.Constants;
 import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.core.common._HashMap;
+import cn.com.xiaoyaoji.core.plugin.LoginPlugin;
+import cn.com.xiaoyaoji.core.plugin.PluginInfo;
+import cn.com.xiaoyaoji.core.plugin.PluginManager;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.core.util.ConfigUtils;
-import cn.com.xiaoyaoji.extension.thirdly.Github;
-import cn.com.xiaoyaoji.util.CacheUtils;
-import cn.com.xiaoyaoji.utils.PasswordUtils;
-
-import cn.com.xiaoyaoji.core.annotations.Ignore;
-import cn.com.xiaoyaoji.data.bean.Thirdparty;
 import cn.com.xiaoyaoji.data.bean.User;
 import cn.com.xiaoyaoji.service.ServiceFactory;
-import cn.com.xiaoyaoji.extension.thirdly.QQ;
-import cn.com.xiaoyaoji.extension.thirdly.Weibo;
-import cn.com.xiaoyaoji.extension.thirdly.qq.UserInfo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import cn.com.xiaoyaoji.util.CacheUtils;
+import cn.com.xiaoyaoji.utils.PasswordUtils;
+import com.alibaba.fastjson.JSON;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author zhoujingjie
@@ -57,69 +55,51 @@ public class LoginController {
         return true;
     }
 
+    /**
+     * 插件登录地址
+     * @param pluginId
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Ignore
-    @PostMapping("/qq")
-    public Object thirdlyQQ(@RequestParam(required = false) String openId,@RequestParam(required = false) String accessToken,HttpServletResponse response) {
-        AssertUtils.notNull(openId, "missing openId");
-        AssertUtils.notNull(accessToken, "missing accessToken");
-        UserInfo userInfo = new QQ().getUserInfo(openId, accessToken);
-        Thirdparty thirdparty = new Thirdparty();
-        thirdparty.setId(openId);
-        thirdparty.setLogo(userInfo.getFigureurl_qq_2());
-        thirdparty.setNickName(userInfo.getNickname());
-        thirdparty.setType(Thirdparty.Type.QQ);
-        User user = ServiceFactory.instance().loginByThirdparty(thirdparty);
-        AssertUtils.notNull(user,"该账户暂未绑定小幺鸡账户,请绑定后使用");
-        //MemoryUtils.putUser(parameter, user);
-        AssertUtils.isTrue(!User.Status.INVALID.equals(user.getStatus()), "invalid status");
-        String token = CacheUtils.token();
-        response.addCookie(setCookie(token,user));
-        return new _HashMap<>()
-                .add("token",token);
-    }
-
-    @Ignore
-    @PostMapping("/weibo")
-    public Object thirdlyWeibo(@RequestParam(required = false) String uid,@RequestParam(required = false) String accessToken,HttpServletResponse response) {
-        AssertUtils.notNull(uid, "missing uid");
-        AssertUtils.notNull(accessToken, "missing accessToken");
-        cn.com.xiaoyaoji.extension.thirdly.weibo.User weiboUser = new Weibo().showUser(accessToken, uid);
-        Thirdparty thirdparty = new Thirdparty();
-        thirdparty.setId(weiboUser.getId());
-        thirdparty.setLogo(weiboUser.getAvatar_large());
-        thirdparty.setNickName(weiboUser.getScreen_name());
-        thirdparty.setType(Thirdparty.Type.WEIBO);
-        User user = ServiceFactory.instance().loginByThirdparty(thirdparty);
-        AssertUtils.notNull(user,"该账户暂未绑定小幺鸡账户,请绑定后使用");
-        //MemoryUtils.putUser(parameter, user);
-        AssertUtils.isTrue(!User.Status.INVALID.equals(user.getStatus()), "invalid status");
-        String token = CacheUtils.token();
-        response.addCookie(setCookie(token,user));
-        return new _HashMap<>()
-                .add("token",token);
-    }
-
-    @Ignore
-    @PostMapping("/github")
-    public Object thirdPartyGithub(@RequestParam(required = false) String accessToken,HttpServletResponse response){
-        AssertUtils.notNull(accessToken, "missing accessToken");
-        Github github = new Github();
-        cn.com.xiaoyaoji.extension.thirdly.github.User user = github.getUser(accessToken);
-        Thirdparty thirdparty = new Thirdparty();
-        thirdparty.setId(user.getId());
-        thirdparty.setLogo(user.getAvatar_url());
-        thirdparty.setNickName(user.getName());
-        thirdparty.setType(Thirdparty.Type.WEIBO);
-        thirdparty.setEmail(user.getEmail());
-        User loginUser = ServiceFactory.instance().loginByThirdparty(thirdparty);
-        AssertUtils.notNull(loginUser,"该账户暂未绑定小幺鸡账户,请绑定后使用");
+    @RequestMapping("/plugin/{pluginId}")
+    public void plugin(@PathVariable("pluginId") String pluginId, HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+        PluginInfo<LoginPlugin> loginPluginInfo =  PluginManager.getInstance().getLoginPlugin(pluginId);
+        if(loginPluginInfo == null){
+            request.setAttribute("errorMsg","未找到插件"+pluginId);
+            request.getRequestDispatcher("/error").forward(request,response);
+            return;
+        }
+        User loginUser = loginPluginInfo.getPlugin().doRequest(request);
+        AssertUtils.notNull(loginUser,"登录失败");
         AssertUtils.isTrue(!User.Status.INVALID.equals(loginUser.getStatus()), "invalid status");
         String token = CacheUtils.token();
         response.addCookie(setCookie(token,loginUser));
-        return new _HashMap<>()
-                .add("token",token);
+        JSON.writeJSONStringTo(new _HashMap<>().add("token",token),response.getWriter());
     }
 
-
+    /**
+     * 第三方登录回调地址
+     * @param pluginId
+     * @param action
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    @Ignore
+    @RequestMapping("/callback/{pluginId}/{action}")
+    public void callback(@PathVariable("pluginId") String pluginId, @PathVariable("action") String action,
+                         HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+        PluginInfo<LoginPlugin> loginPluginInfo =  PluginManager.getInstance().getLoginPlugin(pluginId);
+        if(loginPluginInfo == null){
+            request.setAttribute("errorMsg","未找到插件"+pluginId);
+            request.getRequestDispatcher("/error").forward(request,response);
+            return;
+        }
+        loginPluginInfo.getPlugin().callback(action,loginPluginInfo,request,response);
+    }
 
 }
