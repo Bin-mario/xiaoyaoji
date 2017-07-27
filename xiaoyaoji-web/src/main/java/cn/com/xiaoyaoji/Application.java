@@ -36,8 +36,14 @@ public class Application {
         //todo 功能模块化
 
         try {
-            String pluginsDir = PluginUtils.getPluginDir();
             String outputURI =servletContext.getResource(PluginUtils.getPluginSourceDir()).toURI().getPath();
+
+            String pluginsDir = PluginUtils.getPluginDir();
+            //如果为空则与sourcedir 同目录
+            if( pluginsDir == null || pluginsDir.length() == 0 ){
+                pluginsDir = outputURI;
+            }
+
             extractPlugins(pluginsDir,outputURI);
 
             loadPlugins(outputURI);
@@ -157,7 +163,7 @@ public class Application {
                 PluginManager.getInstance().register(pluginInfo);
             }
         }catch (Exception e){
-            logger.error(e.getMessage(),e);
+            logger.error(file.getAbsoluteFile(),e);
         }
     }
 

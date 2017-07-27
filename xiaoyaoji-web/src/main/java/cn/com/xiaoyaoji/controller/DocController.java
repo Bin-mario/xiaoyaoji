@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
@@ -166,6 +167,7 @@ public class DocController {
     @Ignore
     public ModelAndView docView(@PathVariable String docId,
                                 @RequestParam(value = "docHistoryId", required = false) String docHistoryId, User user,
+                                HttpServletRequest request,
                                 boolean editing
                                 ) {
         AssertUtils.notNull(docId, "参数丢失");
@@ -201,7 +203,7 @@ public class DocController {
                 break;
             }
         }
-
+        boolean isXHR = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
         return new ModelAndView("/doc/view")
                 .addObject("project", project)
                 .addObject("doc", doc)
@@ -209,6 +211,7 @@ public class DocController {
                 .addObject("editPermission", editPermission)
                 .addObject("projectGlobal", ProjectService.instance().getProjectGlobal(doc.getProjectId()))
                 .addObject("pluginInfo",pluginInfo)
+                .addObject("isXHR",isXHR)
                 ;
     }
 
@@ -222,8 +225,8 @@ public class DocController {
      */
     @GetMapping("{docId}/edit")
     public ModelAndView docEdit(@PathVariable String docId,
-                                @RequestParam(value = "docHistoryId", required = false) String docHistoryId, User user) {
-        ModelAndView view = docView(docId, docHistoryId, user,true)
+                                @RequestParam(value = "docHistoryId", required = false) String docHistoryId, User user,HttpServletRequest request) {
+        ModelAndView view = docView(docId, docHistoryId, user,request,true)
                 .addObject("edit", true);
         view.setViewName("/doc/edit");
         return view;

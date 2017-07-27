@@ -1,13 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%@ page import="cn.com.xiaoyaoji.core.plugin.Event" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginManager" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Doc" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Project" %>
 <%@ page import="cn.com.xiaoyaoji.service.ProjectService" %>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="java.util.List" %>
-<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginManager" %>
-<%@ page import="cn.com.xiaoyaoji.core.plugin.Event" %>
-<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginInfo" %>
 <%--
   User: zhoujingjie
   Date: 17/4/16
@@ -76,7 +75,7 @@
                 <div class="dl-doc">
                     <div class="doc-name cb ">
                         <span class="dl-background"></span>
-                        <a class="item-name" :href="ctx+'/doc/'+(item.id)+(edit?'/edit':'')">{{item.name}}</a>
+                        <a class="item-name" v-on:click="itemClick('/doc/'+(item.id)+(edit?'/edit':''),$event)" :href="ctx+'/doc/'+(item.id)+(edit?'/edit':'')">{{item.name}}</a>
                     </div>
                 </div>
             </li>

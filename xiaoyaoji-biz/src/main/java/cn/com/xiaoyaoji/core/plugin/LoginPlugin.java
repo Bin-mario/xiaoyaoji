@@ -22,12 +22,6 @@ public interface LoginPlugin extends Plugin {
      */
     User doRequest(HttpServletRequest request);
 
-    /**
-     * 第三方验证地址
-     * @param pluginInfo
-     * @return str
-     */
-    String getOAuthURL(PluginInfo<LoginPlugin> pluginInfo);
 
     /**
      * 回调地址

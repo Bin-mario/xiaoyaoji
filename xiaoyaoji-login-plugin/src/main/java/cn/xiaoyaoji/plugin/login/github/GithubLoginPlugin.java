@@ -41,17 +41,6 @@ public class GithubLoginPlugin implements LoginPlugin {
         return loginUser;
     }
 
-    /**
-     * 第三方验证地址
-     *
-     * @param pluginInfo
-     * @return str
-     */
-    @Override
-    public String getOAuthURL(PluginInfo<LoginPlugin> pluginInfo) {
-        return null;
-    }
-
     @Override
     public void callback(String action, PluginInfo<LoginPlugin> pluginInfo,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String state = request.getParameter("state");

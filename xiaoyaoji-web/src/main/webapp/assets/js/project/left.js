@@ -43,19 +43,6 @@ $(function(){
 
                     $(doms[0]).off('sortupdate').on('sortupdate', function(e) {
                         e.detail = e.originalEvent.detail;
-                        /*
-
-                         This event is triggered when the user stopped sorting and the DOM position has changed.
-
-                         e.detail.item contains the current dragged element.
-                         e.detail.index contains the new index of the dragged element (considering only list items)
-                         e.detail.oldindex contains the old index of the dragged element (considering only list items)
-                         e.detail.elementIndex contains the new index of the dragged element (considering all items within sortable)
-                         e.detail.oldElementIndex contains the old index of the dragged element (considering all items within sortable)
-                         e.detail.startparent contains the element that the dragged item comes from
-                         e.detail.endparent contains the element that the dragged item was added to (new parent)
-
-                         */
                         var $parent = $(e.detail.endparent);
                         var $item =$(e.detail.item);
                         var $lis = $parent.children('li');
@@ -79,6 +66,22 @@ $(function(){
                 });
             },
             methods:{
+                itemClick:function(url,e){
+                    if(!history.pushState){
+                        return false;
+                    }
+                    e.preventDefault();
+                    $('.doc-name.active').removeClass('active');
+                    $(e.target).parent().addClass('active');
+
+                    $('#loading').show();
+                    $.get(window.ctx+url,function(rs){
+
+                        $('#loading').hide();
+                        $('#doc-content').html(rs);
+                        history.pushState('','',window.ctx+url);
+                    });
+                },
                 fold:function(e){
                     if(e.target instanceof HTMLAnchorElement){
                         return true;

@@ -48,10 +48,10 @@
         <div class="fr">
             <ul class="cb">
                 <c:if test="${docId != null && edit}">
-                    <li class="fl"><a href="${ctx}/doc/${docId}"><i class="iconfont icon-yulan"></i>预览文档</a></li>
+                    <li class="fl"><a v-on:click="viewpage"><i class="iconfont icon-yulan"></i>预览文档</a></li>
                 </c:if>
                 <c:if test="${!edit && editPermission}">
-                    <li class="fl"><a href="${ctx}/doc/${docId}/edit"><i class="iconfont icon-yulan"></i>编辑文档</a></li>
+                    <li class="fl"><a v-on:click="editpage"><i class="iconfont icon-yulan"></i>编辑文档</a></li>
                 </c:if>
                 <c:if test="${edit}">
                     <li class="fl" uk-toggle="target: #save-desc"><a><i class="iconfont icon-yulan"></i>保存</a></li>

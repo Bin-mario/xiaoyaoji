@@ -10,7 +10,7 @@
         <div class="doc-name cb ${docId == item.id?'active':''} _ ${item.children.size() ==0 ?'':'folder'}" v-on:click.stop="fold($event)">
             <span class="dl-background"></span>
             <span class="el-tree-expand ${item.children.size() ==0 ?'is-leaf':''}"></span>
-            <a class="item-name" href="${ctx}/doc/${item.id}${edit?'/edit':''}">${item.name}</a href="${ctx}/doc/${item.id}">
+            <a class="item-name"  v-on:click.stop="itemClick('/doc/${item.id}${edit?'/edit':''}',$event)" href="${ctx}/doc/${item.id}${edit?'/edit':''}">${item.name}</a href="${ctx}/doc/${item.id}">
             <c:if test="${edit}">
                 <i class="iconfont fr icon-angeldownblock" v-on:click.stop="contextMenu"></i>
             </c:if>

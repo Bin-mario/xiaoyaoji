@@ -9,7 +9,7 @@ import cn.com.xiaoyaoji.core.util.ConfigUtils;
 public class PluginUtils {
 
     public static String getPluginDir(){
-        return ConfigUtils.getProperty("xyj.plugin.dir","/WEB-INF/plugins/");
+        return ConfigUtils.getProperty("xyj.plugin.dir");
     }
 
     public static String getPluginSourceDir(){

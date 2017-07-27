@@ -27,7 +27,7 @@ public class ConfigUtils {
 
     public static String getProperty(String key,String defaultValue){
         String value = getProperty(key);
-        if(value == null)
+        if(value == null || value.length()==0)
             return defaultValue;
         return value;
     }

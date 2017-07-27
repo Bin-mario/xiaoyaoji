@@ -1,35 +1,41 @@
 [
   {
-    "id":"cn.xiaoyaoji.login.qq",
+    "id": "cn.xiaoyaoji.login.qq",
     "name": "QQ",
     "clazz": "cn.xiaoyaoji.plugin.login.qq.QQLoginPlugin",
     "description": "QQ登录",
     "author": "zhoujingjie",
     "createTime": "2017/07/24",
     "version": "2.0",
-    "event":"login",
-    "icon":"/assets/qq.png"
+    "event": "login",
+    "icon": {
+      "icon32x32": "/assets/qq.png"
+    }
   },
   {
-    "id":"cn.xiaoyaoji.login.weibo",
+    "id": "cn.xiaoyaoji.login.weibo",
     "name": "微博",
     "clazz": "cn.xiaoyaoji.plugin.login.weibo.WeiboLoginPlugin",
     "description": "微博登录",
     "author": "zhoujingjie",
     "createTime": "2017/07/24",
     "version": "2.0",
-    "event":"login",
-    "icon":"/assets/weibo.png"
+    "event": "login",
+    "icon": {
+      "icon32x32": "/assets/weibo.png"
+    }
   },
   {
-    "id":"cn.xiaoyaoji.login.github",
+    "id": "cn.xiaoyaoji.login.github",
     "name": "QQ登录",
     "clazz": "cn.xiaoyaoji.plugin.login.github.GithubLoginPlugin",
     "description": "Github登录",
     "author": "zhoujingjie",
     "createTime": "2017/07/24",
     "version": "2.0",
-    "event":"login",
-    "icon":"/assets/github.png"
+    "event": "login",
+    "icon": {
+      "icon32x32": "/assets/github.png"
+    }
   }
 ]

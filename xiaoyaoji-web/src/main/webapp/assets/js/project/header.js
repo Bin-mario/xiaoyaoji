@@ -37,6 +37,12 @@ $(function(){
                 })
             },
             methods:{
+                editpage:function(){
+                    location.href=window.ctx+'/doc/'+window._docId_+'/edit';
+                },
+                viewpage:function(){
+                    location.href=window.ctx+'/doc/'+window._docId_;
+                },
                 historyURL:function(docId,isEdit,historyId){
                     //g.ctx+'/doc/'+item.docId+(g.edit)?'/edit':''+'?docHistoryId='+item.id
                     if(isEdit){

@@ -166,7 +166,9 @@
                         <div class="uk-button-group" v-if="global.environment.length>0">
                             <button class="uk-button uk-button-default">{{currentEnv.name}}</button>
                             <div class="uk-inline">
-                                <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
+                                <button class="uk-button uk-button-default" type="button">
+                                    <span  class="uk-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" ratio="1"><polygon points="5 7 15 7 10 12"></polygon></svg></span>
+                                </button>
                                 <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
                                     <ul class="uk-nav uk-dropdown-nav">
                                         <li v-for="item in global.environment" v-on:click="currentEnv=item" v-bind:class="{'uk-active':item.t == currentEnv.t}"><a href="#">{{item.name}}</a></li>
@@ -369,4 +371,4 @@
     var doc = ${doc},projectGlobal=${projectGlobal};
 </script>
 <link rel="stylesheet" type="text/css" href="${assets}/jsonformat/jsonFormater.css"/>
-<script src="${ctx}/plugin?id=cn.xiaoyaoji.plugin&path=http/view.js&v=${pluginInfo.version}"></script>
+<script src="${ctx}/plugin?id=sys.http&path=http/view.js&v=${pluginInfo.version}"></script>
