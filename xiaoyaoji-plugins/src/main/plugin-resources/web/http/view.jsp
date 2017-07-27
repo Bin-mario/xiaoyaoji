@@ -319,7 +319,7 @@
             </form>
             <!--<p class="doc-item-section-title">结果数据</p>-->
             <div class="api-result-tabs cb" v-show="result.content || result.resultHeaders">
-                <a class="tab fl active" v-on:click="resultActive='content'" v-bind:class="{'active':(resultActive=='content')}">Body</a>
+                <a class="tab fl " v-on:click="resultActive='content'" v-bind:class="{'active':(resultActive=='content')}">Body</a>
                 <a class="tab fl" v-on:click="resultActive='headers'" v-bind:class="{'active':(resultActive=='headers')}">Headers</a>
                 <a class="tab fr">Time: {{result.resultRunTime}} ms</a>
                 <a class="tab fr">StatusCode: {{result.resultStatusCode}}</a>

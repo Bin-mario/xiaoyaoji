@@ -62,3 +62,47 @@
     z-index: 2;
     opacity: 0;
 }
+.api-details-xml{
+    font-family: 'Consolas';
+}
+.api-result-tabs{
+    background: #F3F3F3;
+    border: 1px solid #E5E5E5;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
+.api-result-tabs .tab{
+    color: #666;
+    padding: 10px;
+}
+.api-result-tabs .tab.active{
+    border-bottom: 2px solid orangered;
+    color: #000;
+}
+.api-result-tabs .tab:hover{
+    color: #000;
+}
+.api-result-headers-list{
+    line-height: 25px;
+    padding: 20px;
+}
+.api-result-box{
+    position: relative;
+}
+.api-result-box .iconfont{
+    position: absolute;
+    right: 10px;
+    top:0;
+}
+.api-result-box .icon-openwindow{
+    right: 30px;
+}
+#api-result{
+    background: #fff;
+    border: 1px solid #E5E5E5;
+    max-height: 600px;
+    overflow-y: auto;
+}
+#api-result pre{
+    border: none;
+}

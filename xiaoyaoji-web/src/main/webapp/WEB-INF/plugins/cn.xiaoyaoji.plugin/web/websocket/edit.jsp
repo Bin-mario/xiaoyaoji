@@ -129,7 +129,7 @@
                         <div class="doc-attach" v-for="item in attachs" v-bind:class="{'file':item.type=='FILE'}">
                             <i class="iconfont icon-close" v-on:click="deleteFile(item)"></i>
                             <a :href="fileAccess+item.url" v-if="item.type=='FILE'" target="_blank">{{item.fileName}}</a>
-                            <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open('+fileAccess+item.url+');'">
+                            <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open(\''+fileAccess+item.url+'\');'">
                         </div>
                     </div>
                 </div>

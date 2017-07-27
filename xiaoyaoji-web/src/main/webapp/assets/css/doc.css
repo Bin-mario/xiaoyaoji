@@ -186,13 +186,10 @@
     margin-top: 20px;
 }
 
-.dl-docs .doc-name:hover a{
+.dl-docs .doc-name a:hover{
     color: #0f6ecd;
-}
-.dl-docs .doc-name:hover .item-name{
     text-decoration: underline;
 }
-
 .dl-docs .doc-name.active .dl-background {
     background: #d1dbe5;
 }

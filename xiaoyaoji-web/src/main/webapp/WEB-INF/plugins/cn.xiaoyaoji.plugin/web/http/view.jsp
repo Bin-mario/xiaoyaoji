@@ -28,7 +28,7 @@
             <div class="cb">
                 <div class="doc-attach" v-for="item in attachs" v-bind:class="{'file':item.type=='FILE'}">
                     <a :href="fileAccess+item.url" v-if="item.type=='FILE'" target="_blank">{{item.fileName}}</a>
-                    <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open('+fileAccess+item.url+');'">
+                    <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open(\''+fileAccess+item.url+'\');'">
                 </div>
             </div>
         </div>
@@ -317,7 +317,7 @@
             </form>
             <!--<p class="doc-item-section-title">结果数据</p>-->
             <div class="api-result-tabs cb" v-show="result.content || result.resultHeaders">
-                <a class="tab fl active" v-on:click="resultActive='content'" v-bind:class="{'active':(resultActive=='content')}">Body</a>
+                <a class="tab fl" v-on:click="resultActive='content'" v-bind:class="{'active':(resultActive=='content')}">Body</a>
                 <a class="tab fl" v-on:click="resultActive='headers'" v-bind:class="{'active':(resultActive=='headers')}">Headers</a>
                 <a class="tab fr">Time: {{result.resultRunTime}} ms</a>
                 <a class="tab fr">StatusCode: {{result.resultStatusCode}}</a>
@@ -329,8 +329,8 @@
                 <div id="api-result">
                     <pre v-show="resultActive=='content'" id="api-result-content" v-html="result.content"></pre>
                     <div v-show="resultActive=='headers'" id="api-result-headers">
-                        <div class="api-result-headers-list" v-show="result.resultHeaders" v-html="result.resultHeaders"></div>
-                        <div class="api-result-headers-list">
+                        <pre class="api-result-headers-list" v-show="result.resultHeaders" v-html="result.resultHeaders"></pre>
+                        <div class="api-result-headers-list" v-show="!result.resultHeaders">
                             <div>
                                 No header for you
                             </div>

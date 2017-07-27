@@ -178,12 +178,12 @@
                     }
                     var self=this;
                     utils.delete('/attach/'+item.id+'?projectId='+_projectId_,function(rs){
-                        self.attachs.$remove(item);
+                        self.attachs.splice(self.attachs.indexOf(item));
                     })
                 },
                 fileUpload:function(e){
                     var files = e.target.files;
-                    if(files.length == 0)
+                    if(files.length === 0)
                         return false;
                     var fd = new FormData();
                     fd.append('relateId',this.doc.id);
