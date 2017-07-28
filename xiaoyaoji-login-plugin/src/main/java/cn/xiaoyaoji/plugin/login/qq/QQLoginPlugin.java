@@ -19,7 +19,7 @@ import java.io.IOException;
  * @author zhoujingjie
  *         created on 2017/7/24
  */
-public class QQLoginPlugin implements LoginPlugin {
+public class QQLoginPlugin extends LoginPlugin {
     private static Logger logger = Logger.getLogger(QQLoginPlugin.class);
     @Override
     public User doRequest(HttpServletRequest request) {
@@ -39,7 +39,13 @@ public class QQLoginPlugin implements LoginPlugin {
     }
 
     @Override
-    public void callback(String action, PluginInfo<LoginPlugin> pluginInfo,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public String getOpenURL() {
+        String id = getPluginInfo().getId();
+        return "https://graph.qq.com/oauth2.0/authorize?response_type=code&state=login&client_id=101333549&redirect_uri=http://www.xiaoyaoji.cn/login/callback/"+id+"/login";
+    }
+
+    @Override
+    public void callback(String action,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String state = request.getParameter("state");
         String code = request.getParameter("code");
         logger.info("callback qq -> code:" + code + " state:" + state);
@@ -51,7 +57,7 @@ public class QQLoginPlugin implements LoginPlugin {
             request.setAttribute("type","qq");
             request.setAttribute("state",state);
             request.setAttribute("accessToken",accessToken.getAccess_token());
-            request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+pluginInfo.getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);
+            request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+getPluginInfo().getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);
         }
     }
 }

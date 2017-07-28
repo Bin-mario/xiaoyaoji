@@ -6,7 +6,7 @@ import cn.com.xiaoyaoji.core.plugin.doc.DocEvPlugin;
  * @author zhoujingjie
  *         created on 2017/6/21
  */
-public class MarkdownDocPlugin implements DocEvPlugin{
+public class MarkdownDocPlugin extends DocEvPlugin{
 
 
     @Override

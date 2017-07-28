@@ -41,8 +41,8 @@ public class PluginController {
 
 
     @Ignore
-    @RequestMapping("/assets/{id}")
-    public void assets(@RequestParam String path,@PathVariable("id") String pluginId,
+    @RequestMapping("/assets")
+    public void assets(@RequestParam String path,@RequestParam("id") String pluginId,
                        HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         path = path.replace("..","");
         PluginInfo info = PluginManager.getInstance().getPluginInfo(pluginId);

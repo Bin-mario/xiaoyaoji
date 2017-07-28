@@ -23,18 +23,18 @@ import java.util.List;
  * @author zhoujingjie
  *         created on 2017/7/1
  */
-public class JsonExportPlugin implements DocExportPlugin {
+public class JsonExportPlugin extends DocExportPlugin {
     private static final String EXPORT_KEY_DOCS = "docs";
     private static final String EXPORT_KEY_VER = "version";
 
     @Override
-    public void doExport(String projectId, HttpServletResponse response, PluginInfo pluginInfo) throws IOException {
+    public void doExport(String projectId, HttpServletResponse response) throws IOException {
         Project project = ProjectService.instance().getProject(projectId);
         AssertUtils.notNull(project,"项目不存在");
         JSONObject json = (JSONObject) JSON.toJSON(project);
         List<Doc> docs = ProjectService.instance().getProjectDocs(projectId, true);
         json.put(EXPORT_KEY_DOCS, docs);
-        json.put(EXPORT_KEY_VER, pluginInfo.getVersion());
+        json.put(EXPORT_KEY_VER, getPluginInfo().getVersion());
         String jsonStr = JsonUtils.toString(json);
         String encoding = Constants.UTF8.displayName();
         response.setCharacterEncoding(encoding);

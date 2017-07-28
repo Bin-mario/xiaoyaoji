@@ -1,6 +1,7 @@
 package cn.com.xiaoyaoji;
 
 import cn.com.xiaoyaoji.core.common.Constants;
+import cn.com.xiaoyaoji.core.plugin.AbstractPlugin;
 import cn.com.xiaoyaoji.core.plugin.Plugin;
 import cn.com.xiaoyaoji.core.plugin.PluginInfo;
 import cn.com.xiaoyaoji.core.plugin.PluginManager;
@@ -158,6 +159,9 @@ public class Application {
             List<PluginInfo> pluginInfos = JSON.parseObject(content, new TypeReference<List<PluginInfo>>(){});
             for(PluginInfo pluginInfo:pluginInfos) {
                 Plugin plugin = (Plugin) classLoader.loadClass(pluginInfo.getClazz()).newInstance();
+                if(plugin instanceof AbstractPlugin){
+                    ((AbstractPlugin)plugin).setPluginInfo(pluginInfo);
+                }
                 pluginInfo.setPlugin(plugin);
                 pluginInfo.setRuntimeFolder(pluginDir.getName());
                 PluginManager.getInstance().register(pluginInfo);

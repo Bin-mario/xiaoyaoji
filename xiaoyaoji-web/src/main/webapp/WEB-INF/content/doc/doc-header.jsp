@@ -59,8 +59,8 @@
                     </li>
                 </c:if>
                 <c:if test="${editPermission}">
-                <li id="doc-history-li" class="fl" v-cloak v-show="history.length>0"><a href=""><i class="el-icon-setting"></i>历史版本</a></li>
-                <div uk-dropdown v-show="history.length>0" v-cloak class="doc-history">
+                <li id="doc-history-li" class="fl" v-cloak v-on:click="loadHistory"><a><i class="el-icon-setting"></i>历史版本</a></li>
+                <div uk-dropdown v-if="history.length>0" v-cloak class="doc-history">
                     <table class="uk-table">
                         <caption>历史版本</caption>
                         <thead>

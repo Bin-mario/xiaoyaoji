@@ -21,7 +21,7 @@ import java.util.Date;
  * @author zhoujingjie
  *         created on 2017/7/1
  */
-public class JsonImportPlugin implements DocImportPlugin {
+public class JsonImportPlugin extends DocImportPlugin {
     private static final String EXPORT_KEY_DOCS = "docs";
     private static final String EXPORT_KEY_VER = "version";
     private static final String IMPORT_KEY_DOC_CHILDREN = "children";

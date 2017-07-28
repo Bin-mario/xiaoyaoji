@@ -64,8 +64,8 @@ public class LoginController {
      * @throws IOException
      */
     @Ignore
-    @RequestMapping("/plugin/{pluginId}")
-    public void plugin(@PathVariable("pluginId") String pluginId, HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+    @RequestMapping("/plugin")
+    public void plugin(@RequestParam("pluginId") String pluginId, HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
         PluginInfo<LoginPlugin> loginPluginInfo =  PluginManager.getInstance().getLoginPlugin(pluginId);
         if(loginPluginInfo == null){
             request.setAttribute("errorMsg","未找到插件"+pluginId);
@@ -77,13 +77,13 @@ public class LoginController {
         AssertUtils.isTrue(!User.Status.INVALID.equals(loginUser.getStatus()), "invalid status");
         String token = CacheUtils.token();
         response.addCookie(setCookie(token,loginUser));
-        JSON.writeJSONStringTo(new _HashMap<>().add("token",token),response.getWriter());
+        JSON.writeJSONString(response.getWriter(),new _HashMap<>().add("token",token));
     }
 
     /**
      * 第三方登录回调地址
      * @param pluginId
-     * @param action
+     * @param action            action不能有任何后缀
      * @param request
      * @param response
      * @throws ServletException
@@ -99,7 +99,7 @@ public class LoginController {
             request.getRequestDispatcher("/error").forward(request,response);
             return;
         }
-        loginPluginInfo.getPlugin().callback(action,loginPluginInfo,request,response);
+        loginPluginInfo.getPlugin().callback(action,request,response);
     }
 
 }

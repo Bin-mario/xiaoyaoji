@@ -14,6 +14,12 @@
 <c:if test="${!isXHR}">
     <jsp:include page="doc-header.jsp"/>
     <jsp:include page="doc-left.jsp"/>
+    <div class="hide" id="loading">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+    </div>
 <div class="doc-content" id="doc-content">
 </c:if>
     <c:if test="${editProjectGlobal}">
@@ -28,12 +34,7 @@
         </c:if>
     </c:if>
 <!-- loading start -->
-<div class="hide" id="loading">
-    <div class="spinner">
-        <div class="double-bounce1"></div>
-        <div class="double-bounce2"></div>
-    </div>
-</div>
+
 <script>window._edit_ = '${edit}', _projectName_ = '${project.name}', _projectId_ = '${project.id}', _docId_ = '${docId}'</script>
 <c:if test="${!isXHR}">
 </div>

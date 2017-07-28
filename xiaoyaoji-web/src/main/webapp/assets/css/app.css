@@ -345,9 +345,9 @@ ul[uk-tab]{
 .login-third{
     margin: 10px 0;
 }
-.login-third i{
-    font-size: 30px;
-    margin-right: 10px;
+.login-third img{
+    width: 28px;
+    margin-right: 2px;
 }
 .login-register-body .forget-succeed{
     border:1px solid #c0ebd0;

@@ -1,16 +1,12 @@
 package cn.xiaoyaoji.plugin.login.github;
 
 import cn.com.xiaoyaoji.core.plugin.LoginPlugin;
-import cn.com.xiaoyaoji.core.plugin.PluginInfo;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.data.bean.Thirdparty;
 import cn.com.xiaoyaoji.data.bean.User;
 import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.util.PluginUtils;
-import cn.xiaoyaoji.plugin.login.qq.AccessToken;
-import cn.xiaoyaoji.plugin.login.qq.QQ;
-import cn.xiaoyaoji.plugin.login.qq.UserInfo;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -22,7 +18,7 @@ import java.io.IOException;
  * @author zhoujingjie
  *         created on 2017/7/24
  */
-public class GithubLoginPlugin implements LoginPlugin {
+public class GithubLoginPlugin extends LoginPlugin {
     private static Logger logger = Logger.getLogger(GithubLoginPlugin.class);
     @Override
     public User doRequest(HttpServletRequest request) {
@@ -42,7 +38,12 @@ public class GithubLoginPlugin implements LoginPlugin {
     }
 
     @Override
-    public void callback(String action, PluginInfo<LoginPlugin> pluginInfo,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public String getOpenURL() {
+        return "https://github.com/login/oauth/authorize?client_id=4c8973629deb3d577bd3&redirect_uri=http://www.xiaoyaoji.cn/login/callback/"+getPluginInfo().getId()+"/github&scope=user&state=login";
+    }
+
+    @Override
+    public void callback(String action,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String state = request.getParameter("state");
         String code = request.getParameter("code");
         logger.info("callback github -> code:" + code + " state:" + state);
@@ -55,7 +56,7 @@ public class GithubLoginPlugin implements LoginPlugin {
             request.setAttribute("type","github");
             request.setAttribute("state",state);
             request.setAttribute("accessToken",accessToken.getAccess_token());
-            request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+pluginInfo.getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);
+            request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+getPluginInfo().getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);
         }
     }
 }

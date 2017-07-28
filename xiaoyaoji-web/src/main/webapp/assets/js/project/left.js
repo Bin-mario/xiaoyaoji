@@ -71,6 +71,8 @@ $(function(){
                         return false;
                     }
                     e.preventDefault();
+                    var $docContent =$('#doc-content');
+                    $docContent.html("");
                     $('.doc-name.active').removeClass('active');
                     $(e.target).parent().addClass('active');
 
@@ -78,7 +80,7 @@ $(function(){
                     $.get(window.ctx+url,function(rs){
 
                         $('#loading').hide();
-                        $('#doc-content').html(rs);
+                        $docContent.html(rs);
                         history.pushState('','',window.ctx+url);
                     });
                 },

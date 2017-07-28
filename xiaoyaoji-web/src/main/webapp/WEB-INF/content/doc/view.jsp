@@ -11,6 +11,12 @@
     <jsp:include page="doc-left.jsp">
         <jsp:param name="view" value="true"/>
     </jsp:include>
+    <div class="hide" id="loading">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+    </div>
     <div class="doc-content doc-full-width" id="doc-content">
 </c:if>
 <div class="doc-content-header">
@@ -36,12 +42,7 @@
     </c:if>
 </c:if>
 <!-- loading start -->
-<%--<div v-if="status.loading">
-    <div class="spinner">
-        <div class="double-bounce1"></div>
-        <div class="double-bounce2"></div>
-    </div>
-</div>--%>
+
 
 <script>window._edit_ = '${edit}', _projectName_ = '${project.name}', _projectId_ = '${project.id}', _docId_ = '${docId}'</script>
 

@@ -28,7 +28,7 @@
             <div class="cb">
                 <div class="doc-attach" v-for="item in attachs" v-bind:class="{'file':item.type=='FILE'}">
                     <a :href="fileAccess+item.url" v-if="item.type=='FILE'" target="_blank">{{item.fileName}}</a>
-                    <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open(\''+fileAccess+item.url+'\');'">
+                    <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open('+fileAccess+item.url+');'">
                 </div>
             </div>
         </div>
@@ -166,7 +166,9 @@
                         <div class="uk-button-group" v-if="global.environment.length>0">
                             <button class="uk-button uk-button-default">{{currentEnv.name}}</button>
                             <div class="uk-inline">
-                                <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
+                                <button class="uk-button uk-button-default" type="button">
+                                    <span  class="uk-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" ratio="1"><polygon points="5 7 15 7 10 12"></polygon></svg></span>
+                                </button>
                                 <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
                                     <ul class="uk-nav uk-dropdown-nav">
                                         <li v-for="item in global.environment" v-on:click="currentEnv=item" v-bind:class="{'uk-active':item.t == currentEnv.t}"><a href="#">{{item.name}}</a></li>
@@ -317,7 +319,7 @@
             </form>
             <!--<p class="doc-item-section-title">结果数据</p>-->
             <div class="api-result-tabs cb" v-show="result.content || result.resultHeaders">
-                <a class="tab fl" v-on:click="resultActive='content'" v-bind:class="{'active':(resultActive=='content')}">Body</a>
+                <a class="tab fl " v-on:click="resultActive='content'" v-bind:class="{'active':(resultActive=='content')}">Body</a>
                 <a class="tab fl" v-on:click="resultActive='headers'" v-bind:class="{'active':(resultActive=='headers')}">Headers</a>
                 <a class="tab fr">Time: {{result.resultRunTime}} ms</a>
                 <a class="tab fr">StatusCode: {{result.resultStatusCode}}</a>
@@ -329,8 +331,8 @@
                 <div id="api-result">
                     <pre v-show="resultActive=='content'" id="api-result-content" v-html="result.content"></pre>
                     <div v-show="resultActive=='headers'" id="api-result-headers">
-                        <pre class="api-result-headers-list" v-show="result.resultHeaders" v-html="result.resultHeaders"></pre>
-                        <div class="api-result-headers-list" v-show="!result.resultHeaders">
+                        <div class="api-result-headers-list" v-show="result.resultHeaders" v-html="result.resultHeaders"></div>
+                        <div class="api-result-headers-list">
                             <div>
                                 No header for you
                             </div>

@@ -13,24 +13,24 @@ import java.io.IOException;
  * @author zhoujingjie
  *         created on 2017/7/24
  */
-public interface LoginPlugin extends Plugin {
+public abstract class LoginPlugin extends AbstractPlugin<LoginPlugin> {
 
     /**
      * 登录请求操作
      * @param request
      * @return 如果登录成功返回User。登录失败抛异常或返回null
      */
-    User doRequest(HttpServletRequest request);
+    public abstract User doRequest(HttpServletRequest request);
 
 
+    public abstract String getOpenURL();
     /**
      * 回调地址
      * @param action
-     * @param pluginInfo
      * @param request
      * @param response
      * @throws ServletException
      * @throws IOException
      */
-    void callback(String action,PluginInfo<LoginPlugin> pluginInfo ,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+    public abstract void callback(String action ,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }

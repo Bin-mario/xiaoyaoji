@@ -22,14 +22,10 @@ $(function(){
             },
             mounted:function(){
                 var self=this;
-                if(_docId_ && $('#doc-history-li').size()>0){
-                    utils.get('/doc/history/'+_docId_,{},function(rs){
-                        self.history = rs.data;
-                    });
-                }
+
                 $('body').on('keydown',function(e){
                     //ctrl+s or command+s
-                    if((e.ctrlKey || e.metaKey) && e.which == 83 ){
+                    if((e.ctrlKey || e.metaKey) && e.which === 83 ){
                         e.preventDefault();
                         self.submit();
                         return false;
@@ -37,6 +33,14 @@ $(function(){
                 })
             },
             methods:{
+                loadHistory:function(){
+                    if(_docId_){
+                        var self = this;
+                        utils.get('/doc/history/'+_docId_,{},function(rs){
+                            self.history = rs.data;
+                        });
+                    }
+                },
                 editpage:function(){
                     location.href=window.ctx+'/doc/'+window._docId_+'/edit';
                 },

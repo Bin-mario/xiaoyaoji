@@ -19,7 +19,7 @@ import java.io.IOException;
  * @author zhoujingjie
  *         created on 2017/7/24
  */
-public class WeiboLoginPlugin implements LoginPlugin {
+public class WeiboLoginPlugin extends LoginPlugin {
     private static Logger logger = Logger.getLogger(WeiboLoginPlugin.class);
     @Override
     public User doRequest(HttpServletRequest request) {
@@ -40,7 +40,13 @@ public class WeiboLoginPlugin implements LoginPlugin {
     }
 
     @Override
-    public void callback(String action, PluginInfo<LoginPlugin> pluginInfo,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public String getOpenURL() {
+        String id = getPluginInfo().getId();
+        return "https://api.weibo.com/oauth2/authorize?client_id=290920638&state=login&redirect_uri=http://www.xiaoyaoji.cn/login/callback/"+id+"/weibo";
+    }
+
+    @Override
+    public void callback(String action ,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String state = request.getParameter("state");
         String code = request.getParameter("code");
         logger.info("callback weibo -> code:" + code + " state:" + state);
@@ -51,7 +57,7 @@ public class WeiboLoginPlugin implements LoginPlugin {
             request.setAttribute("type","weibo");
             request.setAttribute("state",state);
             request.setAttribute("accessToken",accessToken.getAccess_token());
-            request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+pluginInfo.getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);
+            request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+getPluginInfo().getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);
 
         }
     }

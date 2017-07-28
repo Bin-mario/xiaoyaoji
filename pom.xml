@@ -132,7 +132,7 @@
             </dependency>
             <dependency>
                 <groupId>cn.com.xiaoyaoji</groupId>
-                <artifactId>xiaoyaoji-docformatter</artifactId>
+                <artifactId>xiaoyaoji-pdf</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

@@ -36,9 +36,8 @@ require(['utils','vue', 'vueEx'], function (utils, Vue) {
                 }).catch(function(){
                 })
             },
-            thirdparty:function(pluginId,callback){
-                var url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&state=login&client_id=101333549&redirect_uri='+callback;
-                window.open(url, pluginId, 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
+            thirdparty:function(pluginId,openURL){
+                window.open(openURL, pluginId, 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
 
                 if (window.initialized) {
                     return true;

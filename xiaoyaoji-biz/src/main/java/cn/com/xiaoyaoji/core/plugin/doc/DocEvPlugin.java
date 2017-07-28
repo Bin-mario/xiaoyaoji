@@ -1,16 +1,16 @@
 package cn.com.xiaoyaoji.core.plugin.doc;
 
-import cn.com.xiaoyaoji.core.plugin.Plugin;
+import cn.com.xiaoyaoji.core.plugin.AbstractPlugin;
 
 /**
  * doc edit or doc view
  * @author zhoujingjie
  *         created on 2017/6/21
  */
-public interface DocEvPlugin extends Plugin {
+public abstract class DocEvPlugin extends AbstractPlugin<DocEvPlugin> {
 
-    String getEditPage();
+    public abstract String getEditPage();
 
-    String getViewPage();
+    public abstract String getViewPage();
 
 }

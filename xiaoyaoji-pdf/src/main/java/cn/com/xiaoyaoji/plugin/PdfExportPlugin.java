@@ -28,7 +28,7 @@ import java.util.*;
  * @author zhoujingjie
  *         created on 2017/7/1
  */
-public class PdfExportPlugin implements DocExportPlugin {
+public class PdfExportPlugin extends DocExportPlugin {
 
     private static final Logger log = LoggerFactory.getLogger(PdfExportPlugin.class);
 
@@ -38,7 +38,7 @@ public class PdfExportPlugin implements DocExportPlugin {
 
 
     @Override
-    public void doExport(String projectId, HttpServletResponse response, PluginInfo pluginInfo) throws IOException {
+    public void doExport(String projectId, HttpServletResponse response) throws IOException {
         Project project = ProjectService.instance().getProject(projectId);
         AssertUtils.notNull("pdf export error:project or output stream cannot be null.", project);
         Document document = new Document();

@@ -140,7 +140,7 @@ public class ProjectController {
 
         PluginInfo<DocExportPlugin> docExportPluginPluginInfo = PluginManager.getInstance().getExportPlugin(pluginId);
         AssertUtils.notNull(docExportPluginPluginInfo,"不支持该操作");
-        docExportPluginPluginInfo.getPlugin().doExport(id,response,docExportPluginPluginInfo);
+        docExportPluginPluginInfo.getPlugin().doExport(id,response);
     }
 
     /**
