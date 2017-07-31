@@ -20,7 +20,12 @@ public class PluginManager {
     }
 
     private PluginManager(){
-        pluginInfos = new HashMap<>();
+        pluginInfos = new LinkedHashMap<>();
+    }
+
+
+    public Map<Event,List<PluginInfo>> getPluginInfos(){
+        return pluginInfos;
     }
 
     public static PluginManager getInstance(){
@@ -36,6 +41,18 @@ public class PluginManager {
         }
         temp.add(pluginInfo);
     }
+
+    @SuppressWarnings("unchecked")
+    public void unload(PluginInfo pluginInfo){
+        Event e = Event.parse(pluginInfo.getEvent());
+        List<PluginInfo> temp = pluginInfos.get(e);
+        pluginInfo.getPlugin().destory();
+        pluginInfo.setPlugin(null);
+        if(temp!=null){
+            temp.remove(pluginInfo);
+        }
+    }
+
 
     public List<PluginInfo> getPlugins(Event event){
         List<PluginInfo> temp = this.pluginInfos.get(event);

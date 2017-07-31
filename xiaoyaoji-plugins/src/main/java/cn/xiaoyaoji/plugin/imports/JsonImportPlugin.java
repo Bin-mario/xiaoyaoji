@@ -33,7 +33,7 @@ public class JsonImportPlugin extends DocImportPlugin {
         try {
             obj = JSON.parseObject(json);
         } catch (Exception e) {
-            throw new ServiceException("不支持该文件导入");
+            throw new ServiceException("数据格式有误");
         }
         String version = obj.getString(EXPORT_KEY_VER);
         if(version == null) {

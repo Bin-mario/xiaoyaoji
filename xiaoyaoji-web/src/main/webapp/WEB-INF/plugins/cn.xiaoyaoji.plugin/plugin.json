@@ -87,7 +87,7 @@
     "version": "2.0",
     "event":"doc.export",
     "icon":{
-      "icon32x32":"json.png"
+      "icon32x32":"/assets/json.png"
     }
   },
   {
@@ -100,7 +100,7 @@
     "version": "2.0",
     "event":"doc.import",
     "icon":{
-      "icon32x32":"json.png"
+      "icon32x32":"/assets/json.png"
     }
   }
 ]

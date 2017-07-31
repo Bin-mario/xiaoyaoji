@@ -1,7 +1,6 @@
 package cn.xiaoyaoji.plugin.login.weibo;
 
 import cn.com.xiaoyaoji.core.plugin.LoginPlugin;
-import cn.com.xiaoyaoji.core.plugin.PluginInfo;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.data.bean.Thirdparty;
@@ -41,8 +40,9 @@ public class WeiboLoginPlugin extends LoginPlugin {
 
     @Override
     public String getOpenURL() {
-        String id = getPluginInfo().getId();
-        return "https://api.weibo.com/oauth2/authorize?client_id=290920638&state=login&redirect_uri=http://www.xiaoyaoji.cn/login/callback/"+id+"/weibo";
+        String clientid = getPluginInfo().getConfig().get("clientid");
+        String redirectUri = getPluginInfo().getConfig().get("redirectUri");
+        return "https://api.weibo.com/oauth2/authorize?client_id="+clientid+"&state=login&redirect_uri="+redirectUri;
     }
 
     @Override

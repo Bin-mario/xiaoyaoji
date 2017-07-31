@@ -1,6 +1,10 @@
 package cn.com.xiaoyaoji.core.plugin;
 
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author zhoujingjie
  *         created on 2017/5/18
@@ -18,6 +22,10 @@ public class PluginInfo<T extends Plugin>{
     private T plugin;
     //运行时文件夹
     private String runtimeFolder;
+
+    private Map<String,String> config;
+    //运行时目录
+    private File runtimeDirectory;
 
     public String getId() {
         return id;
@@ -106,4 +114,39 @@ public class PluginInfo<T extends Plugin>{
     public void setRuntimeFolder(String runtimeFolder) {
         this.runtimeFolder = runtimeFolder;
     }
+
+    public Map<String, String> getConfig() {
+        if(config == null){
+            config = new HashMap<>();
+        }
+        return config;
+    }
+
+    public void setConfig(Map<String, String> config) {
+        this.config = config;
+    }
+
+    public void setRuntimeDirectory(File runtimeDirectory) {
+        this.runtimeDirectory = runtimeDirectory;
+    }
+
+    public File getRuntimeDirectory() {
+        return runtimeDirectory;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PluginInfo<?> that = (PluginInfo<?>) o;
+
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
+

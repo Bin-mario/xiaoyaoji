@@ -40,7 +40,7 @@ public class JsonExportPlugin extends DocExportPlugin {
         response.setCharacterEncoding(encoding);
         response.setContentType("application/json;charset="+encoding);
         PrintWriter writer = response.getWriter();
-        response.setContentLength(jsonStr.length());
+        response.setContentLength(jsonStr.getBytes().length);
         String fileName = URLEncoder.encode( project.getName(), Charset.forName(CharEncoding.UTF_8).displayName())+".mjson";
         response.setHeader("Content-Disposition","attachment; filename=\""+fileName+"\";");
         writer.write(jsonStr);

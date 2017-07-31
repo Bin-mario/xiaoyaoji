@@ -80,13 +80,6 @@ public class ConfigUtils {
         return properties.getProperty("salt");
     }
 
-    public static String getQQAppId() {
-        return properties.getProperty("qq.appid");
-    }
-    public static String getQQAppKey() {
-        return properties.getProperty("qq.appkey");
-    }
-
     public static int getTokenExpires() {
         return Integer.parseInt(properties.getProperty("token.expires"));
     }

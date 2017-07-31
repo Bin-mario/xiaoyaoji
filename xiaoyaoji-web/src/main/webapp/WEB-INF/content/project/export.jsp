@@ -1,9 +1,14 @@
-<%--
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.PluginManager" %>
+<%@ page import="cn.com.xiaoyaoji.core.plugin.Event" %><%--
   User: zhoujingjie
   Date: 17/4/8
   Time: 13:33
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    request.setAttribute("exportPlugins",PluginManager.getInstance().getPlugins(Event.DOC_EXPORT));
+%>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -18,11 +23,13 @@
     <div class="project-info-content">
         <div class="db-export">
             <ul class="cb">
-                <li onclick="location.href='${ctx}/project/${project.id}/export/pdf'" id="export-pdf"><i class="iconfont icon-pdf"></i>
-                    <p>导出PDF</p></li>
-                <li onclick="window.open('${ctx}/project/${project.id}/export/cn.xiaoyaoji.export.mjson');"><i class="iconfont icon-jsonfile"></i>
-                    <p>导出JSON</p></li>
-                <!--<li><i class="iconfont icon-sql"></i> <p>导出SQL</p></li>-->
+                <c:forEach items="${exportPlugins}" var="item">
+                    <li onclick="window.open('${ctx}/project/${project.id}/export/${item.id}/do')">
+                        <img src="${ctx}/plugin/assets?id=${item.id}&path=${item.icon.icon32x32}">
+                        <p>${item.name}</p>
+                    </li>
+                </c:forEach>
+
             </ul>
         </div>
     </div>

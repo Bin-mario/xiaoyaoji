@@ -253,15 +253,16 @@ body{
     width: 600px;
 }
 .db-export li{
-    width: 200px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     text-align: center;
     cursor:pointer;
     float: left;
-    font-size: 20px;
+    font-size: 13px;
 }
-.db-export li i{
-    font-size: 80px;
+.db-export li img{
+    width: 32px;
+    height: 32px;
 }
 
 /**********************************************/

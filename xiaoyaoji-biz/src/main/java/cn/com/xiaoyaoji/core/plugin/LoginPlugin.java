@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author zhoujingjie
  *         created on 2017/7/24
  */
-public abstract class LoginPlugin extends AbstractPlugin<LoginPlugin> {
+public abstract class LoginPlugin extends Plugin<LoginPlugin> {
 
     /**
      * 登录请求操作

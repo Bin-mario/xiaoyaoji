@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="${assets}/css/app.css">
     <link rel="stylesheet" href="${assets}/uikit/css/uikit-rtl.css">
     <link rel="stylesheet" href="${assets}/uikit/css/uikit.css">
-    <link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.com.cn/"/>
+    <link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.cn/"/>
     <meta name="keywords"
           content="小幺鸡,接口文档管理,接口平台,在线文档,api管理,api测试,接口文档工具,接口演示,rest,restful,rest api,接口测试,postman,文档管理,websocket在线测试"/>
     <meta name="description" content="简单好用的在线文档管理助手，支持restapi、websocket在线测试,支持markdown编辑器,提升开发效率降低接口错误率。"/>

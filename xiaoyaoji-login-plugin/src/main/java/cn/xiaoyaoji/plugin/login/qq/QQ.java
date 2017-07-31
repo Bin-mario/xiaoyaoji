@@ -17,8 +17,15 @@ import java.util.regex.Pattern;
  */
 public class QQ {
     private static Logger logger = Logger.getLogger("thirdly");
-    public UserInfo getUserInfo(String openid,String accessToken){
-        String rs = HttpUtils.get("https://graph.qq.com/user/get_user_info?openid="+openid+"&oauth_consumer_key="+ ConfigUtils.getQQAppId()+"&access_token="+accessToken+"&format=json");
+    private String appId,appKey;
+
+    public QQ(String appId, String appKey) {
+        this.appId = appId;
+        this.appKey = appKey;
+    }
+
+    public UserInfo getUserInfo(String openid, String accessToken){
+        String rs = HttpUtils.get("https://graph.qq.com/user/get_user_info?openid="+openid+"&oauth_consumer_key="+ appId+"&access_token="+accessToken+"&format=json");
         UserInfo userInfo= JSON.parseObject(rs,UserInfo.class);
         if(!userInfo.getRet().equals("0")){
             throw new QQException(rs);
@@ -28,8 +35,8 @@ public class QQ {
 
     public AccessToken getAccessToken(String code, String redirectURI){
         String rs = HttpUtils.get("https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id="
-                + ConfigUtils.getQQAppId()
-                +"&client_secret="+ConfigUtils.getQQAppKey()
+                + appId
+                +"&client_secret="+appKey
                 +"&code="+code
                 +"&redirect_uri="+redirectURI
         );

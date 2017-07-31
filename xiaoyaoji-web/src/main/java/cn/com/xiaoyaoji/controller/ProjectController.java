@@ -130,7 +130,7 @@ public class ProjectController {
      * @return pdfview
      */
     @Ignore
-    @GetMapping(value = "/{id}/export/{pluginId}")
+    @GetMapping(value = "/{id}/export/{pluginId}/do")
     @ResponseBody
     public void export(@PathVariable("id") String id, @PathVariable String pluginId, User user, HttpServletResponse response) throws IOException {
 
