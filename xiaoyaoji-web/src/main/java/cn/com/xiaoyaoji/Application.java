@@ -22,7 +22,7 @@ public class Application {
         //todo 功能模块化
 
         try {
-            String outputURI =servletContext.getResource(PluginUtils.getPluginSourceDir()).toURI().getPath();
+            String outputURI =servletContext.getRealPath(PluginUtils.getPluginSourceDir());
 
             String pluginsDir = PluginUtils.getPluginDir();
             //如果为空则与sourcedir 同目录
