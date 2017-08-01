@@ -2,12 +2,12 @@ package cn.com.xiaoyaoji.data;
 
 import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.DocType;
+import cn.com.xiaoyaoji.core.common.Pagination;
+import cn.com.xiaoyaoji.core.exception.SystemErrorException;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.core.util.JsonUtils;
 import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.bean.*;
-import cn.com.xiaoyaoji.core.common.Pagination;
-import cn.com.xiaoyaoji.core.exception.SystemErrorException;
 import cn.com.xiaoyaoji.data.handler.IntegerResultHandler;
 import cn.com.xiaoyaoji.data.handler.StringResultHandler;
 import cn.com.xiaoyaoji.integration.file.FileManager;
@@ -44,7 +44,7 @@ public class DataFactory implements Data {
                     return method.invoke(impl, args);
                 } catch (IllegalAccessException | IllegalArgumentException e) {
                     return e;
-                }catch (InvocationTargetException e) {
+                } catch (InvocationTargetException e) {
                     throw e.getTargetException();
                 }
             }
@@ -67,7 +67,7 @@ public class DataFactory implements Data {
             JdbcUtils.commit(connection);
             return data;
         } catch (Exception e) {
-            if(e instanceof IllegalArgumentException){
+            if (e instanceof IllegalArgumentException) {
                 throw new RuntimeException(e);
             }
             if (connection != null) {
@@ -253,13 +253,13 @@ public class DataFactory implements Data {
         return process(new Handler<List<Doc>>() {
             @Override
             public List<Doc> handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select * from "+TableNames.DOC+" where parentId=? order by sort asc",new BeanListHandler<>(Doc.class),parentId);
+                return qr.query(connection, "select * from " + TableNames.DOC + " where parentId=? order by sort asc", new BeanListHandler<>(Doc.class), parentId);
             }
         });
     }
 
     @Override
-    public int deleteInterface( final String parentId) {
+    public int deleteInterface(final String parentId) {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
@@ -294,15 +294,15 @@ public class DataFactory implements Data {
             @Override
             public List<Project> handle(Connection connection, QueryRunner qr) throws SQLException {
                 String status = (String) pagination.getParams().get("status");
-                if(status == null){
-                    status ="VALID";
+                if (status == null) {
+                    status = "VALID";
                 }
                 StringBuilder sql = new StringBuilder("select DISTINCT p.*,u.nickname userName,pu.editable,pu.commonlyUsed from ").append(TableNames.PROJECT)
                         .append(" p left join user u on u.id = p.userId ")
                         .append(" left join project_user pu on pu.projectId = p.id ")
                         .append("  where ( pu.userId=?) and p.status=?")
                         .append(" order by createTime asc");
-                return qr.query(connection, sql.toString(), new BeanListHandler<>(Project.class), pagination.getParams().get("userId"),status);
+                return qr.query(connection, sql.toString(), new BeanListHandler<>(Project.class), pagination.getParams().get("userId"), status);
             }
         });
     }
@@ -402,15 +402,15 @@ public class DataFactory implements Data {
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
                 //todo 删除all
                 //删除项目
-                int rs = qr.update(connection,"delete from "+TableNames.PROJECT+" where id =?",id);
+                int rs = qr.update(connection, "delete from " + TableNames.PROJECT + " where id =?", id);
                 //删除文档
-                rs += qr.update(connection,"delete from "+TableNames.DOC+" where projectid =?",id);
+                rs += qr.update(connection, "delete from " + TableNames.DOC + " where projectid =?", id);
                 //删除文档历史
-                rs += qr.update(connection,"delete from "+TableNames.DOC_HISTORY +" where projectid =?",id);
+                rs += qr.update(connection, "delete from " + TableNames.DOC_HISTORY + " where projectid =?", id);
                 //删除项目与用户关联
-                rs += qr.update(connection,"delete from "+TableNames.PROJECT_USER+" where projectid =?",id);
+                rs += qr.update(connection, "delete from " + TableNames.PROJECT_USER + " where projectid =?", id);
                 //删除分享
-                rs += qr.update(connection,"delete from "+TableNames.SHARE+" where projectid =?",id);
+                rs += qr.update(connection, "delete from " + TableNames.SHARE + " where projectid =?", id);
                 return rs;
             }
         });
@@ -482,14 +482,14 @@ public class DataFactory implements Data {
         });
     }
 
-     @Override
+    @Override
     public List<Doc> getDocsByProjectId(final String projectId, final boolean full) {
 
         return process(new Handler<List<Doc>>() {
             @Override
             public List<Doc> handle(Connection connection, QueryRunner qr) throws SQLException {
                 //不查询content
-                String sqlstr = "select id,name,sort,type,parentId,projectId" + (full ? ",content" : "") +" from ";
+                String sqlstr = "select id,name,sort,type,parentId,projectId" + (full ? ",content" : "") + " from ";
                 StringBuilder sql = new StringBuilder(sqlstr).append(TableNames.DOC).append(" where projectId=? order by sort asc");
                 return qr.query(connection, sql.toString(), new BeanListHandler<>(Doc.class), projectId);
             }
@@ -501,10 +501,10 @@ public class DataFactory implements Data {
         return process(new Handler<List<String>>() {
             @Override
             public List<String> handle(Connection connection, QueryRunner qr) throws SQLException {
-                List<Doc> docs =  qr.query(connection,"select id from "+TableNames.DOC+" where parentId=?",new BeanListHandler<>(Doc.class),parentId);
+                List<Doc> docs = qr.query(connection, "select id from " + TableNames.DOC + " where parentId=?", new BeanListHandler<>(Doc.class), parentId);
                 List<String> ids = new ArrayList<String>();
-                if(docs != null){
-                    for(Doc temp:docs){
+                if (docs != null) {
+                    for (Doc temp : docs) {
                         ids.add(temp.getId());
                     }
                 }
@@ -518,14 +518,14 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                StringBuilder deleteSQL = new StringBuilder("delete from "+SqlUtils.getTableName(clazz));
+                StringBuilder deleteSQL = new StringBuilder("delete from " + SqlUtils.getTableName(clazz));
                 deleteSQL.append(" where id in (");
-                for(String id:ids){
+                for (String id : ids) {
                     deleteSQL.append("?,");
                 }
-                deleteSQL = deleteSQL.delete(deleteSQL.length()-1,deleteSQL.length());
+                deleteSQL = deleteSQL.delete(deleteSQL.length() - 1, deleteSQL.length());
                 deleteSQL.append(")");
-                return qr.update(connection,deleteSQL.toString(),ids.toArray());
+                return qr.update(connection, deleteSQL.toString(), ids.toArray());
             }
         });
     }
@@ -713,19 +713,19 @@ public class DataFactory implements Data {
         return process(new Handler<List<ProjectLog>>() {
             @Override
             public List<ProjectLog> handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select pl.*,u.nickname,u.avatar from "+TableNames.PROJECT_LOG+" pl left join user u on u.id = pl.userId where pl.projectId=? order by pl.createTime desc limit ?,?",new BeanListHandler<>(ProjectLog.class),pagination.getParams().get("projectId"),pagination.getStart(),pagination.getLimit());
+                return qr.query(connection, "select pl.*,u.nickname,u.avatar from " + TableNames.PROJECT_LOG + " pl left join user u on u.id = pl.userId where pl.projectId=? order by pl.createTime desc limit ?,?", new BeanListHandler<>(ProjectLog.class), pagination.getParams().get("projectId"), pagination.getStart(), pagination.getLimit());
             }
         });
     }
 
-    private List<Interface> getInterfaces(QueryRunner qr,Connection connection,int start,int limit) throws SQLException {
-        return qr.query(connection,"select * from interface limit ?,?",new BeanListHandler<>(Interface.class),start,limit);
+    private List<Interface> getInterfaces(QueryRunner qr, Connection connection, int start, int limit) throws SQLException {
+        return qr.query(connection, "select * from interface limit ?,?", new BeanListHandler<>(Interface.class), start, limit);
     }
 
-    private Object[] getData(Object obj){
+    private Object[] getData(Object obj) {
         List<Object> data = new ArrayList<>();
-        for(Field field : obj.getClass().getDeclaredFields()){
-            if(field.getAnnotation(Ignore.class) == null){
+        for (Field field : obj.getClass().getDeclaredFields()) {
+            if (field.getAnnotation(Ignore.class) == null) {
                 try {
                     field.setAccessible(true);
                     data.add(field.get(obj));
@@ -737,32 +737,41 @@ public class DataFactory implements Data {
         return data.toArray();
     }
 
+    private int insertAndReset(Connection connection,QueryRunner qr,StringBuilder sql,List<Object> params) throws SQLException {
+        sql= sql.delete(sql.length()-1,sql.length());
+        int rs= qr.update(connection,sql.toString(),params.toArray());
+        params.clear();
+        sql.delete(0,sql.length());
+        return rs;
+    }
+
     @Override
     public int updateSystem(String version) {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                synchronized (this) {
-
-
-                    //判断是否已执行更新操作
-                    try {
-                        String version = qr.query(connection,"select version from sys limit 1",new StringResultHandler());
-                        if(version != null && version.equals("2.0")){
-                            return 1;
-                        }
-                    } catch (SQLException e) {
-                        //ignore
-                        //e.printStackTrace();
+                connection.setAutoCommit(true);
+                //判断是否已执行更新操作
+                try {
+                    String v = qr.query(connection, "select version from sys limit 1", new StringResultHandler());
+                    if (v != null && v.equals("2.0")) {
+                        return 1;
                     }
+                } catch (SQLException e) {
+                    //ignore
+                    //e.printStackTrace();
+                }
 
-                    //批量更新数量
-                    int batchNum = 100;
+                int rs = 0;
+
+                //批量更新数量
+                int batchNum = 100;
 
 
-                    //创建doc表
-                    int rs =qr.update(connection,"drop table if exists  "+TableNames.DOC);
-                    rs += qr.update(connection, "create table "+TableNames.DOC+" (\n" +
+                //创建doc表
+                try {
+                    rs += qr.update(connection, "drop table if exists  " + TableNames.DOC);
+                    rs += qr.update(connection, "create table " + TableNames.DOC + " (\n" +
                             "\tid char(12) PRIMARY KEY,\n" +
                             "\tname varchar(200),\n" +
                             "    sort int default 100,\n" +
@@ -772,11 +781,11 @@ public class DataFactory implements Data {
                             "    lastUpdateTime datetime,\n" +
                             "    parentId char(12),\n" +
                             "    projectId char(12),\n" +
-                            "    INDEX `projectId` (`projectId` ASC)\n"+
+                            "    INDEX `projectId` (`projectId` ASC)\n" +
                             ") ENGINE=InnoDB");
                     //创建doc_history 表
-                    rs += qr.update(connection,"drop table if exists "+TableNames.DOC_HISTORY);
-                    rs += qr.update(connection,"CREATE TABLE `doc_history` (\n" +
+                    rs += qr.update(connection, "drop table if exists " + TableNames.DOC_HISTORY);
+                    rs += qr.update(connection, "CREATE TABLE `doc_history` (\n" +
                             "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
                             "  `name` varchar(200) DEFAULT NULL,\n" +
                             "  `sort` int(11) DEFAULT '100',\n" +
@@ -792,8 +801,8 @@ public class DataFactory implements Data {
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
 
                     //创建attach
-                    rs += qr.update(connection,"drop table if exists  "+TableNames.ATTACH);
-                    rs += qr.update(connection,"CREATE TABLE `"+TableNames.ATTACH+"` (\n" +
+                    rs += qr.update(connection, "drop table if exists  " + TableNames.ATTACH);
+                    rs += qr.update(connection, "CREATE TABLE `" + TableNames.ATTACH + "` (\n" +
                             "  `id` char(12) NOT NULL,\n" +
                             "  `url` varchar(1000) DEFAULT NULL,\n" +
                             "  `type` varchar(45) DEFAULT NULL,\n" +
@@ -807,220 +816,267 @@ public class DataFactory implements Data {
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
 
                     //创建sys表
-                    rs += qr.update(connection,"drop table if exists sys ");
+                    rs += qr.update(connection, "drop table if exists sys ");
                     rs += qr.update(connection, "CREATE TABLE `sys` (\n" +
                             "  `version` varchar(10) DEFAULT NULL\n" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
 
 
-                    rs +=qr.update(connection,"drop table if exists project_global");
-                    rs +=qr.update(connection,"\n" +
-                            "CREATE TABLE `"+TableNames.PROJECT_GLOBAL+"` (\n" +
+                    rs += qr.update(connection, "drop table if exists project_global");
+                    rs += qr.update(connection, "\n" +
+                            "CREATE TABLE `" + TableNames.PROJECT_GLOBAL + "` (\n" +
                             "  `id` char(12) NOT NULL DEFAULT '',\n" +
                             "  `environment` mediumtext,\n" +
                             "  `http` mediumtext,\n" +
                             "  `projectId` char(12) NOT NULL DEFAULT '',\n" +
                             "  `status` mediumtext\n" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(),e);
+                }
 
-                    SQLBuildResult sbr = null;
-                    String docInsertSQL ="insert into doc (id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId) values(?,?,?,?,?,?,?,?,?)";
-                    //迁移module数据到doc
-                    List<Module> modules = qr.query(connection,"select * from "+TableNames.MODULES,new BeanListHandler<>(Module.class));
-                    if(modules!=null && modules.size()>0){
-                        //key projectId
-                        Map<String,JSONArray> globalRequestArgsMap = new HashMap<>();
-                        Map<String,JSONArray> globalRequestHeadersMap = new HashMap<>();
-                        List<Object[]> params = new ArrayList<>();
-                        String batchSQL = docInsertSQL;
-                        for(Module m:modules){
-                            Doc doc = new Doc();
-                            doc.setId(m.getId());
-                            doc.setName(m.getName());
-                            doc.setSort(0);
-                            doc.setType(DocType.SYS_FOLDER.getTypeName());
-                            doc.setCreateTime(m.getCreateTime());
-                            doc.setLastUpdateTime(m.getLastUpdateTime());
-                            doc.setProjectId(m.getProjectId());
-                            doc.setParentId("0");
-                            params.add(getData(doc));
-                            String requestHeaders = m.getRequestHeaders();
-                            if(org.apache.commons.lang3.StringUtils.isNoneEmpty(requestHeaders)){
-                                try {
-                                    JSONArray temp = globalRequestHeadersMap.get(m.getProjectId());
-                                    if(temp == null){
-                                        globalRequestHeadersMap.put(m.getProjectId(),JSON.parseArray(requestHeaders));
-                                    }else{
-                                        temp.addAll(JSON.parseArray(requestHeaders));
-                                    }
-                                } catch (Exception e) {
+                StringBuilder sql = new StringBuilder();
+                List<Object> params = new ArrayList<>();
+                int size = 0;
+
+                SQLBuildResult sbr = null;
+                String docInsertSQL = "insert into doc (id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId) values";
+                String docValueSQL="(?,?,?,?,?,?,?,?,?),";
+                //迁移module数据到doc
+                List<Module> modules = qr.query(connection, "select * from " + TableNames.MODULES, new BeanListHandler<>(Module.class));
+                if (modules != null && modules.size() > 0) {
+                    //key projectId
+                    Map<String, JSONArray> globalRequestArgsMap = new HashMap<>();
+                    Map<String, JSONArray> globalRequestHeadersMap = new HashMap<>();
+
+                    for (Module m : modules) {
+                        sql.append(docValueSQL);
+                        //id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId
+                        params.add(m.getId());
+                        params.add(m.getName());
+                        params.add(DocType.SYS_FOLDER.getTypeName());
+                        params.add(null);
+                        params.add(m.getCreateTime());
+                        params.add(m.getLastUpdateTime());
+                        params.add(m.getProjectId());
+                        params.add("0");
+
+                        String requestHeaders = m.getRequestHeaders();
+                        if (org.apache.commons.lang3.StringUtils.isNoneEmpty(requestHeaders)) {
+                            try {
+                                JSONArray temp = globalRequestHeadersMap.get(m.getProjectId());
+                                if (temp == null) {
+                                    globalRequestHeadersMap.put(m.getProjectId(), JSON.parseArray(requestHeaders));
+                                } else {
+                                    temp.addAll(JSON.parseArray(requestHeaders));
                                 }
+                            } catch (Exception e) {
                             }
-
-                            String requestArgs = m.getRequestArgs();
-                            if(org.apache.commons.lang3.StringUtils.isNoneEmpty(requestArgs)){
-                                try {
-                                    JSONArray temp = globalRequestArgsMap.get(m.getProjectId());
-                                    if(temp == null){
-                                        globalRequestArgsMap.put(m.getProjectId(),JSON.parseArray(requestArgs));
-                                    }else{
-                                        temp.addAll(JSON.parseArray(requestArgs));
-                                    }
-                                } catch (Exception e) {
-                                }
-                            }
-                            //100条更新一次
-                            if(params.size()>=batchNum){
-                                qr.batch(connection, batchSQL, toObjectArr(params));
-                                params = new ArrayList<>();
-                            }
-
                         }
 
+                        String requestArgs = m.getRequestArgs();
+                        if (org.apache.commons.lang3.StringUtils.isNoneEmpty(requestArgs)) {
+                            try {
+                                JSONArray temp = globalRequestArgsMap.get(m.getProjectId());
+                                if (temp == null) {
+                                    globalRequestArgsMap.put(m.getProjectId(), JSON.parseArray(requestArgs));
+                                } else {
+                                    temp.addAll(JSON.parseArray(requestArgs));
+                                }
+                            } catch (Exception e) {
+                            }
+                        }
+                        if(size >=batchNum){
+                            insertAndReset(connection,qr,sql,params);
+                            size=0;
+                        }else {
+                            size++;
+                        }
+                    }
+
+                    if(params.size()>0){
+                        insertAndReset(connection,qr,sql,params);
+                    }
+
+                    sql = new StringBuilder();
+                    params = new ArrayList<>();
+                    size = 0;
+
+                    {
                         //初始化project_global
                         Set<String> projectIds = new HashSet<>();
                         projectIds.addAll(globalRequestArgsMap.keySet());
                         projectIds.addAll(globalRequestHeadersMap.keySet());
-                        batchSQL = "insert into "+TableNames.PROJECT_GLOBAL+" (id,environment,http,status,projectId) values(?,?,?,?,?)";
+                        sql.append("insert into project_global (id,environment,http,status,projectId) values");
+                        String valueSQL = "(?,?,?,?,?),";
+
                         params = new ArrayList<>();
-                        for(String projectId:projectIds) {
-                            String sql = "select environments from " + TableNames.PROJECT + " where id = ?";
-                            Project temp =  qr.query(connection, sql, new BeanHandler<>(Project.class), projectId);
-                            if(temp == null)
+                        for (String projectId : projectIds) {
+                            String tempSQL = "select environments from " + TableNames.PROJECT + " where id = ?";
+                            Project temp = qr.query(connection, tempSQL, new BeanHandler<>(Project.class), projectId);
+                            if (temp == null)
                                 continue;
-                            ProjectGlobal projectGlobal = new ProjectGlobal();
                             Map<String, Object> httpMap = new HashMap<>();
                             httpMap.put("requestHeaders", globalRequestHeadersMap.get(projectId));
                             httpMap.put("requestArgs", globalRequestArgsMap.get(projectId));
                             httpMap.put("responseArgs", new String[]{});
                             httpMap.put("responseHeaders", new String[]{});
-                            projectGlobal.setHttp(JsonUtils.toString(httpMap));
-                            projectGlobal.setEnvironment(temp.getEnvironments());
-                            projectGlobal.setId(StringUtils.id());
-                            projectGlobal.setProjectId(projectId);
-                            params.add(getData(projectGlobal));
-                            if(params.size()>=batchNum){
-                                qr.batch(connection,batchSQL, toObjectArr(params));
-                                params = new ArrayList<>();
-                            }
-                            //rs += qr.update(connection,sbr.getSql(),sbr.getParams());
-                        }
-                    }
-                    rs += qr.update(connection,"update doc set content = replace(content,':\"VALID\"','有效')");
 
+                            //id,environment,http,status,projectId
+                            sql.append(valueSQL);
+                            params.add(StringUtils.id());
+                            params.add(temp.getEnvironments());
+                            params.add(JsonUtils.toString(httpMap));
+                            params.add(null);
+                            params.add(projectId);
 
-
-                    //迁移interface_folder数据到doc
-                    List<Folder> folders = qr.query(connection,"select * from "+TableNames.INTERFACE_FOLDER,new BeanListHandler<>(Folder.class));
-                    if(folders!=null && folders.size()>0){
-                        String batchSQL = docInsertSQL;
-                        List<Object[]> params = new ArrayList<>();
-                        for(Folder f:folders){
-                            Doc doc = new Doc();
-                            doc.setId(f.getId());
-                            doc.setName(f.getName());
-                            doc.setSort(f.getSort());
-                            doc.setType(DocType.SYS_FOLDER.getTypeName());
-                            doc.setCreateTime(f.getCreateTime());
-                            doc.setLastUpdateTime(new Date());
-                            doc.setProjectId(f.getProjectId());
-                            doc.setParentId(f.getModuleId());
-                            params.add(getData(doc));
-                            if(params.size()>=batchNum){
-                                qr.batch(connection, batchSQL, toObjectArr(params));
-                                params = new ArrayList<>();
+                            if (size>= batchNum) {
+                                insertAndReset(connection,qr,sql,params);
+                                size = 0;
+                            }else{
+                                size++;
                             }
                         }
-
-                    }
-
-                    //迁移interface数据到doc中
-                    int start = 0,limit=10000;
-                    while (true){
-                        List<Interface> interfaces= getInterfaces(qr,connection,start,limit);
-                        if(interfaces != null && interfaces.size()>0){
-                            List<Object[]> params = new ArrayList<>();
-                            String batchSQL = docInsertSQL;
-                            for(Interface in:interfaces){
-                                String protocol = in.getProtocol();
-
-                                if(org.apache.commons.lang3.StringUtils.isBlank(in.getRequestHeaders())){
-                                    in.setRequestHeaders("[]");
-                                }
-                                if(org.apache.commons.lang3.StringUtils.isBlank(in.getRequestArgs())){
-                                    in.setRequestArgs("[]");
-                                }
-                                if(org.apache.commons.lang3.StringUtils.isBlank(in.getResponseArgs())){
-                                    in.setResponseArgs("[]");
-                                }
-                                if("DEPRECATED".equals(in.getStatus())){
-                                    in.setStatus("已废弃");
-                                }else{
-                                    in.setStatus("有效");
-                                }
-
-                                Doc doc = in.toDoc();
-                                doc.setId(in.getId());
-                                if(doc.getSort() == null){
-                                    doc.setSort(0);
-                                }
-
-                                if("HTTP".equals(protocol)) {
-                                    doc.setType(DocType.SYS_HTTP.getTypeName());
-                                }else if("WEBSOCKET".equals(protocol)){
-                                    doc.setType(DocType.SYS_WEBSOCKET.getTypeName());
-                                }else{
-                                    doc.setType(DocType.SYS_DOC_MD.getTypeName());
-                                }
-                                params.add(getData(doc));
-
-                                if(params.size()>=batchNum){
-                                    qr.batch(connection,batchSQL, toObjectArr(params));
-                                    params = new ArrayList<>();
-                                }
-                            }
-
-                            start+=limit;
-                        }else {
-                            break;
+                        if(params.size()>0){
+                            insertAndReset(connection,qr,sql,params);
                         }
                     }
-
-
-
-                    //更新project 字段
-                    rs += qr.update(connection,"ALTER TABLE `project` \n" +
-                            "ADD COLUMN `lastUpdateTime` DATETIME NULL AFTER `details`;");
-                    rs += qr.update(connection,"DROP TABLE IF EXISTS `sys`;");
-                    rs += qr.update(connection,"CREATE TABLE `sys` (\n  `version` varchar(10) DEFAULT NULL\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-                    //设置sys为当前版本
-                    rs += qr.update(connection,"insert into sys values('2.0')");
-
-                    return rs;
                 }
+
+
+                sql = new StringBuilder();
+                params.clear();
+                size = 0;
+
+                //迁移interface_folder数据到doc
+                List<Folder> folders = qr.query(connection, "select * from " + TableNames.INTERFACE_FOLDER, new BeanListHandler<>(Folder.class));
+                if (folders != null && folders.size() > 0) {
+                    sql.append(docInsertSQL);
+                    for (Folder f : folders) {
+                        //id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId
+                        sql.append(docValueSQL);
+                        params.add(f.getId());
+                        params.add(f.getName());
+                        params.add(DocType.SYS_FOLDER.getTypeName());
+                        params.add(null);
+                        params.add(f.getCreateTime());
+                        params.add(new Date());
+                        params.add(f.getProjectId());
+                        params.add(f.getModuleId());
+
+
+                        if (size >= batchNum) {
+                            rs += insertAndReset(connection,qr,sql,params);
+                            size = 0;
+                        }else{
+                            size++;
+                        }
+                    }
+                    if(params.size()>0){
+                        rs += insertAndReset(connection,qr,sql,params);
+                    }
+                }
+                sql = new StringBuilder();
+                size = 0;
+                params.clear();
+
+                //迁移interface数据到doc中
+                int start = 0, limit = 5000;
+                while (true) {
+                    List<Interface> interfaces = getInterfaces(qr, connection, start, limit);
+                    if (interfaces != null && interfaces.size() > 0) {
+                        sql.append(docInsertSQL);
+                        for (Interface in : interfaces) {
+                            sql.append(docValueSQL);
+                            String protocol = in.getProtocol();
+                            if (org.apache.commons.lang3.StringUtils.isBlank(in.getRequestHeaders())) {
+                                in.setRequestHeaders("[]");
+                            }
+                            if (org.apache.commons.lang3.StringUtils.isBlank(in.getRequestArgs())) {
+                                in.setRequestArgs("[]");
+                            }
+                            if (org.apache.commons.lang3.StringUtils.isBlank(in.getResponseArgs())) {
+                                in.setResponseArgs("[]");
+                            }
+                            if ("DEPRECATED".equals(in.getStatus())) {
+                                in.setStatus("已废弃");
+                            } else {
+                                in.setStatus("有效");
+                            }
+
+                            Doc doc = in.toDoc();
+                            doc.setId(in.getId());
+                            if (doc.getSort() == null) {
+                                doc.setSort(0);
+                            }
+
+                            if ("HTTP".equals(protocol)) {
+                                doc.setType(DocType.SYS_HTTP.getTypeName());
+                            } else if ("WEBSOCKET".equals(protocol)) {
+                                doc.setType(DocType.SYS_WEBSOCKET.getTypeName());
+                            } else {
+                                doc.setType(DocType.SYS_DOC_MD.getTypeName());
+                            }
+
+                            //id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId
+                            params.add(doc.getId());
+                            params.add(doc.getName());
+                            params.add(doc.getSort());
+                            params.add(doc.getType());
+                            params.add(doc.getContent());
+                            params.add(doc.getCreateTime());
+                            params.add(doc.getLastUpdateTime());
+                            params.add(doc.getProjectId());
+                            params.add(doc.getParentId());
+
+
+                            if (size >= batchNum) {
+                                insertAndReset(connection,qr,sql,params);
+                                size = 0;
+                            }else{
+                                size++;
+                            }
+                        }
+                        if(params.size()>0){
+                            insertAndReset(connection,qr,sql,params);
+                            size = 0;
+                        }
+                        sql = new StringBuilder();
+                        params.clear();
+                        size = 0;
+                        start += limit;
+                    } else {
+                        break;
+                    }
+                }
+
+                rs += qr.update(connection, "update doc set content = replace(content,':\"VALID\"','有效')");
+
+                //更新project 字段
+                rs += qr.update(connection, "ALTER TABLE `project` \n" +
+                        "ADD COLUMN `lastUpdateTime` DATETIME NULL AFTER `details`;");
+                rs += qr.update(connection, "DROP TABLE IF EXISTS `sys`;");
+                rs += qr.update(connection, "CREATE TABLE `sys` (\n  `version` varchar(10) DEFAULT NULL\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+                //设置sys为当前版本
+                rs += qr.update(connection, "insert into sys values('2.0')");
+
+                return rs;
             }
         });
     }
 
-    private Object[][] toObjectArr(List<Object[]> list){
-        Object[][] arrs = new Object[list.size()][];
-        for(int i=0;i<list.size();i++){
-            arrs[i] = list.get(i);
-        }
-        return arrs;
-    }
 
     @Override
     public ProjectGlobal getProjectGlobal(final String projectId) {
         return process(new Handler<ProjectGlobal>() {
             @Override
             public ProjectGlobal handle(Connection connection, QueryRunner qr) throws SQLException {
-                ProjectGlobal pg = qr.query(connection,"select * from "+TableNames.PROJECT_GLOBAL+" where projectId=?",new BeanHandler<>(ProjectGlobal.class),projectId);
-                if(pg == null){
+                ProjectGlobal pg = qr.query(connection, "select * from " + TableNames.PROJECT_GLOBAL + " where projectId=?", new BeanHandler<>(ProjectGlobal.class), projectId);
+                if (pg == null) {
                     //会有并发问题
                     pg = generateProjectGlobal(projectId);
                     SQLBuildResult sbr = SqlUtils.generateInsertSQL(pg);
-                    if(qr.update(connection,sbr.getSql(),sbr.getParams())== 0){
+                    if (qr.update(connection, sbr.getSql(), sbr.getParams()) == 0) {
                         throw new SystemErrorException("创建project_global失败");
                     }
                 }
@@ -1030,7 +1086,7 @@ public class DataFactory implements Data {
     }
 
 
-    public ProjectGlobal generateProjectGlobal(String projectId){
+    public ProjectGlobal generateProjectGlobal(String projectId) {
         ProjectGlobal pg = new ProjectGlobal();
         pg.setId(StringUtils.id());
         pg.setProjectId(projectId);
@@ -1045,7 +1101,7 @@ public class DataFactory implements Data {
         return process(new Handler<List<Attach>>() {
             @Override
             public List<Attach> handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select * from "+TableNames.ATTACH+" where relatedId=? order by sort asc ,createtime asc",new BeanListHandler<>(Attach.class),relatedId);
+                return qr.query(connection, "select * from " + TableNames.ATTACH + " where relatedId=? order by sort asc ,createtime asc", new BeanListHandler<>(Attach.class), relatedId);
             }
         });
     }
@@ -1055,10 +1111,10 @@ public class DataFactory implements Data {
         return process(new Handler<List<DocHistory>>() {
             @Override
             public List<DocHistory> handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select h.*,u.nickname userName from "+TableNames.DOC_HISTORY+" h\n" +
-                        "left join "+TableNames.USER+" u on u.id = h.userId \n" +
+                return qr.query(connection, "select h.*,u.nickname userName from " + TableNames.DOC_HISTORY + " h\n" +
+                        "left join " + TableNames.USER + " u on u.id = h.userId \n" +
                         "where h.docId=?\n" +
-                        "order by createTime desc limit 20 ",new BeanListHandler<>(DocHistory.class),docId);
+                        "order by createTime desc limit 20 ", new BeanListHandler<>(DocHistory.class), docId);
             }
         });
     }
@@ -1068,7 +1124,7 @@ public class DataFactory implements Data {
         return process(new Handler<Integer>() {
             @Override
             public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.update(connection,"delete from "+TableNames.DOC_HISTORY+" where docId=?",docId);
+                return qr.update(connection, "delete from " + TableNames.DOC_HISTORY + " where docId=?", docId);
             }
         });
     }
@@ -1078,7 +1134,7 @@ public class DataFactory implements Data {
         return process(new Handler<Boolean>() {
             @Override
             public Boolean handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select count(1) from "+TableNames.PROJECT+" where permission='PUBLIC' and id=?",new IntegerResultHandler(),projectId)>0;
+                return qr.query(connection, "select count(1) from " + TableNames.PROJECT + " where permission='PUBLIC' and id=?", new IntegerResultHandler(), projectId) > 0;
             }
         });
     }
@@ -1088,8 +1144,8 @@ public class DataFactory implements Data {
         return process(new Handler<List<Doc>>() {
             @Override
             public List<Doc> handle(Connection connection, QueryRunner qr) throws SQLException {
-                String t ="%"+text+"%";
-                return qr.query(connection,"select id,name from "+TableNames.DOC+" where projectId=? and (name like ? or content like ?) order by sort asc ,createTime desc ",new BeanListHandler<>(Doc.class),projectId,t,t);
+                String t = "%" + text + "%";
+                return qr.query(connection, "select id,name from " + TableNames.DOC + " where projectId=? and (name like ? or content like ?) order by sort asc ,createTime desc ", new BeanListHandler<>(Doc.class), projectId, t, t);
             }
         });
     }
@@ -1099,7 +1155,7 @@ public class DataFactory implements Data {
         return process(new Handler<String>() {
             @Override
             public String handle(Connection connection, QueryRunner qr) throws SQLException {
-                return qr.query(connection,"select id from doc where projectId=? order by sort asc ,createTime asc limit 1",new StringResultHandler(),projectId);
+                return qr.query(connection, "select id from doc where projectId=? order by sort asc ,createTime asc limit 1", new StringResultHandler(), projectId);
             }
         });
     }
