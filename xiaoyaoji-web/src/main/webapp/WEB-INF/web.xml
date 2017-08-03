@@ -10,7 +10,7 @@
     </listener>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
-        <url-pattern>*.css</url-pattern>
+        <!--<url-pattern>*.css</url-pattern>
         <url-pattern>*.js</url-pattern>
         <url-pattern>*.map</url-pattern>
         <url-pattern>*.gif</url-pattern>
@@ -19,15 +19,23 @@
         <url-pattern>*.woff</url-pattern>
         <url-pattern>*.woff2</url-pattern>
         <url-pattern>*.ttf</url-pattern>
-        <url-pattern>*.ico</url-pattern>
-        <url-pattern>*.txt</url-pattern>
         <url-pattern>*.crx</url-pattern>
         <url-pattern>*.font</url-pattern>
-        <url-pattern>*.md</url-pattern>
+        <url-pattern>*.md</url-pattern>-->
         <url-pattern>*.html</url-pattern>
+        <url-pattern>*.txt</url-pattern>
+        <url-pattern>*.ico</url-pattern>
     </servlet-mapping>
 
 
+    <servlet>
+        <servlet-name>proxy</servlet-name>
+        <servlet-class>cn.com.xiaoyaoji.controller.ProxyServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>proxy</servlet-name>
+        <url-pattern>/proxy/*</url-pattern>
+    </servlet-mapping>
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:/spring/applicationContext.xml</param-value>

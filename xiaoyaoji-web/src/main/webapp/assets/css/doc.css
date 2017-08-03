@@ -1,63 +1,58 @@
 /*******DOC start*********/
-.doc-full-width .doc-content{
+.doc-full-width .doc-content {
     margin-left: 0;
 }
-.doc-full-width .doc-left{
+
+.doc-full-width .doc-left {
     display: none;
 }
+
 .doc {
 
 }
-.doc.left-collapsed .doc-left{
+
+.doc.left-collapsed .doc-left {
     margin-left: -250px;
-    transition: margin-left .5s;
 }
-.doc.left-collapsed .doc-content{
+
+.doc.left-collapsed .doc-content {
     margin-left: 0;
-    transition: margin-left .5s;
+}
+
+.doc.left-collapsed .doc-header {
+    left: 0;
 }
 
 .doc .doc-header {
-    width: 100%;
     height: 50px;
-    background-color: #324157;
-    color: #fff;
     position: fixed;
-    top:0;
-    left: 0;
+    top: 0;
+    left: 250px;
+    right: 0;
     z-index: 1000;
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, .07);
+    padding: 0 10px;
+    transition: left .5s;
 }
-.doc .uk-sticky-placeholder{
+
+.doc .uk-sticky-placeholder {
     height: 50px;
     margin: 0;
 }
-.doc .doc-header a{
-    color: #fff;
+
+.doc-header .doc-history {
+    overflow-y: auto;
+    max-height: 600px;
 }
-.doc-header .doc-history{
-    overflow-y: auto;max-height: 600px;
-}
-.doc-header .doc-history a{
+
+.doc-header .doc-history a {
     color: #1e87f0;
     text-decoration: underline;
 }
-.doc-header-return{
-    line-height: 50px;
-    cursor: pointer;
-}
+
 .doc [class*=" el-icon-"], [class^=el-icon-] {
     margin: 0 4px;
-}
-
-.doc .doc-header .project-name {
-    height: 50px;
-    line-height: 50px;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 18px;
-    margin-left: 14px;
-    width: 550px;
 }
 
 .doc .doc-header li {
@@ -70,13 +65,15 @@
     padding: 0 10px;
     height: 50px;
 }
-.doc .doc-header .uk-table th{
-    padding-top:8px;
-    padding-bottom:8px;
+
+.doc .doc-header .uk-table th {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
-.doc .doc-header .uk-table td{
-    padding-top:8px;
-    padding-bottom:8px;
+
+.doc .doc-header .uk-table td {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .doc-left {
@@ -84,10 +81,11 @@
     border-right: 1px solid rgba(0, 0, 0, .07);
     height: 100%;
     position: fixed;
-    top:50px;
+    top: 0;
     bottom: 0;
     background-color: #fafafa;
     z-index: 100;
+    transition: margin-left .5s;
 }
 
 .doc-left .doc-search {
@@ -99,18 +97,21 @@
     font-size: 14px;
     border: none;
 }
-.doc-left .searh-no-results{
+
+.doc-left .searh-no-results {
     text-align: center;
     margin-top: 20px;
 }
 
 .doc-left .dl-doc-actions {
-    padding: 10px;
-    border-bottom: 1px solid #ccc
+    padding-left: 10px;
+    border-bottom: 1px solid #ccc;
+    height: 50px;
 }
 
 .doc-left .dl-doc-actions a {
     font-size: 14px;
+    line-height: 50px;
     padding-right: 12px;
     background: url("http://img.alicdn.com/tps/i3/TB1vn3AGXXXXXbFXXXXWXbjJFXX-7-4.png") right center no-repeat;
     background-position-y: 4px;
@@ -137,21 +138,30 @@
     z-index: 1;
     display: block;
 }
-.doc-left .dl-placehoder{
+
+.doc-left .dl-placehoder {
     text-align: center;
     line-height: 40px;
 }
 
-.dl-docs .sortable-placeholder{
+.dl-docs .sortable-placeholder {
     height: 35px;
     background: #c0c0c0;
 }
-.dl-docs .dl-project-name{
+
+.dl-docs .dl-project-name {
     margin-top: 7px;
-    font-weight:bold;
+    font-weight: bold;
     font-size: 14px;
 }
-.dl-docs .divider{height:1px;margin:7px 0;overflow:hidden;background:rgba(0,0,0,.07)}
+
+.dl-docs .divider {
+    height: 1px;
+    margin: 7px 0;
+    overflow: hidden;
+    background: rgba(0, 0, 0, .07)
+}
+
 .dl-docs .doc-name {
     line-height: 35px;
     height: 35px;
@@ -162,13 +172,15 @@
     white-space: nowrap;
     overflow: hidden;
 }
-.dl-docs .doc-name .item-name{
+
+.dl-docs .doc-name .item-name {
     position: relative;
     z-index: 2;
     color: #000;
     /*display: inline-block;*/
 }
-.dl-docs .doc-name i{
+
+.dl-docs .doc-name i {
     color: #000;
 }
 
@@ -180,16 +192,16 @@
     display: inline-block;
 }
 
-
 .dl-docs .doc-name.api-folder-new {
     background: #e0e0e0;
     margin-top: 20px;
 }
 
-.dl-docs .doc-name a:hover{
+.dl-docs .doc-name a:hover {
     color: #0f6ecd;
     text-decoration: underline;
 }
+
 .dl-docs .doc-name.active .dl-background {
     background: #d1dbe5;
 }
@@ -205,6 +217,11 @@
 
 .dl-docs .doc-name i {
     margin-left: 8px;
+    opacity: 0;
+}
+
+.dl-docs .doc-name:hover i {
+    opacity: 1;
 }
 
 .dl-docs .icon-angeldownblock {
@@ -212,6 +229,7 @@
     position: relative;
     z-index: 10;
 }
+
 .dl-content {
     position: relative;
     overflow-y: auto;
@@ -224,7 +242,8 @@
     background-color: #fff;
     box-shadow: 3px 3px 10px #ccc;
 }
-.doc .dl-menus .sub{
+
+.doc .dl-menus .sub {
     display: none;
 }
 
@@ -263,16 +282,14 @@
 
 .doc-content {
     margin-left: 250px;
-    padding: 10px;
+    padding: 0 10px;
     position: relative;
     overflow-x: hidden;
+    transition: margin-left .5s;
+    min-height: 500px;
 }
 
-
-.doc-content-header {
-    line-height: 50px;
-}
-.doc-content-header-edit{
+.doc-content-header-edit {
     line-height: 50px;
     font-size: 20px;
     width: 300px;
@@ -281,18 +298,16 @@
 
 .doc-content-header .doc-ops a {
     display: inline-block;
-    width: 40px;
     text-align: center;
     line-height: 50px;
     height: 50px;
+    font-size: 18px;
+    color: #888;
+    text-decoration: none;
 }
 
-.doc-content-header .doc-ops i {
-    color: #828282;
-}
-
-.doc-content-header .doc-ops i:hover {
-    color: #000;
+.doc-content-header .doc-ops a:hover {
+    color: #1e87f0;
 }
 
 .doc-content-header .doc-content-title {
@@ -300,23 +315,41 @@
     color: rgb(126, 136, 139);
 }
 
-.doc .doc-name-box{
+.doc-content .doc-save-button {
+    width: 80px;
+    height: 80px;
+    background-color: #db4437;
+    color: #fff;
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    border: none;
+    outline: none;
+    border-radius: 100%;
+    cursor: pointer;
+}
+.doc-content .doc-save-button:focus{
+    background-color: darkred;
+}
+
+.doc .doc-name-box {
     margin: 10px 0;
 }
-.doc .doc-name-box input[type='text']{
+
+.doc .doc-name-box input[type='text'] {
     width: 100%;
     padding: 10px;
     font-size: 24px;
     font-weight: bold;
     letter-spacing: 2px;
 }
-.doc-history-comment{
+
+.doc-history-comment {
     max-width: 400px;
 }
 
-#api-description{
+#api-description {
     padding: 10px 12px;
 }
-
 
 /*******DOC end*********/

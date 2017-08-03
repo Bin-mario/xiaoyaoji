@@ -11,25 +11,17 @@
     <jsp:include page="doc-left.jsp">
         <jsp:param name="view" value="true"/>
     </jsp:include>
+<div class="doc-content">
     <div class="hide" id="loading">
         <div class="spinner">
             <div class="double-bounce1"></div>
             <div class="double-bounce2"></div>
         </div>
     </div>
-    <div class="doc-content doc-full-width" id="doc-content">
+
+    <div class="doc-full-width" id="doc-content">
 </c:if>
-<div class="doc-content-header">
-    <div class="doc-ops">
-        <a onclick="$('.doc').toggleClass('left-collapsed')">
-            <i class="iconfont icon-list2"></i>
-        </a>
-        <%--<a href=""><i class="iconfont icon-search"></i>
-        </a>
-        <a href=""><i class="iconfont icon-ziti"></i>
-        </a>--%>
-    </div>
-</div>
+
 <c:if test="${editProjectGlobal}">
     <jsp:include page="../project/global/project-global.jsp"/>
 </c:if>
@@ -49,6 +41,7 @@
 <c:if test="${!isXHR}">
     </div>
     <script src="${assets}/js/project/header.js"></script>
+    </div>
     </div>
     <!-- loading end -->
     </body>

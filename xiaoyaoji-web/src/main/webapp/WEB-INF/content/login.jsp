@@ -49,7 +49,7 @@
     <div class="login-third ta-c">
         <c:forEach items="${loginPlugins}" var="item">
             <a v-on:click="thirdparty('${item.id}','${item.plugin.openURL}')">
-                <img src="${ctx}/plugin/assets?id=${item.id}&path=${item.icon.icon32x32}" title="${item.description}"/>
+                <img src="${ctx}/proxy/${item.id}/${item.icon.icon32x32}?v=${item.version}" title="${item.description}"/>
             </a>
         </c:forEach>
     </div>

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" href="${assets}/css/http.css?v=${v}"/>
+<link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/css/http.css?v=${v}"/>
 <div class="content-section" id="docApp" style="padding: 0 10px;">
 
 <span class="doc-update-time">更新时间: <span id="api-update-time">{{doc.lastUpdateTime}}</span></span>
@@ -23,51 +23,10 @@
             <div class="cb">
                 <div class="doc-attach" v-for="item in attachs" v-bind:class="{'file':item.type=='FILE'}">
                     <a :href="fileAccess+item.url" v-if="item.type=='FILE'" target="_blank">{{item.fileName}}</a>
-                    <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open('+fileAccess+item.url+');'">
+                    <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open(\''+fileAccess+item.url+'\');'">
                 </div>
             </div>
         </div>
-<%--
-        <div v-if=" (global.requestArgs  && global.requestArgs.length>0)">
-            <p class="doc-item-section-title">全局请求参数</p>
-            <div class="div-table">
-                <ul class="div-table-header div-table-line cb">
-                    <li class="col-sm-2">参数名称</li>
-                    <li class="col-sm-1">是否必须</li>
-                    <li class="col-sm-1">类型</li>
-                    <li class="col-sm-2">默认值</li>
-                    <li class="col-sm-6">描述</li>
-                </ul>
-                <request-args-vue
-                        v-bind:request-args.sync="global.requestArgs"></request-args-vue>
-            </div>
-        </div>
-        <div v-if="(global.http.responseArgs  && global.http.responseArgs.length>0)">
-            <p class="doc-item-section-title">全局响应数据</p>
-            <div class="div-table">
-                <ul class="div-table-header div-table-line cb">
-                    <li class="col-sm-3">参数名称</li>
-                    <li class="col-sm-1">是否必须</li>
-                    <li class="col-sm-2">数据类型</li>
-                    <li class="col-sm-6">描述</li>
-                </ul>
-                <response-args-vue
-                        v-bind:response-args.sync="global.http.responseArgs"></response-args-vue>
-            </div>
-        </div>
-        <div v-if="(content.http.requestHeaders  && content.http.requestHeaders.length>0)">
-            <p class="doc-item-section-title">请求头</p>
-            <div class="div-table">
-                <ul class="div-table-header div-table-line cb">
-                    <li class="col-sm-2">参数名称</li>
-                    <li class="col-sm-1">是否必须</li>
-                    <li class="col-sm-2">默认值</li>
-                    <li class="col-sm-7">描述</li>
-                </ul>
-                <request-headers-vue
-                        v-bind:request-headers.sync="content.http.requestHeaders"></request-headers-vue>
-            </div>
-        </div>--%>
 
         <div v-if=" (content.requestArgs  && content.requestArgs.length>0)">
             <p class="doc-item-section-title">请求参数</p>
@@ -176,6 +135,6 @@
 <jsp:include page="../includes/request-args.jsp"/>
 <jsp:include page="../includes/response-args.jsp"/>
 <script>
-    var doc = ${doc},projectGlobal=${projectGlobal};
+    var doc = ${doc},projectGlobal=${projectGlobal},pluginId='${pluginInfo.id}';
 </script>
-<script src="${ctx}/plugin?id=sys.websocket&path=websocket/view.js&v=${pluginInfo.version}"></script>
+<script src="${ctx}/proxy/${pluginInfo.id}/web/websocket/view.js?v=${pluginInfo.version}"></script>

@@ -48,20 +48,6 @@ public class PluginController {
         }
     }
 
-
-    @Ignore
-    @RequestMapping("/assets")
-    public void assets(@RequestParam String path,@RequestParam("id") String pluginId,
-                       HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        path = path.replace("..","");
-        PluginInfo info = PluginManager.getInstance().getPluginInfo(pluginId);
-        if(info == null){
-            response.setStatus(503);
-            response.getWriter().write("plugin not found");
-        }else {
-            request.getRequestDispatcher(PluginUtils.getPluginSourceDir() + info.getRuntimeFolder() + path).forward(request, response);
-        }
-    }
     private void checkAuthorization(HttpSession session){
         AssertUtils.isTrue(session.getAttribute("plugin.config.key")!=null,"无操作权限");
     }

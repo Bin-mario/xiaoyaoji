@@ -4,7 +4,7 @@
   Time: 22:43
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" type="text/css" href="${assets}/wangeditor/dist/css/wangEditor.min.css">
+<link rel="stylesheet" type="text/css" href="${ctx}/proxy/${pluginInfo.id}/assets/wangeditor/dist/css/wangEditor.min.css">
 <div class="docWeApp" id="docWeApp" v-cloak>
     <div id="we" style="height: 600px;">${doc.content}</div>
 </div>
@@ -20,7 +20,7 @@
         }
         $(window).resize(function(){resizeHeight()});
         resizeHeight(true);
-        require(['vue', 'wangeditor/dist/js/wangEditor'], function (Vue) {
+        require(['vue', '${ctx}/proxy/${pluginInfo.id}/assets/wangeditor/dist/js/wangEditor.js'], function (Vue) {
             var editor;
             var app = new Vue({
                 el: '#docWeApp',

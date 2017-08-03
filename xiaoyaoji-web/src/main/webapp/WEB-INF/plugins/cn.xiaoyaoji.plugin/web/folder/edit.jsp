@@ -23,3 +23,4 @@
         </c:if>
     </div>
 </div>
+<script>$('.doc-save-button').hide()</script>

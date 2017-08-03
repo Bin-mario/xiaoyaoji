@@ -4,7 +4,7 @@
   Time: 16:19
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" href="${assets}/css/http.css?v=${v}"/>
+<link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/css/http.css?v=${v}"/>
 <div id="doc">
     <div v-cloak>
         <datalist id="requestlist">
@@ -129,7 +129,7 @@
                         <div class="doc-attach" v-for="item in attachs" v-bind:class="{'file':item.type=='FILE'}">
                             <i class="iconfont icon-close" v-on:click="deleteFile(item)"></i>
                             <a :href="fileAccess+item.url" v-if="item.type=='FILE'" target="_blank">{{item.fileName}}</a>
-                            <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open('+fileAccess+item.url+');'">
+                            <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open(\''+fileAccess+item.url+'\');'">
                         </div>
                     </div>
                 </div>
@@ -162,6 +162,6 @@
 <jsp:include page="../includes/response-args.jsp"/>
 
 <script>
-    var doc = ${doc},projectGlobal=${projectGlobal};
+    var doc = ${doc},projectGlobal=${projectGlobal},pluginId='${pluginInfo.id}';
 </script>
-<script src="${ctx}/plugin?id=sys.websocket&path=websocket/edit.js&v=${pluginInfo.version}"></script>
+<script src="${ctx}/proxy/${pluginInfo.id}/web/websocket/edit.js?v=${pluginInfo.version}"></script>

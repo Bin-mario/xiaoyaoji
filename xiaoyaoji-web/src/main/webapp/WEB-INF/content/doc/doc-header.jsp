@@ -28,7 +28,7 @@
 </head>
 <body>
 <div class="doc">
-    <div class="doc-header cb" id="doc-header">
+   <%-- <div class="doc-header cb" id="doc-header">
         <c:if test="${edit}">
         <div class="fl doc-header-return">
             <a href="${ctx}/dashboard"><span class="uk-icon">
@@ -90,20 +90,7 @@
             </ul>
 
             <!-- This is the modal -->
-            <div id="save-desc" uk-modal>
-                <div class="uk-modal-dialog uk-modal-body">
-                    <h2 class="uk-modal-title">保存文档</h2>
-                    <p class="uk-margin"><textarea autofocus class="uk-textarea" rows="5" v-model="submitComment"
-                                                   placeholder="可以在这儿输入一些备注"></textarea></p>
-                    <p style="color: rgb(204, 204, 204);">提示:CTRL+S 可快速保存</p>
-                    <p class="uk-text-right">
-                        <button class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
-                        <button class="uk-button uk-button-primary uk-modal-close" type="button" v-on:click="submit">
-                            保存
-                        </button>
-                    </p>
-                </div>
-            </div>
+
         </div>
         </c:if>
         <c:if test="${sessionScope.user == null}">
@@ -116,5 +103,36 @@
             </div>
         </c:if>
     </div>
+--%>
+
+
+    <div class="doc-header cb doc-content-header" id="doc-header">
+        <div class="doc-ops cb">
+            <div class="fl">
+                <a title="折叠" onclick="$('.doc').toggleClass('left-collapsed')">
+                    <i class="iconfont icon-list2"></i>
+                </a>
+                <%--<a href=""><i class="iconfont icon-ziti"></i></a>--%>
+                <a title="搜索"><i class="iconfont icon-search"></i></a>
+                <a href="" title="历史记录"><i class="iconfont icon-history"></i></a>
+                <c:if test="${!edit && editPermission}">
+                    <a title="编辑文档" v-on:click="editpage"><i class="iconfont icon-edit"></i></a>
+                </c:if>
+                <c:if test="${docId != null && edit}">
+                    <a title="预览文档" v-on:click="viewpage"><i class="iconfont icon-eye"></i></a>
+                </c:if>
+            </div>
+            <div class="fr">
+                <a href="${ctx}/project/${project.id}/info" title="项目设置"><i class="iconfont icon-setting2"></i></a>
+                <c:if test="${sessionScope.user!=null}">
+                    <a href="${ctx}/dashboard" title="控制台"><i class="iconfont icon-dashboard"></i></a>
+                    <a href="${ctx}/profile" title="个人中心"><i class="iconfont icon-user"></i></a>
+                </c:if>
+            </div>
+
+
+        </div>
+    </div>
+
     <div class="uk-sticky-placeholder"></div>
     <script>window._isGlobal_ = '${editProjectGlobal}'</script>

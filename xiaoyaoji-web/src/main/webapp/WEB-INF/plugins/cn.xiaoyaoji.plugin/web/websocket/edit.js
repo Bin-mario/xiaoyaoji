@@ -2,7 +2,7 @@
     var thirds = [
         'vue',
         'utils',
-        ctx+'/assets/js/project/doc.commons.js'
+        ctx+'/proxy/'+pluginId+'/assets/js/doc.commons.js'
     ];
     requirejs(thirds,function(Vue,utils,commons){
         var docApp = new Vue({
@@ -117,13 +117,13 @@
             },
             methods:{
                 newRow:function(type){
-                    if(type =='requestHeader'){
+                    if(type ==='requestHeader'){
                         this.content.requestHeaders.push({id:utils.generateUID(),require:'true',children:[]});
-                    }else if(type =='requestArg'){
+                    }else if(type ==='requestArg'){
                         this.content.requestArgs.push({id:utils.generateUID(),require:'true',children:[],type:'string'});
-                    }else if(type =='responseHeader'){
+                    }else if(type ==='responseHeader'){
                         this.content.responseHeaders.push({id:utils.generateUID(),require:'true',children:[]});
-                    }else  if(type =='responseArg'){
+                    }else  if(type ==='responseArg'){
                         this.content.responseArgs.push({id:utils.generateUID(),require:'true',children:[],type:'string'});
                     }
                     commons._initsort_(this);
@@ -149,13 +149,13 @@
                     commons.parseImportData(data, temp);
                     var self = this;
                     temp.forEach(function (d) {
-                        if(self.import =='requestHeader'){
+                        if(self.import ==='requestHeader'){
                             self.content.requestHeaders.push(d);
-                        }else if(self.import =='requestArg'){
+                        }else if(self.import ==='requestArg'){
                             self.content.requestArgs.push(d);
-                        }else if(self.import =='responseHeader'){
+                        }else if(self.import ==='responseHeader'){
                             self.content.responseHeaders.push(d);
-                        }else if(self.import =='responseArg'){
+                        }else if(self.import ==='responseArg'){
                             self.content.responseArgs.push(d);
                         }
                     });

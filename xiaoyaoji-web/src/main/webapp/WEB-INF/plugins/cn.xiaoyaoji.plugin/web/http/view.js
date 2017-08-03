@@ -1,9 +1,11 @@
-requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
-    ctx + '/assets/clipboard/clipboard.min.js',
-    ctx + '/plugin?id=sys.http&path=includes/chrome-extension.js',
-    ctx + '/assets/ace/src-min/ace.js',
-    ctx + '/assets/xml2json/2json.js',
-    ctx + '/assets/xml2json/2xml.js'
+var _pre=ctx+'/proxy/'+pluginId;
+requirejs(['utils', 'vue',
+    _pre + '/assets/jsonformat/jsonFormater.js',
+    _pre + '/assets/clipboard/clipboard.min.js',
+    _pre + '/assets/js/chrome-extension.js',
+    _pre + '/assets/ace/src-min/ace.js',
+    _pre + '/assets/xml2json/2json.js',
+    _pre + '/assets/xml2json/2xml.js'
 ], function (utils, Vue, x, Clipboard, Plugin) {
     var xml = new XML.ObjTree();
     //请求头
@@ -39,17 +41,17 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
                 var name = this.name;
                 if (args[name]) {
                     var temp = args[name];
-                    if (temp.constructor.name != 'Array') {
+                    if (temp.constructor.name !== 'Array') {
                         args[name] = [];
                         args[name].push(temp);
                     }
-                    if (type == 'file') {
+                    if (type === 'file') {
                         args[name].push(this.files[0] || null)
                     } else {
                         args[name].push(this.value);
                     }
                 } else {
-                    if (type == 'file') {
+                    if (type === 'file') {
                         args[name] = this.files[0] || null;
                     } else {
                         args[name] = this.value;
@@ -65,8 +67,8 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
     function Result() {
         var jf = new JsonFormater({
             dom: '#api-result',
-            imgCollapsed: '../assets/jsonformat/images/Collapsed.gif',
-            imgExpanded: '../assets/jsonformat/images/Expanded.gif'
+            imgCollapsed: _pre+'path=/assets/jsonformat/images/Collapsed.gif',
+            imgExpanded: _pre+'path=/assets/jsonformat/images/Expanded.gif'
         });
         var fn = {
             JSON: function (data) {
@@ -113,26 +115,26 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
         for (var name in args) {
             var key = self.doc.id + ':args:' + name;
             var value = args[name];
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 localStorage.setItem(key, value);
             }
         }
         //如果是图片或二进制
-        if (this.content.contentType == "IMAGE" || this.content.contentType == 'BINARY') {
+        if (this.content.contentType === "IMAGE" || this.content.contentType === 'BINARY') {
             window.open(url + '?' + utils.args2Params(args));
             params = undefined;
             return true;
         }
         //请求头
         var headers = getRequestHeaders();
-        if (runType == 'proxy') {
+        if (runType === 'proxy') {
             headers['url'] = url;
             url = ctx + '/plugin/http/proxy';
         }
         for (var name in headers) {
             var key = self.doc.id + ':headers:' + name;
             var value = headers[name];
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 localStorage.setItem(key, value);
             }
         }
@@ -151,11 +153,11 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
             xhrFields: {
                 withCredentials: true
             },
-            jsonpCallback: this.content.contentType == 'JSONP' ? 'callback' : undefined,
+            jsonpCallback: this.content.contentType === 'JSONP' ? 'callback' : undefined,
             complete: function (xhr, status) {
                 self.apiLoading = false;
                 var useTime = Date.now() - xhr.beginTime, body = '';
-                if (status === "success" || status == 'OK') {
+                if (status === "success" || status === 'OK') {
                     var resp = xhr.responseText;
                     body = new Result().resolve(resp, self.content.contentType);
                 } else {
@@ -168,18 +170,18 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
                 self.result.content = body;
 
 
-                if (status != 'success' && status != 'OK') {
+                if (status !== 'success' && status !== 'OK') {
                     var msg = (xhr.responseText || xhr.statusText);
-                    if (status == 'error') {
+                    if (status === 'error') {
                         msg = ('status:' + xhr.status + ' readyState:' + xhr.readyState + '  errorText:' + msg);
                     }
                     var error = utils.escape(msg);
-                    if (status == 'parsererror') {
+                    if (status === 'parsererror') {
                         self.result.content = new Result().resolve(error, self.content.contentType);
                         return true;
                     }
-                    if (!xhr.status || xhr.status == 0) {
-                        if (xhr.statusText == 'error') {
+                    if (!xhr.status || xhr.status === 0) {
+                        if (xhr.statusText === 'error') {
                             error = '请求地址错误,服务器无响应或JavaScript跨域错误,详情错误请查看控制台';
                         }
                     }
@@ -195,6 +197,8 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
                 params.contentType = false;
                 params.processData = false;
                 var data = params.data;
+                //插件时用
+                params.tempdata=data;
                 var fd = new FormData();
                 for (var key in data) {
                     var value = data[key];
@@ -263,10 +267,14 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
         this.apiLoading = true;
         // chrome 插件中jsonp 会出问题
 
-        if (runType == 'plugin' && this.content.contentType != 'JSONP') {
+        if (runType === 'plugin' && this.content.contentType !== 'JSONP') {
             Plugin.complete = params['complete'];
             Plugin.success = params['success'];
             Plugin.error = params['error'];
+            if(params.tempdata){
+                params.data=params.tempdata;
+                delete params['tempdata'];
+            }
             delete params['complete'];
             delete params['success'];
             delete params['error'];
@@ -318,7 +326,7 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
     function initUrlArgs() {
         var urlArgs = [];
         var match = this.content.url.match(/(\{[a-zA-Z0-9_]+\})/g);
-        if (match != null && match.length > 0) {
+        if (match !== null && match.length > 0) {
             urlArgs = match;
             urlArgs = urlArgs.map(function (d) {
                 return {name: d.substring(1, d.length - 1), tempValue: null, id: utils.generateUID()};
@@ -458,10 +466,10 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
             requestArgsPreview: function () {
                 var type = this.content.dataType;
                 var obj = getRequestArgsObject(this.formArgs);
-                if (type == 'XML') {
+                if (type === 'XML') {
                     obj = {xml: obj};
                     return formatXml(xml.writeXML(obj));
-                } else if (type == 'JSON') {
+                } else if (type === 'JSON') {
                     if (obj) {
                         return JSON.stringify(obj, null, '\t');
                     }
@@ -505,9 +513,9 @@ requirejs(['utils', 'vue', ctx + '/assets/jsonformat/jsonFormater.js',
     //初始化ace编辑器
     function initAceEditor(type, self) {
         var mode;
-        if (type == 'JSON') {
+        if (type === 'JSON') {
             mode = 'ace/mode/json';
-        } else if (type == 'XML') {
+        } else if (type === 'XML') {
             mode = 'ace/mode/xml';
         }
         setTimeout(function () {

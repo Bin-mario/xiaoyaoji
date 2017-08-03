@@ -12,7 +12,7 @@
         border: none;
     }
 </style>
-<link rel="stylesheet" type="text/css" href="${assets}/wangeditor/dist/css/wangEditor.min.css">
+<link rel="stylesheet" type="text/css" href="${ctx}/proxy/${pluginInfo.id}/assets/wangeditor/dist/css/wangEditor.min.css">
 <div class="docWeApp" id="docWeApp">
     <div id="we">${doc.content}</div>
 </div>

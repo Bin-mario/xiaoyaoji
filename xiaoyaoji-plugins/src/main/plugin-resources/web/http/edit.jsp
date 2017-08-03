@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" href="${assets}/css/http.css?v=${v}"/>
+<link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/css/http.css?v=${v}"/>
 <div id="doc" v-cloak>
     <div v-cloak>
 
@@ -221,7 +221,7 @@
                         <div class="doc-attach" v-for="item in attachs" v-bind:class="{'file':item.type=='FILE'}">
                             <i class="iconfont icon-close" v-on:click="deleteFile(item)"></i>
                             <a :href="fileAccess+item.url" v-if="item.type=='FILE'" target="_blank">{{item.fileName}}</a>
-                            <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open('+fileAccess+item.url+')'">
+                            <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open(\''+fileAccess+item.url+'\')'">
                         </div>
                     </div>
                 </div>
@@ -251,10 +251,10 @@
     </div>
 </div>
 <script>
-    var doc = ${doc},projectGlobal=${projectGlobal};
+    var doc = ${doc},projectGlobal=${projectGlobal},pluginId='${pluginInfo.id}';
 </script>
 <jsp:include page="../includes/request-args.jsp"/>
 <jsp:include page="../includes/request-headers.jsp"/>
 <jsp:include page="../includes/response-args.jsp"/>
 <jsp:include page="../includes/response-headers.jsp"/>
-<script src="${ctx}/plugin?id=sys.http&path=http/edit.js&v=${pluginInfo.version}"></script>
+<script src="${ctx}/proxy/${pluginInfo.id}/web/http/edit.js?v=${pluginInfo.version}"></script>

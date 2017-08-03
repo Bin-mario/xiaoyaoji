@@ -21,12 +21,12 @@ requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
         for (var name in args) {
             var key = self.doc.id + ':args:' + name;
             var value = args[name];
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 localStorage.setItem(key, value);
             }
         }
         //如果是图片或二进制
-        if (this.content.contentType == "IMAGE" || this.content.contentType == 'BINARY') {
+        if (this.content.contentType === "IMAGE" || this.content.contentType === 'BINARY') {
             window.open(url + '?' + utils.args2Params(args));
             params = undefined;
             return true;
@@ -40,7 +40,7 @@ requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
         for (var name in headers) {
             var key = self.doc.id + ':headers:' + name;
             var value = headers[name];
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 localStorage.setItem(key, value);
             }
         }
@@ -77,18 +77,18 @@ requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
                 self.result.content = body;
 
 
-                if (status != 'success') {
+                if (status !== 'success') {
                     var msg = (xhr.responseText || xhr.statusText);
-                    if (status == 'error') {
+                    if (status === 'error') {
                         msg = ('status:' + xhr.status + ' readyState:' + xhr.readyState + '  errorText:' + msg);
                     }
                     var error = utils.escape(msg);
-                    if (status == 'parsererror') {
+                    if (status === 'parsererror') {
                         self.result.content = new Result().resolve(error, self.content.contentType);
                         return true;
                     }
-                    if (!xhr.status || xhr.status== 0) {
-                        if(xhr.statusText == 'error'){
+                    if (!xhr.status || xhr.status=== 0) {
+                        if(xhr.statusText === 'error'){
                             error ='请求地址错误,服务器无响应或JavaScript跨域错误,详情错误请查看控制台';
                         }
                     }
@@ -272,7 +272,7 @@ requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
             this.currentEnv = g.environment[0] || {};
             var urlArgs=[];
             var match = this.content.url.match(/(\{[a-zA-Z0-9_]+\})/g);
-            if (match != null && match.length > 0) {
+            if (match !== null && match.length > 0) {
                 urlArgs = match;
                 urlArgs = urlArgs.map(function (d) {
                     return {name: d.substring(1, d.length - 1), value: null};
@@ -319,7 +319,7 @@ requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
         methods:{
             loadAttach:function(){
                 var self = this;
-                utils.get('/attach/'+this.doc.id,{},function (rs) {
+                utils.get('/attach/'+this.doc.id,{projectId:_projectId_},function (rs) {
                     self.attachs = rs.data.attachs || [];
                     self.fileAccess = rs.data.fileAccess || '';
                 });

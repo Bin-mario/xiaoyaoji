@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" href="${assets}/css/http.css?v=${v}"/>
+<link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/css/http.css?v=${v}"/>
 <div class="content-section" id="docApp" style="padding: 0 10px;" v-cloak>
 
 <span class="doc-update-time">更新时间: <span id="api-update-time">{{doc.lastUpdateTime}}</span></span>
@@ -28,7 +28,7 @@
             <div class="cb">
                 <div class="doc-attach" v-for="item in attachs" v-bind:class="{'file':item.type=='FILE'}">
                     <a :href="fileAccess+item.url" v-if="item.type=='FILE'" target="_blank">{{item.fileName}}</a>
-                    <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open('+fileAccess+item.url+');'">
+                    <img v-if="item.type =='IMG'" v-bind:src="fileAccess+item.url" :onclick="'window.open(\''+fileAccess+item.url+'\');'">
                 </div>
             </div>
         </div>
@@ -368,7 +368,7 @@
 <jsp:include page="../includes/response-args.jsp"/>
 
 <script>
-    var doc = ${doc},projectGlobal=${projectGlobal};
+    var doc = ${doc},projectGlobal=${projectGlobal},pluginId='${pluginInfo.id}';
 </script>
-<link rel="stylesheet" type="text/css" href="${assets}/jsonformat/jsonFormater.css"/>
-<script src="${ctx}/plugin?id=sys.http&path=http/view.js&v=${pluginInfo.version}"></script>
+<link rel="stylesheet" type="text/css" href="${ctx}/proxy/${pluginInfo.id}/assets/jsonformat/jsonFormater.css"/>
+<script src="${ctx}/proxy/${pluginInfo.id}/web/http/view.js?v=${pluginInfo.version}"></script>

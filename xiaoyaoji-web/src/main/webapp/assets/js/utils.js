@@ -23,7 +23,7 @@
             toJSON: function (data) {
                 if (data === undefined || data === null)
                     return data;
-                if (data.constructor.name == 'String') {
+                if (data.constructor.name === 'String') {
                     //有bug,暂时去掉
                     /*data=data.replace(/:\s*"([^"]*)"/g, function(match, p1) {
                      return ': "' + p1.replace(/:/g, '@colon@') + '"';
@@ -169,8 +169,8 @@
             var complete = params.complete;
             var success = params.success;
             params.complete = function (xhr, result) {
-                if (result == 'error') {
-                    if (xhr.readyState == 0) {
+                if (result === 'error') {
+                    if (xhr.readyState === 0) {
                         toastr.error('网络错误');
                     } else {
                         console.log(arguments)
@@ -182,15 +182,15 @@
             };
             var expired = params.expired;
             params.success = function (rs) {
-                if (rs.code == 0) {
+                if (rs.code === 0) {
                     if (success) {
                         success.apply(this, arguments);
                     }
-                } else if (rs.code == -2) {
+                } else if (rs.code === -2) {
                     if (expired && expired(rs)) {
                         return true;
                     }
-                    if (location.href.indexOf('/project/demo') != -1) {
+                    if (location.href.indexOf('/project/demo') !== -1) {
                         toastr.error('请登陆后尝试');
                         return true;
                     }

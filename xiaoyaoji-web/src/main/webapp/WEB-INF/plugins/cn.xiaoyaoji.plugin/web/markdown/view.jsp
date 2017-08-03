@@ -22,13 +22,16 @@
     <div id="editormdvalue" class="hide">${doc.content}</div>
     <div id="editormd"></div>
 </div>
-<link rel="stylesheet" href="${assets}/editor.md/lib/codemirror/codemirror.min.css"/>
-<link rel="stylesheet" href="${assets}/editor.md/lib/codemirror/addon/fold/foldgutter.css"/>
-<link rel="stylesheet" href="${assets}/editor.md/css/editormd.min.css"/>
+<link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/editor.md/lib/codemirror/codemirror.min.css?v=${pluginInfo.version}"/>
+<link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/editor.md/lib/codemirror/addon/fold/foldgutter.css?v=${pluginInfo.version}"/>
+<link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/editor.md/css/editormd.min.css?v=${pluginInfo.version}"/>
 <script>
     requirejs.config({
-        baseUrl:'${assets}',
+        baseUrl:'${ctx}/proxy/${pluginInfo.id}/assets/',
+        urlArgs:'v=${pluginInfo.version}',
         paths: {
+            'vue':'/assets/vue/vue.2.3.3',
+            'utils':'/assets/js/utils',
             marked: "editor.md/lib/marked.min",
             prettify: "editor.md/lib/prettify.min",
             raphael: "editor.md/lib/raphael.min",

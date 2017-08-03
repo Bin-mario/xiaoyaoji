@@ -25,7 +25,7 @@
             <ul class="cb">
                 <c:forEach items="${exportPlugins}" var="item">
                     <li onclick="window.open('${ctx}/project/${project.id}/export/${item.id}/do')">
-                        <img src="${ctx}/plugin/assets?id=${item.id}&path=${item.icon.icon32x32}">
+                        <img src="${ctx}/proxy/${item.id}/${item.icon.icon32x32}?v=${item.version}">
                         <p>${item.name}</p>
                     </li>
                 </c:forEach>
