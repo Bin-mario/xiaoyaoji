@@ -845,15 +845,17 @@ public class DataFactory implements Data {
                 //迁移module数据到doc
                 List<Module> modules = qr.query(connection, "select * from " + TableNames.MODULES, new BeanListHandler<>(Module.class));
                 if (modules != null && modules.size() > 0) {
+                    sql.append(docInsertSQL);
                     //key projectId
                     Map<String, JSONArray> globalRequestArgsMap = new HashMap<>();
                     Map<String, JSONArray> globalRequestHeadersMap = new HashMap<>();
-
+                    int index=0;
                     for (Module m : modules) {
                         sql.append(docValueSQL);
                         //id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId
                         params.add(m.getId());
                         params.add(m.getName());
+                        params.add(++index);
                         params.add(DocType.SYS_FOLDER.getTypeName());
                         params.add(null);
                         params.add(m.getCreateTime());
@@ -888,6 +890,7 @@ public class DataFactory implements Data {
                         }
                         if(size >=batchNum){
                             insertAndReset(connection,qr,sql,params);
+                            sql.append(docInsertSQL);
                             size=0;
                         }else {
                             size++;
@@ -932,6 +935,7 @@ public class DataFactory implements Data {
 
                             if (size>= batchNum) {
                                 insertAndReset(connection,qr,sql,params);
+                                sql.append("insert into project_global (id,environment,http,status,projectId) values");
                                 size = 0;
                             }else{
                                 size++;
@@ -952,11 +956,13 @@ public class DataFactory implements Data {
                 List<Folder> folders = qr.query(connection, "select * from " + TableNames.INTERFACE_FOLDER, new BeanListHandler<>(Folder.class));
                 if (folders != null && folders.size() > 0) {
                     sql.append(docInsertSQL);
+                    int index=0;
                     for (Folder f : folders) {
                         //id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId
                         sql.append(docValueSQL);
                         params.add(f.getId());
                         params.add(f.getName());
+                        params.add(++index);
                         params.add(DocType.SYS_FOLDER.getTypeName());
                         params.add(null);
                         params.add(f.getCreateTime());
@@ -967,6 +973,7 @@ public class DataFactory implements Data {
 
                         if (size >= batchNum) {
                             rs += insertAndReset(connection,qr,sql,params);
+                            sql.append(docInsertSQL);
                             size = 0;
                         }else{
                             size++;
@@ -974,6 +981,7 @@ public class DataFactory implements Data {
                     }
                     if(params.size()>0){
                         rs += insertAndReset(connection,qr,sql,params);
+                        sql.append(docInsertSQL);
                     }
                 }
                 sql = new StringBuilder();
@@ -1032,6 +1040,7 @@ public class DataFactory implements Data {
 
                             if (size >= batchNum) {
                                 insertAndReset(connection,qr,sql,params);
+                                sql.append(docInsertSQL);
                                 size = 0;
                             }else{
                                 size++;
@@ -1039,6 +1048,7 @@ public class DataFactory implements Data {
                         }
                         if(params.size()>0){
                             insertAndReset(connection,qr,sql,params);
+                            sql.append(docInsertSQL);
                             size = 0;
                         }
                         sql = new StringBuilder();
