@@ -12,7 +12,7 @@
 
 <link rel="stylesheet" href="${assets}/uikit/css/uikit.min.css?v=${v}">
 <link rel="stylesheet" href="${assets}/uikit/css/uikit-rtl.min.css?v=${v}">
-<link rel="stylesheet" href="${assets}/css/style.css?v=${v}">
+<%--<link rel="stylesheet" href="${assets}/css/style.css?v=${v}">--%>
 <link rel="stylesheet" href="${assets}/css/app.css?v=${v}">
 <link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.com.cn/"/>
 <meta name="keywords"

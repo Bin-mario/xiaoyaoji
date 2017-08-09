@@ -19,7 +19,10 @@ import cn.com.xiaoyaoji.service.DocService;
 import cn.com.xiaoyaoji.service.ProjectService;
 import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.service.ServiceTool;
+import cn.com.xiaoyaoji.view.MultiView;
 import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,7 +39,7 @@ import java.util.List;
  * @author zhoujingjie
  * @date 2016-07-20
  */
-@RestController
+@Controller
 @RequestMapping("/project")
 public class ProjectController {
     private static final String EXPORT_SUPPORTED_TYPE_PDF = "PDF";
@@ -173,10 +176,10 @@ public class ProjectController {
 
 
     @GetMapping("/list")
-    public ModelAndView list(User user, @RequestParam(value = "status", required = false) String status) {
+    public MultiView list(User user, @RequestParam(value = "status", required = false) String status) {
         Pagination p = Pagination.build(new _HashMap<String, String>().add("status", status).add("userId", user.getId()));
         List<Project> projects = ServiceFactory.instance().getProjects(p);
-        return new ModelAndView("/dashboard/index")
+        return new MultiView("/dashboard/index")
                 .addObject("projects", projects)
                 ;
     }

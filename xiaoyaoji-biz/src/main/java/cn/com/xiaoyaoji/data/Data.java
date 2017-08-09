@@ -90,8 +90,6 @@ public interface Data {
 
     List<ProjectLog> getProjectLogs(Pagination pagination);
 
-    int updateSystem(String version);
-
     ProjectGlobal getProjectGlobal(String projectId);
 
     List<Attach> getAttachsByRelatedId(String relatedId);

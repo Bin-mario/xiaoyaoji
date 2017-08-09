@@ -1,7 +1,7 @@
 $(function(){
     require(['utils','vue'],function(utils,Vue){
         new Vue({
-            el:'#doc-header',
+            el:'#sidebar',
             data:{
                 submitComment:'',
                 projectName:_projectName_,
@@ -9,6 +9,10 @@ $(function(){
                 g:{
                     ctx:ctx,
                     edit:_edit_
+                },
+                projects:[],
+                loading:{
+                    project:true
                 }
             },
             watch:{
@@ -30,7 +34,9 @@ $(function(){
                         self.submit();
                         return false;
                     }
-                })
+                });
+
+                this.loadProjects();
             },
             methods:{
                 loadHistory:function(){
@@ -54,6 +60,10 @@ $(function(){
                     }
                     return ctx+'/doc/'+docId+'?docHistoryId='+historyId;
                 },
+                showProject:function(){
+                    $('#sidebar').addClass('layer');
+                    this.loadProjects();
+                },
                 submit:function(){
                     if(_isGlobal_){
                         window.submitProjectGlobal();
@@ -64,6 +74,14 @@ $(function(){
                             toastr.success('操作成功');
                         });
                     }
+                },
+                loadProjects:function(){
+                    var self = this;
+                    self.loading.project=true;
+                    utils.get('/project/list',{},function(rs){
+                        self.loading.project=false;
+                        self.projects = rs.data.projects;
+                    });
                 }
             }
         })

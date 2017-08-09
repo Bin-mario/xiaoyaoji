@@ -1,11 +1,9 @@
 package cn.com.xiaoyaoji.data;
 
 import cn.com.xiaoyaoji.core.annotations.Ignore;
-import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.core.common.Pagination;
 import cn.com.xiaoyaoji.core.exception.SystemErrorException;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
-import cn.com.xiaoyaoji.core.util.JsonUtils;
 import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.bean.*;
 import cn.com.xiaoyaoji.data.handler.IntegerResultHandler;
@@ -13,8 +11,6 @@ import cn.com.xiaoyaoji.data.handler.StringResultHandler;
 import cn.com.xiaoyaoji.integration.file.FileManager;
 import cn.com.xiaoyaoji.util.JdbcUtils;
 import cn.com.xiaoyaoji.utils.SqlUtils;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -25,7 +21,10 @@ import java.io.IOException;
 import java.lang.reflect.*;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: zhoujingjie
@@ -718,9 +717,7 @@ public class DataFactory implements Data {
         });
     }
 
-    private List<Interface> getInterfaces(QueryRunner qr, Connection connection, int start, int limit) throws SQLException {
-        return qr.query(connection, "select * from interface limit ?,?", new BeanListHandler<>(Interface.class), start, limit);
-    }
+
 
     private Object[] getData(Object obj) {
         List<Object> data = new ArrayList<>();
@@ -737,343 +734,7 @@ public class DataFactory implements Data {
         return data.toArray();
     }
 
-    private int insertAndReset(Connection connection,QueryRunner qr,StringBuilder sql,List<Object> params) throws SQLException {
-        sql= sql.delete(sql.length()-1,sql.length());
-        int rs= qr.update(connection,sql.toString(),params.toArray());
-        params.clear();
-        sql.delete(0,sql.length());
-        return rs;
-    }
 
-    @Override
-    public int updateSystem(String version) {
-        return process(new Handler<Integer>() {
-            @Override
-            public Integer handle(Connection connection, QueryRunner qr) throws SQLException {
-                connection.setAutoCommit(true);
-                //判断是否已执行更新操作
-                try {
-                    String v = qr.query(connection, "select version from sys limit 1", new StringResultHandler());
-                    if (v != null && v.equals("2.0")) {
-                        return 1;
-                    }
-                } catch (SQLException e) {
-                    //ignore
-                    //e.printStackTrace();
-                }
-
-                int rs = 0;
-
-                //批量更新数量
-                int batchNum = 100;
-
-
-                //创建doc表
-                try {
-                    rs += qr.update(connection, "drop table if exists  " + TableNames.DOC);
-                    rs += qr.update(connection, "create table " + TableNames.DOC + " (\n" +
-                            "\tid char(12) PRIMARY KEY,\n" +
-                            "\tname varchar(200),\n" +
-                            "    sort int default 100,\n" +
-                            "    type varchar(100),\n" +
-                            "    content longtext,\n" +
-                            "    createTime datetime,\n" +
-                            "    lastUpdateTime datetime,\n" +
-                            "    parentId char(12),\n" +
-                            "    projectId char(12),\n" +
-                            "    INDEX `projectId` (`projectId` ASC)\n" +
-                            ") ENGINE=InnoDB");
-                    //创建doc_history 表
-                    rs += qr.update(connection, "drop table if exists " + TableNames.DOC_HISTORY);
-                    rs += qr.update(connection, "CREATE TABLE `doc_history` (\n" +
-                            "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-                            "  `name` varchar(200) DEFAULT NULL,\n" +
-                            "  `sort` int(11) DEFAULT '100',\n" +
-                            "  `type` varchar(100) DEFAULT NULL,\n" +
-                            "  `content` longtext,\n" +
-                            "  `createTime` datetime DEFAULT NULL,\n" +
-                            "  `parentId` char(12) DEFAULT NULL,\n" +
-                            "  `projectId` char(12) DEFAULT NULL,\n" +
-                            "  `comment` text,\n" +
-                            "  `userId` char(12) DEFAULT NULL,\n" +
-                            "  `docId` char(12) DEFAULT NULL,\n" +
-                            "  PRIMARY KEY (`id`)\n" +
-                            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
-
-                    //创建attach
-                    rs += qr.update(connection, "drop table if exists  " + TableNames.ATTACH);
-                    rs += qr.update(connection, "CREATE TABLE `" + TableNames.ATTACH + "` (\n" +
-                            "  `id` char(12) NOT NULL,\n" +
-                            "  `url` varchar(1000) DEFAULT NULL,\n" +
-                            "  `type` varchar(45) DEFAULT NULL,\n" +
-                            "  `sort` int(11) DEFAULT NULL,\n" +
-                            "  `relatedId` char(12) DEFAULT NULL,\n" +
-                            "  `fileName` varchar(1000) DEFAULT NULL,\n" +
-                            "  `createTime` datetime DEFAULT NULL,\n" +
-                            "  `projectId` char(12) DEFAULT NULL,\n" +
-                            "  PRIMARY KEY (`id`),\n" +
-                            "  KEY `normal` (`relatedId`)\n" +
-                            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
-
-                    //创建sys表
-                    rs += qr.update(connection, "drop table if exists sys ");
-                    rs += qr.update(connection, "CREATE TABLE `sys` (\n" +
-                            "  `version` varchar(10) DEFAULT NULL\n" +
-                            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
-
-
-                    rs += qr.update(connection, "drop table if exists project_global");
-                    rs += qr.update(connection, "\n" +
-                            "CREATE TABLE `" + TableNames.PROJECT_GLOBAL + "` (\n" +
-                            "  `id` char(12) NOT NULL DEFAULT '',\n" +
-                            "  `environment` mediumtext,\n" +
-                            "  `http` mediumtext,\n" +
-                            "  `projectId` char(12) NOT NULL DEFAULT '',\n" +
-                            "  `status` mediumtext\n" +
-                            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n");
-                } catch (SQLException e) {
-                    logger.error(e.getMessage(),e);
-                }
-
-                StringBuilder sql = new StringBuilder();
-                List<Object> params = new ArrayList<>();
-                int size = 0;
-
-                SQLBuildResult sbr = null;
-                String docInsertSQL = "insert into doc (id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId) values";
-                String docValueSQL="(?,?,?,?,?,?,?,?,?),";
-                //迁移module数据到doc
-                List<Module> modules = qr.query(connection, "select * from " + TableNames.MODULES, new BeanListHandler<>(Module.class));
-                if (modules != null && modules.size() > 0) {
-                    sql.append(docInsertSQL);
-                    //key projectId
-                    Map<String, JSONArray> globalRequestArgsMap = new HashMap<>();
-                    Map<String, JSONArray> globalRequestHeadersMap = new HashMap<>();
-                    int index=0;
-                    for (Module m : modules) {
-                        sql.append(docValueSQL);
-                        //id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId
-                        params.add(m.getId());
-                        params.add(m.getName());
-                        params.add(++index);
-                        params.add(DocType.SYS_FOLDER.getTypeName());
-                        params.add(null);
-                        params.add(m.getCreateTime());
-                        params.add(m.getLastUpdateTime());
-                        params.add(m.getProjectId());
-                        params.add("0");
-
-                        String requestHeaders = m.getRequestHeaders();
-                        if (org.apache.commons.lang3.StringUtils.isNoneEmpty(requestHeaders)) {
-                            try {
-                                JSONArray temp = globalRequestHeadersMap.get(m.getProjectId());
-                                if (temp == null) {
-                                    globalRequestHeadersMap.put(m.getProjectId(), JSON.parseArray(requestHeaders));
-                                } else {
-                                    temp.addAll(JSON.parseArray(requestHeaders));
-                                }
-                            } catch (Exception e) {
-                            }
-                        }
-
-                        String requestArgs = m.getRequestArgs();
-                        if (org.apache.commons.lang3.StringUtils.isNoneEmpty(requestArgs)) {
-                            try {
-                                JSONArray temp = globalRequestArgsMap.get(m.getProjectId());
-                                if (temp == null) {
-                                    globalRequestArgsMap.put(m.getProjectId(), JSON.parseArray(requestArgs));
-                                } else {
-                                    temp.addAll(JSON.parseArray(requestArgs));
-                                }
-                            } catch (Exception e) {
-                            }
-                        }
-                        if(size >=batchNum){
-                            insertAndReset(connection,qr,sql,params);
-                            sql.append(docInsertSQL);
-                            size=0;
-                        }else {
-                            size++;
-                        }
-                    }
-
-                    if(params.size()>0){
-                        insertAndReset(connection,qr,sql,params);
-                    }
-
-                    sql = new StringBuilder();
-                    params = new ArrayList<>();
-                    size = 0;
-
-                    {
-                        //初始化project_global
-                        Set<String> projectIds = new HashSet<>();
-                        projectIds.addAll(globalRequestArgsMap.keySet());
-                        projectIds.addAll(globalRequestHeadersMap.keySet());
-                        sql.append("insert into project_global (id,environment,http,status,projectId) values");
-                        String valueSQL = "(?,?,?,?,?),";
-
-                        params = new ArrayList<>();
-                        for (String projectId : projectIds) {
-                            String tempSQL = "select environments from " + TableNames.PROJECT + " where id = ?";
-                            Project temp = qr.query(connection, tempSQL, new BeanHandler<>(Project.class), projectId);
-                            if (temp == null)
-                                continue;
-                            Map<String, Object> httpMap = new HashMap<>();
-                            httpMap.put("requestHeaders", globalRequestHeadersMap.get(projectId));
-                            httpMap.put("requestArgs", globalRequestArgsMap.get(projectId));
-                            httpMap.put("responseArgs", new String[]{});
-                            httpMap.put("responseHeaders", new String[]{});
-
-                            //id,environment,http,status,projectId
-                            sql.append(valueSQL);
-                            params.add(StringUtils.id());
-                            params.add(temp.getEnvironments());
-                            params.add(JsonUtils.toString(httpMap));
-                            params.add(null);
-                            params.add(projectId);
-
-                            if (size>= batchNum) {
-                                insertAndReset(connection,qr,sql,params);
-                                sql.append("insert into project_global (id,environment,http,status,projectId) values");
-                                size = 0;
-                            }else{
-                                size++;
-                            }
-                        }
-                        if(params.size()>0){
-                            insertAndReset(connection,qr,sql,params);
-                        }
-                    }
-                }
-
-
-                sql = new StringBuilder();
-                params.clear();
-                size = 0;
-
-                //迁移interface_folder数据到doc
-                List<Folder> folders = qr.query(connection, "select * from " + TableNames.INTERFACE_FOLDER, new BeanListHandler<>(Folder.class));
-                if (folders != null && folders.size() > 0) {
-                    sql.append(docInsertSQL);
-                    int index=0;
-                    for (Folder f : folders) {
-                        //id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId
-                        sql.append(docValueSQL);
-                        params.add(f.getId());
-                        params.add(f.getName());
-                        params.add(++index);
-                        params.add(DocType.SYS_FOLDER.getTypeName());
-                        params.add(null);
-                        params.add(f.getCreateTime());
-                        params.add(new Date());
-                        params.add(f.getProjectId());
-                        params.add(f.getModuleId());
-
-
-                        if (size >= batchNum) {
-                            rs += insertAndReset(connection,qr,sql,params);
-                            sql.append(docInsertSQL);
-                            size = 0;
-                        }else{
-                            size++;
-                        }
-                    }
-                    if(params.size()>0){
-                        rs += insertAndReset(connection,qr,sql,params);
-                        sql.append(docInsertSQL);
-                    }
-                }
-                sql = new StringBuilder();
-                size = 0;
-                params.clear();
-
-                //迁移interface数据到doc中
-                int start = 0, limit = 5000;
-                while (true) {
-                    List<Interface> interfaces = getInterfaces(qr, connection, start, limit);
-                    if (interfaces != null && interfaces.size() > 0) {
-                        sql.append(docInsertSQL);
-                        for (Interface in : interfaces) {
-                            sql.append(docValueSQL);
-                            String protocol = in.getProtocol();
-                            if (org.apache.commons.lang3.StringUtils.isBlank(in.getRequestHeaders())) {
-                                in.setRequestHeaders("[]");
-                            }
-                            if (org.apache.commons.lang3.StringUtils.isBlank(in.getRequestArgs())) {
-                                in.setRequestArgs("[]");
-                            }
-                            if (org.apache.commons.lang3.StringUtils.isBlank(in.getResponseArgs())) {
-                                in.setResponseArgs("[]");
-                            }
-                            if ("DEPRECATED".equals(in.getStatus())) {
-                                in.setStatus("已废弃");
-                            } else {
-                                in.setStatus("有效");
-                            }
-
-                            Doc doc = in.toDoc();
-                            doc.setId(in.getId());
-                            if (doc.getSort() == null) {
-                                doc.setSort(0);
-                            }
-
-                            if ("HTTP".equals(protocol)) {
-                                doc.setType(DocType.SYS_HTTP.getTypeName());
-                            } else if ("WEBSOCKET".equals(protocol)) {
-                                doc.setType(DocType.SYS_WEBSOCKET.getTypeName());
-                            } else {
-                                doc.setType(DocType.SYS_DOC_MD.getTypeName());
-                            }
-
-                            //id,name,sort,type,content,createTime,lastUpdateTime,projectId,parentId
-                            params.add(doc.getId());
-                            params.add(doc.getName());
-                            params.add(doc.getSort());
-                            params.add(doc.getType());
-                            params.add(doc.getContent());
-                            params.add(doc.getCreateTime());
-                            params.add(doc.getLastUpdateTime());
-                            params.add(doc.getProjectId());
-                            params.add(doc.getParentId());
-
-
-                            if (size >= batchNum) {
-                                insertAndReset(connection,qr,sql,params);
-                                sql.append(docInsertSQL);
-                                size = 0;
-                            }else{
-                                size++;
-                            }
-                        }
-                        if(params.size()>0){
-                            insertAndReset(connection,qr,sql,params);
-                            sql.append(docInsertSQL);
-                            size = 0;
-                        }
-                        sql = new StringBuilder();
-                        params.clear();
-                        size = 0;
-                        start += limit;
-                    } else {
-                        break;
-                    }
-                }
-
-                rs += qr.update(connection, "update doc set content = replace(content,':\"VALID\"','有效')");
-
-                //更新project 字段
-                rs += qr.update(connection, "ALTER TABLE `project` \n" +
-                        "ADD COLUMN `lastUpdateTime` DATETIME NULL AFTER `details`;");
-                rs += qr.update(connection, "DROP TABLE IF EXISTS `sys`;");
-                rs += qr.update(connection, "CREATE TABLE `sys` (\n  `version` varchar(10) DEFAULT NULL\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-                //设置sys为当前版本
-                rs += qr.update(connection, "insert into sys values('2.0')");
-
-                return rs;
-            }
-        });
-    }
 
 
     @Override

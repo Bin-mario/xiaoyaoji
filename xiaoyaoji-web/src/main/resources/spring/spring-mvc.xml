@@ -35,6 +35,7 @@
 
 
 
+
     <!-- 多部分文件上传 -->
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
@@ -80,6 +81,9 @@
         <mvc:argument-resolvers>
             <bean class="cn.com.xiaoyaoji.resolver.UserArgumentsResolver"/>
         </mvc:argument-resolvers>
+        <mvc:return-value-handlers>
+            <bean class="cn.com.xiaoyaoji.handler.MultiModelAndViewReturnValueHandler" primary="true"/>
+        </mvc:return-value-handlers>
     </mvc:annotation-driven>
     <!-- controller扫描 -->
     <context:component-scan base-package="cn.com.xiaoyaoji.controller" />

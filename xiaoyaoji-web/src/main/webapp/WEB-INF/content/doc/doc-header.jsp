@@ -10,7 +10,7 @@
 <head>
     <title>${doc.name}-${project.name}</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="${assets}/css/style.css">
+    <%--<link rel="stylesheet" href="${assets}/css/style.css">--%>
     <link rel="stylesheet" href="${assets}/css/doc.css">
     <link rel="stylesheet" href="${assets}/css/icons.css">
     <link rel="stylesheet" href="${assets}/css/app.css">
@@ -106,13 +106,13 @@
 --%>
 
 
-    <div class="doc-header cb doc-content-header" id="doc-header">
+   <%-- <div class="doc-header cb doc-content-header" id="doc-header">
         <div class="doc-ops cb">
             <div class="fl">
                 <a title="折叠" onclick="$('.doc').toggleClass('left-collapsed')">
                     <i class="iconfont icon-list2"></i>
                 </a>
-                <%--<a href=""><i class="iconfont icon-ziti"></i></a>--%>
+                &lt;%&ndash;<a href=""><i class="iconfont icon-ziti"></i></a>&ndash;%&gt;
                 <a title="搜索"><i class="iconfont icon-search"></i></a>
                 <a href="" title="历史记录"><i class="iconfont icon-history"></i></a>
                 <c:if test="${!edit && editPermission}">
@@ -120,6 +120,7 @@
                 </c:if>
                 <c:if test="${docId != null && edit}">
                     <a title="预览文档" v-on:click="viewpage"><i class="iconfont icon-eye"></i></a>
+                    <li class="fl"><a href="${ctx}/project/global/${project.id}"><i class="iconfont icon-yulan"></i>全局设置</a>
                 </c:if>
             </div>
             <div class="fr">
@@ -132,7 +133,9 @@
 
 
         </div>
-    </div>
+    </div>--%>
 
-    <div class="uk-sticky-placeholder"></div>
+    <%--<div class="uk-sticky-placeholder"></div>--%>
     <script>window._isGlobal_ = '${editProjectGlobal}'</script>
+
+    <jsp:include page="doc-sidebar.jsp"/>

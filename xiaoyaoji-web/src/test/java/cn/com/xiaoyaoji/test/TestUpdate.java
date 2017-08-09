@@ -11,6 +11,6 @@ public class TestUpdate {
 
     @Test
     public void test(){
-        DataFactory.instance().updateSystem("");
+        //DataFactory.instance().updateSystem("");
     }
 }

@@ -1,0 +1,287 @@
+
+
+/********* SIDEBAR ************/
+
+
+
+.db-left{
+}
+.db-left .logo{
+    margin-top: 50px;
+}
+.db-left-content{
+    position: fixed;
+    width: 250px;
+    top:0;
+    left:0;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 101;
+    background-color: #fff;
+}
+.sidebar{
+    display: none;;
+    left: 60px;
+}
+.dashboard.max .dlc1{
+    display: none;
+}
+.dashboard.max .sidebar{
+    display: block;
+}
+.sidebar .db-left-content{
+    left: 60px;
+}
+.dbl-projects{
+    display: block;
+}
+body.profile .dbl-projects{
+    display: none;
+}
+
+.db-left-layer{
+    background-color: rgba(138, 138, 138, 0.5);
+    position: fixed;
+    top:0;
+    left:60px;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    z-index: 100;
+}
+.db-left-bar{
+    background-color: #2e2d2b;
+    color: #fff;
+    width: 60px;
+    height: 100%;
+    position: fixed;
+    z-index: 99;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+}
+.db-left-bar .logo img{
+    width: 50px;
+}
+.db-left .db-left-bar .db-item{
+    padding-left: 0;
+}
+.db-left .db-left-bar .db-item a{
+    color: #a2a2a2;
+}
+.db-left .db-left-bar .db-item a:hover,.db-left .db-left-bar .db-item a.active{
+    color: #fff;
+}
+.dashboard .db-left-bar .db-item:hover{
+    background-color: inherit;
+}
+.db-left .db-left-bar .db-item i{
+    font-size: 30px;
+    font-weight: bold;
+    margin-right: inherit;
+}
+
+.db-left-search{
+    margin: 40px 0 5px 25px;
+}
+.db-left-search [type='text']{
+    border: none;
+    line-height: 30px;
+    height: 30px;
+    margin-left: 3px;
+}
+.db-left-search i{
+    font-size: 20px;
+    color: #757575;
+}
+.db-search-box{
+    margin: 30px auto;
+    width: 80%;
+    display: block;
+}
+.db-search-box input{
+    border-color: #E5E5E5;
+}
+.db-left .db-item{
+    display: -webkit-flex;
+    display: flex;
+    padding-left: 26px;
+    margin-bottom: 10px;}
+
+.db-left .db-item a{
+    -webkit-flex: 3;
+    flex: 3;
+    height: 40px;
+    width: 50%;
+    line-height: 40px;
+}
+.db-left .db-item .shoucang{
+    -webkit-flex: 1;
+    flex: 1;
+    display: none;
+    text-align: center;
+}
+.db-left .db-item.active{
+    background-color: #fff;
+}
+.db-left .db-item:hover .shoucang{
+    display: block;
+    color: #00b290;
+}
+.db-left .db-item i{
+    margin-right: 10px;
+}
+.bd-project-title{
+    padding-left: 26px;
+    font-size: 16px;
+    margin: 30px 0 20px 0;
+}
+.db-right{
+    margin-left: 250px
+}
+.dashboard.max .db-right{
+    margin-left: 60px;
+}
+
+.db-right .db-nav{
+    display: block;
+    border-bottom: 1px solid #e1e1e1;
+}
+.db-nav .db-back{
+    border-right:1px solid #e1e1e1;
+    margin:0 10px 0 5px;
+}
+.db-nav .db-item{
+    position: relative;
+}
+.db-nav a{
+    color: #666;
+    display: block;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 15px;
+}
+.db-nav .db-item:hover{
+    background-color: #F1F1F1;
+}
+.db-nav .page-name{
+    font-weight: bold;
+    font-size: 14px;
+}
+.db-right .db-nav a:hover{
+    color: #000;
+}
+.db-nav .db-user-logo{
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    margin-right: 8px;
+    margin-top: 10px;
+}
+.db-nav .db-msg{
+    position: relative;
+    padding-right: 20px;
+}
+.db-nav .db-msg .db-subscript{
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 12px;
+    border-radius: 100%;
+    background: #d43b49;
+    color: #fff;
+    display: block;
+    height: 20px;
+    width: 20px;
+    padding: 0;
+    text-align: center;
+}
+
+.db-item-sub{
+    background: #fff;
+    border: 1px solid #eaeaea;
+    position: absolute;
+    right: 0;
+    z-index: 12;
+    top: 50px;
+}
+.db-item-sub a{
+    width: 150px;
+    height: 40px;
+    line-height: 40px;
+}
+.db-item-sub i{
+    color: #00B290;
+    margin-right: 5px;
+}
+.db-item-sub .db-item{
+    border-bottom: 1px solid #eaeaea;
+}
+.db-item-sub .db-item:last-child{
+    border: none;
+}
+.db-item:hover .db-item-sub{
+    /*display: block;*/
+}
+.db-nav-sub-profile{
+    margin: 10px 0;
+    line-height: 25px;
+    width: 180px;
+    overflow: hidden;
+}
+.db-nav-profile-name{
+    font-size: 16px;
+}
+.db-item-sub .db-user-logo{
+    height: 50px;
+    width: 50px;
+    margin: 10px 20px 10px 20px;
+}
+.db-item .db-profile-info{
+    background: #fff!important;
+    color: #666;
+    width: 280px;
+}
+.db-item.profile .db-item{
+    background: #f9f9f9;
+}
+.db-item.profile .db-item a{
+    padding-left: 30px;
+}
+.db-nav-msg-box{
+    padding: 0 10px;
+    line-height: 40px;
+    background: #e2e2e2;
+    width: 300px;
+}
+.db-msg .db-item-sub{
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.db-msg .db-item:not(.item-title){
+    padding: 5px;
+}
+.db-msg .db-item:hover{
+    background: none;
+}
+.db-msg .db-item a:hover{
+    color: #0759ff;
+}
+.db-msg .db-item a{
+    font-size: 12px;
+    color: #06c;
+    height: initial;
+    line-height: 16px;
+    width: 100%;
+    padding: 5px 8px 0 8px;
+    box-sizing: border-box;
+}
+.db-main{
+    padding: 60px 0 0 80px;
+}
+.db-view-form{
+    width: 600px;
+}
+
+/************* SIDEBAR END ***********/

@@ -40,7 +40,6 @@
 
 <c:if test="${!isXHR}">
     </div>
-    <script src="${assets}/js/project/header.js"></script>
     </div>
     </div>
     <!-- loading end -->

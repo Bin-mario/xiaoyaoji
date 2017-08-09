@@ -56,7 +56,7 @@
     </div>
     </div>
     </div>
-    <script src="${assets}/js/project/header.js"></script>
+
     </body>
     </html>
 </c:if>

@@ -4,7 +4,7 @@ import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.core.common._HashMap;
 import cn.com.xiaoyaoji.core.exception.NotLoginException;
 import cn.com.xiaoyaoji.core.exception.ServiceException;
-import cn.com.xiaoyaoji.view.JsonView;
+import com.alibaba.fastjson.support.spring.FastJsonJsonView;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,7 +38,7 @@ public class ExceptionResolver extends SimpleMappingExceptionResolver {
         boolean isXhr = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
         if(isXhr){
             response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
-            ModelAndView mv = new ModelAndView(new JsonView());
+            ModelAndView mv = new ModelAndView(new FastJsonJsonView());
             String errorMsg = ex.getMessage();
             if(!(ex instanceof IllegalArgumentException) && !(ex instanceof ServiceException)){
                 errorMsg = "系统错误";
