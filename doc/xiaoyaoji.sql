@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-06-09 16:17:12
+Date: 2017-08-14 18:04:24
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -47,7 +47,8 @@ CREATE TABLE `doc` (
   `parentId` char(12) DEFAULT NULL,
   `projectId` char(12) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `projectId` (`projectId`)
+  KEY `parentId` (`parentId`) USING BTREE,
+  KEY `projectId` (`projectId`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -214,7 +215,8 @@ CREATE TABLE `project_user` (
   `status` char(255) DEFAULT 'PENDING',
   `editable` char(3) DEFAULT 'YES',
   `commonlyUsed` char(3) DEFAULT 'NO',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `project_user` (`projectId`,`userId`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
