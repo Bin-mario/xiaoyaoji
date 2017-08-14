@@ -5,7 +5,7 @@
  */
 
 (function(){
-    requirejs(['vue','utils',ctx+'/assets/js/project/doc.commons.js'],function(Vue,utils,commons){
+    requirejs(['vue','utils',ctx+'/assets/js/project/doc/doc.commons.js'],function(Vue,utils,commons){
 
         window.submitProjectGlobal = function(){
             var environment = JSON.stringify(app.global.environment);
@@ -92,6 +92,9 @@
                 this.global = g;
             },
             methods:{
+                saveHttpEnvironment:function(){
+                    submitProjectGlobal();
+                },
                 createEnv:function(){
                     this.flag.tempEnv={vars:[{}]};
                     this.envModal=true;
@@ -136,38 +139,26 @@
                         return {name: item.name, t: item.t, vars: item.vars}
                     });
                     this.envModal= false;
+                    submitProjectGlobal();
                 },
-                envRemove: function () {
-                    var self = this;
-                    var t = this.flag.tempEnv.t;
-                    var index = this.envs.findIndex(function (item) {
-                        return item.t == self.flag.tempEnv.t;
-                    });
-                    this.envs.$remove(this.envs[index]);
-                    utils.post('/project/' + this.id + '.json', {environments: JSON.stringify(this.envs)}, function (rs) {
-                        toastr.success('移除成功');
-                        if (self.envs.length == 0) {
-                            self.currentEnv = {name: '环境切换', vars: []};
-                        } else {
-                            if (self.currentEnv.t == t) {
-                                self.currentEnv = self.envs[0];
-                            }
-                        }
-                    });
+                removeEnvironment:function(index){
+                    this.global.environment.splice(index);
+                    submitProjectGlobal();
                 },
-                envCopy: function (item) {
+                copyEnvironment: function (item) {
                     var temp = $.extend(true, {}, item);
                     temp.t = Date.now();
                     this.global.environment.push(temp);
+                    submitProjectGlobal();
                 },
                 newRow:function(type){
-                    if(type =="requestHeaders"){
+                    if(type ==="requestHeaders"){
                         this.global.http.requestHeaders.push({require:'true',children:[]});
-                    }else if(type =="requestArgs"){
+                    }else if(type ==="requestArgs"){
                         this.global.http.requestArgs.push({require:'true',children:[],type:'string'});
-                    }else if(type =="responseHeaders"){
+                    }else if(type ==="responseHeaders"){
                         this.global.http.responseHeaders.push({require:'true',children:[]});
-                    }else if(type =="responseArgs"){
+                    }else if(type ==="responseArgs"){
                         this.global.http.responseArgs.push({require:'true',children:[],type:'string'});
                     }
                     commons._initsort_(this);
@@ -210,12 +201,18 @@
                     if(!(this.tempStatus.name)){
                         return false;
                     }
+                    UIkit.modal('#modal-status').hide();
                     if(this.tempStatus.t){
 
                     }else{
                         this.tempStatus.t = Date.now();
                         this.global.status.push(this.tempStatus);
                     }
+                    submitProjectGlobal();
+                },
+                statusRemove:function(index){
+                    this.global.status.splice(index);
+                    submitProjectGlobal();
                 }
             }
         });

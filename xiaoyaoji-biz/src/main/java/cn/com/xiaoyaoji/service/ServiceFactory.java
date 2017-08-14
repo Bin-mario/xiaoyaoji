@@ -18,6 +18,7 @@ import java.util.*;
 public class ServiceFactory {
     private static Logger logger = Logger.getLogger(ServiceFactory.class);
     private static ServiceFactory instance;
+
     static {
         instance = new ServiceFactory();
     }
@@ -44,6 +45,7 @@ public class ServiceFactory {
 
     /**
      * 删除数据与图片
+     *
      * @param tableName
      * @param id
      * @param imgFields
@@ -64,13 +66,14 @@ public class ServiceFactory {
         }
         return DataFactory.instance().delete(tableName, id);
     }
-    public int updateAndImage(Object instance,String... imgKeys) {
-        return DataFactory.instance().updateAndImage(instance,imgKeys);
+
+    public int updateAndImage(Object instance, String... imgKeys) {
+        return DataFactory.instance().updateAndImage(instance, imgKeys);
     }
 
     public User login(String email, String password) {
-        User user = DataFactory.instance().login(email,password);
-        if(user != null){
+        User user = DataFactory.instance().login(email, password);
+        if (user != null) {
             initUserThirdlyBinds(user);
             user.setPassword(null);
         }
@@ -79,9 +82,31 @@ public class ServiceFactory {
 
     public User loginByThirdparty(Thirdparty thirdparty) {
         User user = DataFactory.instance().getUserByThirdId(thirdparty.getId());
-        if(user != null){
+        if (user != null) {
             user.setPassword(null);
             initUserThirdlyBinds(user);
+        } else {
+            user = new User();
+            user.setId(StringUtils.id());
+            user.setNickname(thirdparty.getNickName());
+            user.setCreatetime(new Date());
+            user.setType(User.Type.USER);
+            user.setAvatar(thirdparty.getLogo());
+            user.setStatus(User.Status.VALID);
+            create(user);
+            thirdparty.setUserId(user.getId());
+            bindUserWithThirdParty(thirdparty);
+            switch (thirdparty.getType()) {
+                case "QQ":
+                    user.setBindQQ(true);
+                    break;
+                case "GITHUB":
+                    user.setBindGithub(true);
+                    break;
+                case "WEIBO":
+                    user.setBindWeibo(true);
+                    break;
+            }
         }
         return user;
     }
@@ -91,11 +116,11 @@ public class ServiceFactory {
     }
 
 
-
     public List<Module> getModules(String projectId) {
         //return ResultUtils.list(DataFactory.instance().getModules(projectId));
         return null;
     }
+
     public List<Team> getTeams(String userId) {
         return ResultUtils.list(DataFactory.instance().getTeams(userId));
     }
@@ -105,10 +130,11 @@ public class ServiceFactory {
     }
 
 
-    public List<User> getUsersByProjectId(String projectId){
+    public List<User> getUsersByProjectId(String projectId) {
         return ResultUtils.list(DataFactory.instance().getUsersByProjectId(projectId));
     }
-    public List<User> getAllProjectUsersByUserId(String userId){
+
+    public List<User> getAllProjectUsersByUserId(String userId) {
         return ResultUtils.list(DataFactory.instance().getAllProjectUsersByUserId(userId));
     }
 
@@ -121,18 +147,18 @@ public class ServiceFactory {
         return DataFactory.instance().deleteProject(id);
     }
 
-    public List<User> searchUsers(String key,String... excludeIds) {
-        return ResultUtils.list(DataFactory.instance().searchUsers(key,excludeIds));
+    public List<User> searchUsers(String key, String... excludeIds) {
+        return ResultUtils.list(DataFactory.instance().searchUsers(key, excludeIds));
     }
 
     /**
-     * @see ProjectService#getProject(String)
      * @param id
      * @return
+     * @see ProjectService#getProject(String)
      */
     @Deprecated
     public Project getProject(String id) {
-        return DataFactory.instance().getById(Project.class,id);
+        return DataFactory.instance().getById(Project.class, id);
     }
 
     public boolean checkEmailExists(String email) {
@@ -140,23 +166,24 @@ public class ServiceFactory {
     }
 
     public boolean checkProjectUserExists(String projectId, String userId) {
-        return DataFactory.instance().checkProjectUserExists(projectId,userId);
+        return DataFactory.instance().checkProjectUserExists(projectId, userId);
     }
 
     public int deleteProjectUser(String projectId, String userId) {
-        return DataFactory.instance().deleteProjectUser(projectId,userId);
+        return DataFactory.instance().deleteProjectUser(projectId, userId);
     }
 
 
     public List<Doc> getDocsByProjectId(String projectId) {
         return ResultUtils.list(DataFactory.instance().getDocsByProjectId(projectId));
     }
+
     public String getUserIdByEmail(String email) {
         return DataFactory.instance().getUserIdByEmail(email);
     }
 
     public int createProjectUserRelation(String userId, String projectId) {
-        if(!checkProjectUserExists(projectId,userId)) {
+        if (!checkProjectUserExists(projectId, userId)) {
             ProjectUser pu = new ProjectUser();
             pu.setUserId(userId);
             pu.setId(StringUtils.id());
@@ -168,17 +195,17 @@ public class ServiceFactory {
         return 0;
     }
 
-    public <T> T getById(String id,Class<T> clazz) {
-        return DataFactory.instance().getById(clazz,id);
+    public <T> T getById(String id, Class<T> clazz) {
+        return DataFactory.instance().getById(clazz, id);
     }
 
 
     public int findPassword(String id, String email, String password) {
-        return DataFactory.instance().findPassword(id,email,password);
+        return DataFactory.instance().findPassword(id, email, password);
     }
 
     public boolean checkUserHasProjectEditPermission(String userId, String projectId) {
-        return DataFactory.instance().checkUserHasProjectEditPermission(userId,projectId);
+        return DataFactory.instance().checkUserHasProjectEditPermission(userId, projectId);
     }
 
     public void initUserThirdlyBinds(User user) {
@@ -186,13 +213,13 @@ public class ServiceFactory {
     }
 
     public int unbindUserThirdPartyRelation(String userId, String type) {
-        return DataFactory.instance().removeUserThirdPartyRelation(userId,type);
+        return DataFactory.instance().removeUserThirdPartyRelation(userId, type);
     }
 
     /**
-     * @see ProjectService#createProject(Project)
      * @param project
      * @return
+     * @see ProjectService#createProject(Project)
      */
     @Deprecated
     public int createProject(Project project) {
@@ -201,19 +228,19 @@ public class ServiceFactory {
 
 
     public int updateProjectUserEditable(String projectId, String userId, String editable) {
-        return DataFactory.instance().updateProjectUserEditable(projectId,userId,editable);
+        return DataFactory.instance().updateProjectUserEditable(projectId, userId, editable);
     }
 
     public int updateCommonlyUsedProject(String projectId, String userId, String isCommonlyUsed) {
-        return DataFactory.instance().updateCommonlyUsedProject(projectId,userId,isCommonlyUsed);
+        return DataFactory.instance().updateCommonlyUsedProject(projectId, userId, isCommonlyUsed);
     }
 
 
     public List<Share> getSharesByProjectId(String projectId) {
-        List<Share> shares =  ResultUtils.list(DataFactory.instance().getSharesByProjectId(projectId));
-        if(shares.size()>0){
-            for(Share s:shares){
-                if(!Share.ShareAll.YES.equals(s.getShareAll())){
+        List<Share> shares = ResultUtils.list(DataFactory.instance().getSharesByProjectId(projectId));
+        if (shares.size() > 0) {
+            for (Share s : shares) {
+                if (!Share.ShareAll.YES.equals(s.getShareAll())) {
                     //todo
                     //s.setShareModules(ResultUtils.list(DataFactory.instance().getModuleNameIdsInIds(s.getModuleIdsArray())));
                     return null;
@@ -226,6 +253,7 @@ public class ServiceFactory {
     public int updateDocSorts(String[] idsorts) {
         return DataFactory.instance().updateDocSorts(idsorts);
     }
+
     public String getUserName(String userId) {
         return DataFactory.instance().getUserName(userId);
     }
@@ -240,22 +268,22 @@ public class ServiceFactory {
     }
 
 
-    public void getDocIdsByParentId(Set<String> ids, String parentId){
+    public void getDocIdsByParentId(Set<String> ids, String parentId) {
         List<String> temp = ResultUtils.list(DataFactory.instance().getDocIdsByParentId(parentId));
         ids.addAll(temp);
-        for(String id:temp){
-            getDocIdsByParentId(ids,id);
+        for (String id : temp) {
+            getDocIdsByParentId(ids, id);
         }
     }
 
     public int deleteDoc(String id) {
         //需要优化
         Set<String> ids = new HashSet<>();
-        getDocIdsByParentId(ids,id);
+        getDocIdsByParentId(ids, id);
         ids.add(id);
         //删除数据
-        int rs =deleteByIds(new ArrayList<>(ids));
-        for(String temp:ids) {
+        int rs = deleteByIds(new ArrayList<>(ids));
+        for (String temp : ids) {
             //删除附件
             List<Attach> attaches = getAttachsByRelatedId(temp);
             for (Attach attach : attaches) {
@@ -274,7 +302,7 @@ public class ServiceFactory {
     }
 
     private int deleteByIds(List<String> ids) {
-        return DataFactory.instance().deleteByIds(Doc.class,ids);
+        return DataFactory.instance().deleteByIds(Doc.class, ids);
     }
 
     public List<DocHistory> getDocHistorys(String docId) {
@@ -285,6 +313,5 @@ public class ServiceFactory {
         return ResultUtils.list(DataFactory.instance().getDocsByProjectId(projectId, full));
     }
 
-    
 
 }

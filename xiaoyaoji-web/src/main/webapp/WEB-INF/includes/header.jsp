@@ -18,16 +18,13 @@
                 <div class="user-action fr">
                     <a class="item" href="${ctx}/login">登陆</a>
                     <a class="item" href="${ctx}/register">注册</a>
-                    <a class="item thirdly" v-on:click="qq"><i class="iconfont icon-qq"></i></a>
-                    <a class="item thirdly" v-on:click="weibo"><i class="iconfont icon-weibo"></i></a>
-                    <a class="item thirdly" v-on:click="github"><i class="iconfont icon-github"></i></a>
                 </div>
             </c:if>
         </div>
     </div>
 
     <div class="header mc cb">
-        <a href="index.html" class="logo fl"><img alt="小幺鸡" src="${assets}/img/logo/full.png"></a>
+        <a href="${ctx}/" class="logo fl"><img alt="小幺鸡" src="${assets}/img/logo/full.png"></a>
         <nav class="fl">
             <ul class="cb">
                 <li><a href="${ctx}/">主页</a> </li>

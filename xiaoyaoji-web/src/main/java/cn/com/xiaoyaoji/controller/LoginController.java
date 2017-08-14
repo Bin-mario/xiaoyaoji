@@ -14,6 +14,7 @@ import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.util.CacheUtils;
 import cn.com.xiaoyaoji.utils.PasswordUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
@@ -65,19 +66,16 @@ public class LoginController {
      */
     @Ignore
     @RequestMapping("/plugin")
-    public void plugin(@RequestParam("pluginId") String pluginId, HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+    @ResponseBody
+    public Object plugin(@RequestParam("pluginId") String pluginId, HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
         PluginInfo<LoginPlugin> loginPluginInfo =  PluginManager.getInstance().getLoginPlugin(pluginId);
-        if(loginPluginInfo == null){
-            request.setAttribute("errorMsg","未找到插件"+pluginId);
-            request.getRequestDispatcher("/error").forward(request,response);
-            return;
-        }
+        AssertUtils.isTrue(loginPluginInfo != null,"未找到插件"+pluginId);
         User loginUser = loginPluginInfo.getPlugin().doRequest(request);
         AssertUtils.notNull(loginUser,"登录失败");
         AssertUtils.isTrue(!User.Status.INVALID.equals(loginUser.getStatus()), "invalid status");
         String token = CacheUtils.token();
         response.addCookie(setCookie(token,loginUser));
-        JSON.writeJSONString(response.getWriter(),new _HashMap<>().add("token",token));
+        return new _HashMap<>().add("token",token);
     }
 
     /**

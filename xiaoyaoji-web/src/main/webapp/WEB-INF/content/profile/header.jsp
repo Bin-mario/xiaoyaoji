@@ -31,7 +31,7 @@
     <div class="mc cb ta-c">
         <a href="${ctx}/dashboard" class="fl"><img src="${assets}/img/logo/full.png" alt="logo"></a>
         <div class="user-account fr">
-            <a href=""><img src="${fileAccess}${sessionScope.user.avatar}" class="user-account-logo" alt=""><span>${sessionScope.user.nickname}</span></a>
+            <a href=""><img src="${sessionScope.user.avatar}" class="user-account-logo" alt=""><span>${sessionScope.user.nickname}</span></a>
         </div>
         <div v-cloak uk-dropdown="pos: top-right" style="text-align: left">
             <ul class="uk-nav uk-dropdown-nav">

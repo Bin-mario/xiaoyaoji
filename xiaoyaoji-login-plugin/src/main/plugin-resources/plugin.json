@@ -12,7 +12,8 @@
       "icon32x32": "/assets/qq.png"
     },
     "config":{
-      "clientid":"",
+      "clientId":"",
+      "secret":"",
       "redirectUri":"http://www.xiaoyaoji.cn/login/callback/cn.xiaoyaoji.login.qq/login"
     }
   },
@@ -29,8 +30,9 @@
       "icon32x32": "/assets/weibo.png"
     },
     "config":{
-      "clientid":"",
-      "redirectUri":"http://www.xiaoyaoji.cn/login/callback/cn.xiaoyaoji.login.weibo/login"
+      "clientId":"",
+      "secret":"",
+      "redirectUri":"http://41047218.nat123.net/login/callback/cn.xiaoyaoji.login.weibo/login"
     }
   },
   {
@@ -46,7 +48,8 @@
       "icon32x32": "/assets/github.png"
     },
     "config":{
-      "clientid":"",
+      "clientId":"",
+      "secret":"",
       "redirectUri":"http://www.xiaoyaoji.cn/login/callback/cn.xiaoyaoji.login.github/login"
     }
   }

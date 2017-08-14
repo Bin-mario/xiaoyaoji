@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -152,6 +153,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping(value = "/import")
+    @ResponseBody
     public Object projectImport(String pluginId, User user,
                                 @RequestParam("file") MultipartFile file,
                                 @RequestParam(value = "projectId",required = false) String projectId,
@@ -175,10 +177,14 @@ public class ProjectController {
     }
 
 
+    @Ignore
     @GetMapping("/list")
     public MultiView list(User user, @RequestParam(value = "status", required = false) String status) {
-        Pagination p = Pagination.build(new _HashMap<String, String>().add("status", status).add("userId", user.getId()));
-        List<Project> projects = ServiceFactory.instance().getProjects(p);
+        List<Project> projects = new ArrayList<>();
+        if(user != null){
+            Pagination p = Pagination.build(new _HashMap<String, String>().add("status", status).add("userId", user.getId()));
+            projects = ServiceFactory.instance().getProjects(p);
+        }
         return new MultiView("/dashboard/index")
                 .addObject("projects", projects)
                 ;
@@ -222,6 +228,7 @@ public class ProjectController {
 
 
     @GetMapping("/{id}/shares")
+    @ResponseBody
     public Object shares(@PathVariable("id") String id) {
         return new _HashMap<>().add("shares", ServiceFactory.instance().getSharesByProjectId(id));
     }
@@ -233,6 +240,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("/{id}/commonly")
+    @ResponseBody
     public int updateCommonlyUsed(@PathVariable("id") String id, User user,
                                   @RequestParam String isCommonlyUsed
     ) {
@@ -250,6 +258,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping
+    @ResponseBody
     public Object create(User user, Project project) {
         project.setId(StringUtils.id());
         project.setCreateTime(new Date());
@@ -276,6 +285,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("{id}")
+    @ResponseBody
     public Object update(@PathVariable("id") String id, User user, Project project) {
         ServiceTool.checkUserHasEditPermission(id, user);
         project.setId(id);
@@ -293,6 +303,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("/{id}/transfer")
+    @ResponseBody
     public Object transfer(@PathVariable("id") String id, User user, @RequestParam String userId) {
 
         AssertUtils.isTrue(org.apache.commons.lang3.StringUtils.isNoneBlank(userId), "missing userId");
@@ -314,6 +325,7 @@ public class ProjectController {
      * @return
      */
     @DeleteMapping("{id}")
+    @ResponseBody
     public Object delete(@PathVariable("id") String id, User user) {
         ServiceTool.checkUserHasEditPermission(id, user);
         Project temp = new Project();
@@ -333,6 +345,7 @@ public class ProjectController {
      * @return
      */
     @DeleteMapping("/{id}/actual")
+    @ResponseBody
     public Object deleteActual(@PathVariable("id") String id, User user) {
         ServiceTool.checkUserHasEditPermission(id, user);
         int rs = ServiceFactory.instance().deleteProject(id);
@@ -348,6 +361,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("/{id}/invite")
+    @ResponseBody
     public String invite(@PathVariable("id") String id, User user, @RequestParam String userId) {
         ProjectUser pu = new ProjectUser();
         pu.setId(StringUtils.id());
@@ -371,6 +385,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("/{id}/invite/email")
+    @ResponseBody
     public String inviteByEmail(@PathVariable("id") String id, @RequestParam("email") String email, User user) {
         String userId = ServiceFactory.instance().getUserIdByEmail(email);
         AssertUtils.isTrue(userId != null, "该邮箱未注册");
@@ -397,6 +412,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("/{id}/pu/{inviteId}/accept")
+    @ResponseBody
     public int acceptInvite(@PathVariable("inviteId") String inviteId) {
         ProjectUser pu = new ProjectUser();
         pu.setId(inviteId);
@@ -410,6 +426,7 @@ public class ProjectController {
      * 拒绝邀请
      */
     @PostMapping("/{id}/pu/{inviteId}/refuse")
+    @ResponseBody
     public int acceptRefuse(@PathVariable("inviteId") String inviteId) {
         ProjectUser pu = new ProjectUser();
         pu.setId(inviteId);
@@ -427,6 +444,7 @@ public class ProjectController {
      * @return
      */
     @DeleteMapping("/{id}/pu/{userId}")
+    @ResponseBody
     public int removeMember(@PathVariable("id") String id, @PathVariable("userId") String userId, User user) {
         Project project = ServiceFactory.instance().getProject(id);
         ServiceTool.checkUserIsOwner(project, user);
@@ -446,6 +464,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("/{id}/pu/{userId}/{editable}")
+    @ResponseBody
     public int editProjectEditable(@PathVariable("id") String projectId, @PathVariable("userId") String userId, @PathVariable("editable") String editable,
                                    User user) {
         AssertUtils.isTrue(ProjectUser.Editable.YES.equals(editable) || ProjectUser.Editable.NO.equals(editable), "参数错误");
@@ -464,6 +483,7 @@ public class ProjectController {
      * @return
      */
     @DeleteMapping("/{id}/quit")
+    @ResponseBody
     public int quit(@PathVariable("id") String id, User user) {
 
         Project project = ServiceFactory.instance().getProject(id);

@@ -32,7 +32,7 @@
                             <c:forEach items="${users}" var="item">
                                 <li class="cb">
                                     <div class="col-sm-2"><img class="user-logo"
-                                                               src="${fileAccess}${item.avatar}">
+                                                               src="${item.avatar}">
                                     </div>
                                     <div class="col-sm-2"> ${item.nickname}</div>
                                     <div class="col-sm-3"> ${item.email}</div>
@@ -52,7 +52,7 @@
                                 <ul class="cb dbv-chose-users"> <!--v-for-start-->
                                     <li v-for="item in users" v-bind:class="{'active':exists[item.id]}">
                                         <div class="dbv-user-icon" v-on:click="inviteByUserId(item,$event)">
-                                            <img class="img" v-bind:src="fileAccess+item.avatar" v-if="item.avatar">
+                                            <img class="img" v-bind:src="item.avatar" v-if="item.avatar">
                                             <div class="img ta-c word" v-else>{{item.nickname.substring(0,3)}}</div>
                                             <p class="flag"></p>
                                         </div>

@@ -43,7 +43,7 @@
             </c:forEach>
             <div>
                 <c:if test="${config.size()>0}">
-                <input type="submit" class="uk-button uk-button-primary" value="保存">
+                <input type="submit" class="uk-button uk-button-primary" value="保存(重启后失效)">
                 </c:if>
                 <c:if test="${pluginId != null}">
                     <a href="?id=${pluginId}&action=reload" class="uk-button uk-button-secondary ">重新加载插件</a>

@@ -13,7 +13,7 @@
                 <a href="${ctx}/help">常见问题</a>
             </span>
         <div class="user-account fr">
-            <a href=""><img src="${fileAccess}${sessionScope.user.avatar}" class="user-account-logo" alt=""><span>${user.nickname}</span></a>
+            <a href=""><img src="${sessionScope.user.avatar}" class="user-account-logo" alt=""><span>${user.nickname}</span></a>
         </div>
         <div v-cloak uk-dropdown="pos: top-right" style="text-align: left">
             <ul class="uk-nav uk-dropdown-nav">

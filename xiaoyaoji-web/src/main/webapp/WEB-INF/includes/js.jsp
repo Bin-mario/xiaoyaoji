@@ -13,6 +13,7 @@
     <script src="${assets}/requirejs/require.min.2.3.3.js?v=${v}"></script>
     <script>
         window.ctx='${ctx}';
+        location.path='${ctx}';
         toastr.options.escapeHtml = true;
         toastr.options.closeButton = true;
         toastr.options.positionClass = 'toast-top-center';

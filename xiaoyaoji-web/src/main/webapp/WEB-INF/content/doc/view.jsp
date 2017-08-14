@@ -20,6 +20,8 @@
     </div>
 
     <div class="doc-full-width" id="doc-content">
+
+
 </c:if>
 
 <c:if test="${editProjectGlobal}">

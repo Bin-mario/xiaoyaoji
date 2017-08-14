@@ -67,7 +67,7 @@ public class UpdateManager {
                 //ignore
             }
 
-            String upgradeFolder = "/META-INF/upgrade/" + version;
+            String upgradeFolder = "META-INF/upgrade/";
             File file = new File(this.getClass().getClassLoader().getResource(upgradeFolder).getFile());
             if (!file.exists()) {
                 throw new ServiceException(file.getAbsolutePath() + " 不存在 ");
@@ -81,13 +81,13 @@ public class UpdateManager {
                 public boolean accept(File dir, String name) {
                     if (tempVersion == null)
                         return true;
-                    return name.compareTo(tempVersion) > 0;
+                    return name.compareTo(tempVersion) >= 0;
                 }
             });
             if (updateFolders == null) {
                 throw new ServiceException("没有升级文件");
             }
-            if (updateFolders.length > 0) {
+            if (updateFolders.length > 1) {
                 Collections.sort(Arrays.asList(updateFolders), new Comparator<File>() {
                     @Override
                     public int compare(File o1, File o2) {
@@ -99,7 +99,7 @@ public class UpdateManager {
             QueryRunner queryRunner = new MyQueryRunner();
             Class currentClass = getClass();
             for (File item : updateFolders) {
-                String sql = IOUtils.toString(new FileInputStream(item), Constants.UTF8);
+                String sql = IOUtils.toString(new FileInputStream(item), Constants.UTF8.displayName());
                 result += executeSQL(connection, sql, queryRunner);
                 String fileVersion = item.getName().replace(".sql", "");
                 Method upgradeMethod = currentClass.getDeclaredMethod("update" + fileVersion, Connection.class, QueryRunner.class);
@@ -107,7 +107,7 @@ public class UpdateManager {
             }
             return result;
         } catch (Exception e) {
-            throw new RuntimeException("升级失败;" + e.toString());
+            throw new RuntimeException("升级失败;" + e.toString(),e);
         } finally {
             JdbcUtils.close(connection);
         }
@@ -369,12 +369,6 @@ public class UpdateManager {
         }
 
         rs += qr.update(connection, "update doc set content = replace(content,':\"VALID\"','有效')");
-
-        //更新project 字段
-        rs += qr.update(connection, "ALTER TABLE `project` \n" +
-                "ADD COLUMN `lastUpdateTime` DATETIME NULL AFTER `details`;");
-        rs += qr.update(connection, "DROP TABLE IF EXISTS `sys`;");
-        rs += qr.update(connection, "CREATE TABLE `sys` (\n  `version` varchar(10) DEFAULT NULL\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
         //设置sys为当前版本
         rs += qr.update(connection, "insert into sys values('2.0')");
 

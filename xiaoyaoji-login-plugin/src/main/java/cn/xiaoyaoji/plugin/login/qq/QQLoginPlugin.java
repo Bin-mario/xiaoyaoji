@@ -27,7 +27,7 @@ public class QQLoginPlugin extends LoginPlugin {
     @Override
     public void init() {
         Map<String,String> config = getPluginInfo().getConfig();
-        qq = new QQ(config.get("clientid"),config.get("secret"));
+        qq = new QQ(config.get("clientId"),config.get("secret"));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class QQLoginPlugin extends LoginPlugin {
 
     @Override
     public String getOpenURL() {
-        String clientid =  getPluginInfo().getConfig().get("clientid");
+        String clientid =  getPluginInfo().getConfig().get("clientId");
         String redirectUri = getPluginInfo().getConfig().get("redirectUri");
         return "https://graph.qq.com/oauth2.0/authorize?response_type=code&state=login&client_id="+clientid+"&redirect_uri="+redirectUri;
     }

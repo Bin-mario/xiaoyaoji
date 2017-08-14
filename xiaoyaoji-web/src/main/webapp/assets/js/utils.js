@@ -84,6 +84,7 @@
                     url: url,
                     type: 'delete',
                     success: success,
+                    dataType: 'json',
                     error: error
                 });
             },
@@ -114,20 +115,6 @@
                     params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
                 }
                 return params;
-            },
-            window: {
-                qq: function () {
-                    var url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&state=login&client_id=101333549&redirect_uri=http://www.xiaoyaoji.cn/callback/qq';
-                    window.open(url, 'qqwindow', 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
-                },
-                weibo: function () {
-                    var url = 'https://api.weibo.com/oauth2/authorize?client_id=290920638&redirect_uri=http://www.xiaoyaoji.cn/callback/weibo&state=login';
-                    window.open(url, 'qqwindow', 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
-                },
-                github: function () {
-                    var url = "https://github.com/login/oauth/authorize?client_id=4c8973629deb3d577bd3&redirect_uri=http://www.xiaoyaoji.cn/callback/github&scope=user&state=login";
-                    window.open(url, 'qqwindow', 'height=550, width=900, top=0, left=0, toolbar=no, menubar=no, scrollbars=no,resizable=no,location=no, status=no');
-                }
             },
             login: {
                 submit: function (url, data) {
@@ -161,7 +148,7 @@
         $._ajax_ = function (params) {
             if (params.data) {
                 for (var key in params.data) {
-                    if (params.data[key] == undefined || params.data[key] == null) {
+                    if (params.data[key] === undefined || params.data[key] === null) {
                         delete params.data[key];
                     }
                 }

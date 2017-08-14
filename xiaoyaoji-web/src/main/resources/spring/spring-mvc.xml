@@ -76,7 +76,19 @@
     <!-- 注解扫描 -->
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
         <mvc:message-converters>
-            <bean class="cn.com.xiaoyaoji.converter.JsonMessageConverter"/>
+            <bean class="cn.com.xiaoyaoji.converter.JsonMessageConverter">
+                <property name="fastJsonConfig">
+                    <bean class="com.alibaba.fastjson.support.config.FastJsonConfig">
+                        <property name="serializerFeatures">
+                            <array>
+                                <value>WriteDateUseDateFormat</value>
+                                <value>WriteMapNullValue</value>
+                                <value>WriteNullStringAsEmpty</value>
+                            </array>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
         </mvc:message-converters>
         <mvc:argument-resolvers>
             <bean class="cn.com.xiaoyaoji.resolver.UserArgumentsResolver"/>

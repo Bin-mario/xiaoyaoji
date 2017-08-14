@@ -18,7 +18,8 @@ public class ProxyServlet extends HttpServlet{
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String uri = request.getRequestURI().replace("/proxy/","");
+        String prefix = request.getServletContext().getContextPath()+"/proxy/";
+        String uri = request.getRequestURI().replace(prefix,"");
         String pluginId = uri.substring(0,uri.indexOf("/"));
         String path = uri.replace(pluginId,"");
         path = path.replace("..","");

@@ -106,6 +106,8 @@
                 <configuration>
                     <port>9999</port>
                     <path>/</path>
+                    <uriEncoding>UTF-8</uriEncoding>
+                    <charset>UTF-8</charset>
                 </configuration>
             </plugin>
             <!--<plugin>

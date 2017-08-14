@@ -431,7 +431,7 @@ public class DataFactory implements Data {
                     }
                 }
                 _excludeIds_ = _excludeIds_.delete(_excludeIds_.length() - 1, _excludeIds_.length());
-                StringBuilder sql = new StringBuilder("select id,email,nickname from user where  id not in(" + _excludeIds_ + ") and nickname like ? order by length(nickname) asc limit 5");
+                StringBuilder sql = new StringBuilder("select id,email,nickname from user where  id not in(" + _excludeIds_ + ") and nickname like ? escape '/' order by length(nickname) asc limit 5");
                 return qr.query(connection, sql.toString(), new BeanListHandler<>(User.class), n);
             }
         });
@@ -816,7 +816,7 @@ public class DataFactory implements Data {
             @Override
             public List<Doc> handle(Connection connection, QueryRunner qr) throws SQLException {
                 String t = "%" + text + "%";
-                return qr.query(connection, "select id,name from " + TableNames.DOC + " where projectId=? and (name like ? or content like ?) order by sort asc ,createTime desc ", new BeanListHandler<>(Doc.class), projectId, t, t);
+                return qr.query(connection, "select id,name from " + TableNames.DOC + " where projectId=? and (name like ? escape '/' or content like ? escape '/') order by sort asc ,createTime desc ", new BeanListHandler<>(Doc.class), projectId, t, t);
             }
         });
     }

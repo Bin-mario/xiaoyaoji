@@ -46,7 +46,7 @@ require(['utils','vue', 'vueEx'], function (utils, Vue) {
                 window.addEventListener('message', function (e) {
                     var data = e.data;
                     data = JSON.parse(data);
-                    utils.post('/login/plugin/' + pluginId, data, function (rs) {
+                    utils.post('/login/plugin?pluginId=' + pluginId, data, function (rs) {
                         utils.login.success(rs.data.token, rs.data.user, null);
                     });
                 });

@@ -29,6 +29,7 @@ public class JsonMessageConverter extends FastJsonHttpMessageConverter {
         }else{
             result = new Result(true,o);
         }
+        outputMessage.getHeaders().add("Content-Type","application/json;charset=utf-8");
         super.writeInternal(result,outputMessage);
     }
 }

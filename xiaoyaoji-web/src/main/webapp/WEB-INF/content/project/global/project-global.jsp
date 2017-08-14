@@ -19,15 +19,15 @@
                 <div class="col-sm-4">值</div>
                 <div class="col-sm-3">操作</div>
             </div>
-            <div v-for="item in global.environment">
+            <div v-for="(item,index) in global.environment">
                 <div class="cb">
                     <div class="col-sm-2">{{item.name}}</div>
                     <div class="col-sm-3">&nbsp;</div>
                     <div class="col-sm-4">&nbsp; </div>
                     <div class="col-sm-3">
                         <i v-on:click.stop="envEdit(item)" style="padding-right: 5px" class="iconfont icon-edit"></i>
-                        <i v-on:click.stop="envCopy(item)" style="padding-right: 5px" class="iconfont icon-copy"></i>
-                        <i v-on:click.stop="global.environment.$remove(item)" style="padding-right: 5px" class="iconfont icon-close"></i>
+                        <i v-on:click.stop="copyEnvironment(item)" style="padding-right: 5px" class="iconfont icon-copy"></i>
+                        <i v-on:click.stop="removeEnvironment(index)" style="padding-right: 5px" class="iconfont icon-close"></i>
                     </div>
                 </div>
                 <div>
@@ -58,7 +58,7 @@
                         环境变量运行在URL中,你可以配置多个(线上、灰度、开发)环境变量。在URL中使用方式{{flag.varname}},例：<br/>
                         线上环境：prefix => http://www.xiaoyaoji.com.cn<br/>
                         则<br/>
-                        请求URL：{{flag.prefix}}/say => http://www.xiaoyaoji.com.cn/say
+                        请求URL：{{flag.prefix}}/hello => http://www.xiaoyaoji.cn/hello
                     </div>
                     <p class="title"></p>
                     <div class="item">
@@ -72,7 +72,7 @@
                             <input type="text" class="text" v-model="item.value" placeholder="变量值" :value="item.value">
                         </div>
                         <div class="col-sm-1 full-text">
-                            <i class="iconfont icon-close" v-if="flag.tempEnv.vars.length>1" v-on:click="flag.tempEnv.$remove(item)"></i>
+                            <i class="iconfont icon-close" v-if="flag.tempEnv.vars.length>1" v-on:click="flag.tempEnv.vars.splice(index)"></i>
                         </div>
                     </div>
 
@@ -213,6 +213,8 @@
                 </div>
             </div>
         </div>
+
+        <button class="doc-save-button" v-cloak v-on:click="saveHttpEnvironment">保存</button>
     </div>
     <div v-cloak v-show="uitab=='http-status'">
         <div>
@@ -226,10 +228,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="item in global.status">
+            <tr v-for="(item,index) in global.status">
                 <td>{{item.name}}</td>
                 <td><i v-on:click.stop="tempStatus=item" uk-toggle="target:#modal-status"  class="iconfont icon-edit"></i>
-                    <i v-on:click.stop="global.status.$remove(item)" class="iconfont icon-close"></i></td>
+                    <i v-on:click.stop="statusRemove(index)" class="iconfont icon-close"></i></td>
             </tr>
             </tbody>
         </table>
@@ -264,11 +266,11 @@
             <h2 class="uk-modal-title">新建状态</h2>
             <div class="uk-modal-body">
                 <label>变量名称:</label>
-                <input class="uk-input" type="text" :value="tempStatus.name" autofocus="" v-model="tempStatus.name">
+                <input class="uk-input" type="text" :value="tempStatus.name" v-on:keyup.enter="statusOk" autofocus="" v-model="tempStatus.name">
             </div>
             <p class="uk-text-right">
                 <button class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
-                <button class="uk-button uk-button-primary uk-modal-close" v-on:click="statusOk" type="button">确定</button>
+                <button class="uk-button uk-button-primary uk-modal-close" v-on:click.enter="statusOk" type="button">确定</button>
             </p>
         </div>
     </div>

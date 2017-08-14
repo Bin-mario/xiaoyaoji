@@ -39,7 +39,7 @@ public class GithubLoginPlugin extends LoginPlugin {
 
     @Override
     public String getOpenURL() {
-        String clientid = getPluginInfo().getConfig().get("clientid");
+        String clientid = getPluginInfo().getConfig().get("clientId");
         String redirectUri = getPluginInfo().getConfig().get("redirectUri");
         return "https://github.com/login/oauth/authorize?client_id="+clientid+"&redirect_uri="+redirectUri+"/github&scope=user&state=login";
     }
@@ -51,7 +51,7 @@ public class GithubLoginPlugin extends LoginPlugin {
         logger.info("callback github -> code:" + code + " state:" + state);
         if ("login".contains(state)) {
             Github github = new Github();
-            String clientId = getPluginInfo().getConfig().get("clientid");
+            String clientId = getPluginInfo().getConfig().get("clientId");
             String secret = getPluginInfo().getConfig().get("secret");
             String redirectUri = getPluginInfo().getConfig().get("redirectUri");
             cn.xiaoyaoji.plugin.login.AccessToken accessToken = github.getAccessToken(clientId, secret, code, redirectUri);

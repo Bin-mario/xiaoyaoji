@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author zhoujingjie
@@ -40,7 +41,7 @@ public class WeiboLoginPlugin extends LoginPlugin {
 
     @Override
     public String getOpenURL() {
-        String clientid = getPluginInfo().getConfig().get("clientid");
+        String clientid = getPluginInfo().getConfig().get("clientId");
         String redirectUri = getPluginInfo().getConfig().get("redirectUri");
         return "https://api.weibo.com/oauth2/authorize?client_id="+clientid+"&state=login&redirect_uri="+redirectUri;
     }
@@ -52,7 +53,8 @@ public class WeiboLoginPlugin extends LoginPlugin {
         logger.info("callback weibo -> code:" + code + " state:" + state);
         if ("login".contains(state)) {
             Weibo weibo = new Weibo();
-            cn.xiaoyaoji.plugin.login.weibo.AccessToken accessToken = weibo.getAccessToken(ConfigUtils.getProperty("weibo.appkey"), ConfigUtils.getProperty("weibo.appsecret"), code, ConfigUtils.getProperty("weibo.redirect_uri"));
+            Map<String, String> config =  getPluginInfo().getConfig();
+            cn.xiaoyaoji.plugin.login.weibo.AccessToken accessToken = weibo.getAccessToken(config.get("clientId"), config.get("secret"), code, config.get("redirectUri"));
             request.setAttribute("uid",accessToken.getUid());
             request.setAttribute("type","weibo");
             request.setAttribute("state",state);

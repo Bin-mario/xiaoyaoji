@@ -12,12 +12,13 @@ $(function(){
                 },
                 projects:[],
                 loading:{
-                    project:true
+                    project:null,
+                    history:null
                 }
             },
             watch:{
                 "projectName":function(){
-                    if(this.projectName!=_projectName_){
+                    if(this.projectName!==_projectName_){
                         utils.post('/project/'+_projectId_,{name:this.projectName},function(rs){
                             toastr.success('修改成功');
                         });
@@ -42,10 +43,22 @@ $(function(){
                 loadHistory:function(){
                     if(_docId_){
                         var self = this;
+                        self.loading.history=true;
                         utils.get('/doc/history/'+_docId_,{},function(rs){
+                            self.loading.history=false;
                             self.history = rs.data;
                         });
                     }
+                },
+                switchCommonly:function(item){
+                    if(item.commonlyUsed=='YES'){
+                        item.commonlyUsed='NO';
+                        utils.post('/project/'+ item.id + '/commonly.json',{isCommonlyUsed:'NO'});
+                    } else {
+                        item.commonlyUsed='YES';
+                        utils.post('/project/'+ item.id + '/commonly.json',{isCommonlyUsed:'YES'});
+                    }
+
                 },
                 editpage:function(){
                     location.href=window.ctx+'/doc/'+window._docId_+'/edit';
@@ -54,11 +67,10 @@ $(function(){
                     location.href=window.ctx+'/doc/'+window._docId_;
                 },
                 historyURL:function(docId,isEdit,historyId){
-                    //g.ctx+'/doc/'+item.docId+(g.edit)?'/edit':''+'?docHistoryId='+item.id
                     if(isEdit){
-                        return ctx+'/doc/'+docId+'/edit?docHistoryId='+historyId;
+                        return location.path+'/doc/'+docId+'/edit?docHistoryId='+historyId;
                     }
-                    return ctx+'/doc/'+docId+'?docHistoryId='+historyId;
+                    return location.path+'/doc/'+docId+'?docHistoryId='+historyId;
                 },
                 showProject:function(){
                     $('#sidebar').addClass('layer');

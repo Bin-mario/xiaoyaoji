@@ -331,8 +331,8 @@
                 <div id="api-result">
                     <pre v-show="resultActive=='content'" id="api-result-content" v-html="result.content"></pre>
                     <div v-show="resultActive=='headers'" id="api-result-headers">
-                        <div class="api-result-headers-list" v-show="result.resultHeaders" v-html="result.resultHeaders"></div>
-                        <div class="api-result-headers-list">
+                        <pre class="api-result-headers-list" v-show="result.resultHeaders">{{result.resultHeaders}}</pre>
+                        <div class="api-result-headers-list" v-show="!result.resultHeaders">
                             <div>
                                 No header for you
                             </div>

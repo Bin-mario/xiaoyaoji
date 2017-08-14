@@ -22,6 +22,7 @@
         </div>
     </div>
     <div id="doc-content">
+
 </c:if>
 <c:if test="${editProjectGlobal}">
     <jsp:include page="../project/global/project-global.jsp"/>

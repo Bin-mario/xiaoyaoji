@@ -232,9 +232,14 @@ public class DocController {
         return view;
     }
 
+    @Ignore
     @GetMapping("/search")
     public Object search(@RequestParam String text, @RequestParam("projectId") String projectId, User user) {
         ServiceTool.checkUserHasAccessPermission(projectId, user);
+        if(text != null){
+            text = text.replace("%","/%");
+            text = text.replace("_","/_");
+        }
         List<Doc> docs = DocService.instance().searchDocs(text, projectId);
         return new _HashMap<>()
                 .add("docs", docs);

@@ -13,7 +13,7 @@
                 <div class="col-sm-2" style="line-height: 100px">头像</div>
                 <div class="col-sm-10">
                     <div class="user-logo">
-                        <img src='${fileAccess}${user.avatar}' alt="">
+                        <img src='${user.avatar}' alt="">
                         <div class="logo-edit" title="修改头像"><i class="iconfont icon-edit3"></i></div>
                         <input id="imagefile" type="file" v-on:change="uploadImage">
                     </div>

@@ -8,9 +8,25 @@ $(function(){
             var height = wHeight-top - $('.dl-placehoder').height();
             $d.height(height);
         }
+        //加载
+        function loadDoc(url){
+            var $docContent =$('#doc-content');
+            $docContent.html("");
+            $('#loading').show();
+            $.get(window.ctx+url,function(rs){
 
-        $(window).resize(setDocContentHeight);
+                $('#loading').hide();
+                $docContent.html(rs);
+                history.pushState('','',window.ctx+url);
+            });
+        }
 
+        $(window).on({
+            resize:setDocContentHeight,
+            popstate:function(){
+                loadDoc(location.pathname.substring(ctx.length));
+            }
+        });
         new Vue({
             el:'#docLeft',
             data:{
@@ -71,18 +87,11 @@ $(function(){
                         return false;
                     }
                     e.preventDefault();
-                    var $docContent =$('#doc-content');
-                    $docContent.html("");
+
                     $('.doc-name.active').removeClass('active');
                     $(e.target).parent().addClass('active');
 
-                    $('#loading').show();
-                    $.get(window.ctx+url,function(rs){
-
-                        $('#loading').hide();
-                        $docContent.html(rs);
-                        history.pushState('','',window.ctx+url);
-                    });
+                    loadDoc(url);
                 },
                 fold:function(e){
                     if(e.target instanceof HTMLAnchorElement){
@@ -133,24 +142,30 @@ $(function(){
                         return true;
                     }
                     var offset=$('#doc-names').offset();
+                    //距离最顶部高度
                     var $target=$(e.target).parents('li:eq(0)');
+                    //滚动条高度
+                    var scrollTop = $(document).scrollTop();
+                    //菜单高度
+                    var menuHeight =$('#dl-menus').height();
+                    //窗口大小
+                    var winHeight = $(window).height();
                     this.target = {
                         type:$target.data("type"),
                         id:$target.data("id"),
                         name:$target.data("name")
                     };
-                    if(this.target.type=='sys.folder'){
+                    if(this.target.type==='sys.folder'){
                         this.menu.isFolder=true;
                     }else{
                         this.menu.isFolder=false;
                     }
-                    //50 = 搜索框 height
-                    var docLeftHeight=($('#doc-left').height() || 0);
-                    var top =e.pageY-offset.top+50+docLeftHeight ;
-                    var menuHeight =$('#dl-menus').height();
-                    if(top + menuHeight+70>=$(window).height()){
-                        top = $(window).height() -menuHeight-50-docLeftHeight;
+                    var top = e.pageY - scrollTop;
+                    //判断最底下
+                    if(menuHeight + top > winHeight){
+                        top = winHeight -menuHeight;
                     }
+
                     this.menu.top = top;
                     this.menu.left = e.pageX - offset.left;
                     this.menu.show= true;

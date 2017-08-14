@@ -7,80 +7,6 @@ footer{
     padding: 15px 0;
 }
 .col-sm-1,.col-sm-10,.col-sm-11,.col-sm-12,.col-sm-2,.col-sm-3,.col-sm-4,.col-sm-5,.col-sm-6,.col-sm-7,.col-sm-8,.col-sm-9 { float:left;padding-left: 15px } .col-sm-12 { width: 100% } .col-sm-11 { width: 91.66666667% } .col-sm-10 { width: 83.33333333% } .col-sm-9 { width: 75% } .col-sm-8 { width: 66.66666667% } .col-sm-7 { width: 58.33333333% } .col-sm-6 { width: 50% } .col-sm-5 { width: 41.66666667% } .col-sm-4 { width: 33.33333333% } .col-sm-3 { width: 25% } .col-sm-2 { width: 16.66666667% } .col-sm-1 { width: 8.33333333% }
-body.modal-open{
-    overflow: hidden;
-}
-.modal{
-    /*display: none;*/
-    position: fixed;
-    left:0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    z-index: 1000;
-    overflow-y: auto;
-}
-.modal-close{
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    font-size: 40px;
-}
-.modal-layout1{
-    width: 300px;
-    margin: 100px auto;
-}
-.modal-layout1 .title,.modal-layout2 .title{
-    font-size: 24px;
-    font-weight:bold;
-    margin: 0 0 50px 0;
-    text-align: center;
-    padding: 0!important;
-}
-.modal-layout1 .actions,.modal-layout2 .actions{
-    margin-top: 30px;
-}
-
-.modal-layout2{
-    width: 350px;
-    margin: 100px auto;
-}
-.modal-layout3{
-    width: 500px;
-    margin: 100px auto;
-}
-.modal-layout-box{
-    width: 500px;
-    border: 1px solid #e5e5e5;
-    box-shadow: 2px 2px 5px #ccc;
-    margin: 100px auto;
-    padding: 15px;
-}
-.modal-layout-box .title{
-    padding: 0!important;
-    font-weight: bold;
-    margin: 10px 0;
-}
-.env-modal{
-
-}
-.env-modal .hint{
-    color: #01A304!important;
-    background-color: #dff0d8;
-    padding: 10px;
-}
-.env-modal .text{
-    border: none;
-    border-bottom: 1px solid #e0e0e0;
-}
-.env-modal .text:focus{
-    border-bottom-color: #0f6ecd;
-}
-.env-modal .item{
-    padding: 5px 0!important;
-    border-bottom: none!important;
-}
 
 
 .nav {
@@ -220,18 +146,7 @@ body.loading .component-loading{
     background: #fff;
     z-index: 11;
 }
-.api-env-vars{
-    color: #919191;
-    margin-top: 5px;
-}
-.api-env-vars span{
-    padding: 4px 8px;
-    cursor: pointer;
-    background-color: #CACACA;
-    color: #383838;
-    border-radius: 4px;
-    margin-right: 5px;
-}
+
 .api-menus{
     position: absolute;
     z-index: 15;
