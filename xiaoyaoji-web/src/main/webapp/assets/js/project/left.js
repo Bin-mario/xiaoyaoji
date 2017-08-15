@@ -119,6 +119,21 @@ $(function(){
                         this.target.id = parentId;
                     }
                 },
+                copyDoc:function(){
+                    if(this.target.id){
+                        var self =this;
+                        UIkit.modal.confirm('是否确认复制?').then(function(){
+                            utils.post('/doc/copy',{
+                                docId:self.target.id,
+                                projectId:_projectId_
+                            },function(){
+                                location.reload();
+                            });
+                        });
+                    }else{
+                        toastr.error('未选中文档');
+                    }
+                },
                 updateName:function(){
                     this.createModal.display=true;
                     this.createModal.id=this.target.id;

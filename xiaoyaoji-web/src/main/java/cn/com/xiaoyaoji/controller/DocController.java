@@ -23,7 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author: zhoujingjie
@@ -127,7 +129,7 @@ public class DocController {
         Doc temp = ServiceFactory.instance().getById(id, Doc.class);
         AssertUtils.notNull(temp, "接口不存在或已删除");
         AssertUtils.isTrue(ServiceFactory.instance().checkUserHasProjectEditPermission(user.getId(), temp.getProjectId()), "无操作权限");
-        int rs = ServiceFactory.instance().deleteDoc(id);
+        int rs = DocService.instance().deleteDoc(id);
 
         AssertUtils.isTrue(rs > 0, "删除失败");
         /*AsyncTaskBus.instance().push(temp.getProjectId(), Project.Action.DELETE_INTERFACE, id, token, "删除接口-" + temp.getName());*/
@@ -251,10 +253,19 @@ public class DocController {
         return DocService.instance().getProjectDocs(projectId);
     }
 
+    /**
+     * 复制文档
+     * @param projectId    项目id
+     * @param docId         文档id
+     * @param user
+     * @return rs
+     */
     @PostMapping("/copy")
     public Object copy(@RequestParam("projectId")String projectId,
-                       @RequestParam("formId")String fromId,
-                       @RequestParam("toId") String toId){
-        return null;
+                       @RequestParam("docId") String docId,User user){
+        ServiceTool.checkUserHasEditPermission(projectId,user);
+        int rs = DocService.instance().copyDoc(docId);
+        AssertUtils.isTrue(rs>0,"操作失败");
+        return rs;
     }
 }

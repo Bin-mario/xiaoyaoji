@@ -529,6 +529,58 @@ public class DataFactory implements Data {
         });
     }
 
+    /**
+     * 复制
+     * @param parentDocId
+     * @param newParentDocId
+     * @return
+     */
+    private int copyDocs(String parentDocId, String newParentDocId){
+        //根据父级id查询自节点
+        List<String> docIds = getDocIdsByParentId(parentDocId);
+        int rs = 0;
+        if(docIds!=null && docIds.size()>0){
+            for(String docId:docIds){
+                String newDocId = StringUtils.id();
+                rs += copyDoc0(docId,newDocId,newParentDocId);
+                rs += copyDocs(docId,newDocId);
+            }
+        }
+        return rs;
+    }
+
+    /**
+     * 复制文档
+     * @param docId         原文档id
+     * @param newDocId      新文档id
+     * @param parentId      父级ID
+     * @return rs
+     */
+    private int copyDoc0(String docId,String newDocId,String parentId){
+        Doc doc = getById(Doc.class,docId);
+        if(doc == null)
+            return 0;
+        doc.setCreateTime(new Date());
+        doc.setLastUpdateTime(new Date());
+        doc.setId(newDocId);
+        if(parentId != null) {
+            doc.setParentId(parentId);
+        }
+        return insert(doc);
+    }
+
+    /**
+     * 复制文档
+     * @param docId
+     * @return
+     */
+    @Override
+    public int copyDoc(final String docId) {
+        String newDocId = StringUtils.id();
+        int rs = copyDoc0(docId,newDocId,null);
+        rs += copyDocs(docId,newDocId);
+        return rs;
+    }
 
     @Override
     public String getUserIdByEmail(final String email) {
@@ -563,7 +615,7 @@ public class DataFactory implements Data {
         return process(new Handler<Boolean>() {
             @Override
             public Boolean handle(Connection connection, QueryRunner qr) throws SQLException {
-                String sql = new StringBuilder("select count(id) from ").append(TableNames.PROJECT_USER).append(" where userId=? and projectId=? and editable='YES'").toString();
+                String sql = new StringBuilder("select count(1) from ").append(TableNames.PROJECT_USER).append(" where userId=? and projectId=? and editable='YES'").toString();
                 return qr.query(connection, sql, new IntegerResultHandler(), userId, projectId) > 0;
             }
         });
@@ -574,9 +626,9 @@ public class DataFactory implements Data {
         process(new Handler<Object>() {
             @Override
             public Object handle(Connection connection, QueryRunner qr) throws SQLException {
-                user.setBindQQ(qr.query(connection, "select count(id) from " + TableNames.USER_THIRD + " where userId=? and type='QQ'", new IntegerResultHandler(), user.getId()) > 0);
-                user.setBindWeibo(qr.query(connection, "select count(id) from " + TableNames.USER_THIRD + " where userId=? and type='WEIBO'", new IntegerResultHandler(), user.getId()) > 0);
-                user.setBindGithub(qr.query(connection, "select count(id) from " + TableNames.USER_THIRD + " where userId=? and type='GITHUB'", new IntegerResultHandler(), user.getId()) > 0);
+                user.setBindQQ(qr.query(connection, "select count(1) from " + TableNames.USER_THIRD + " where userId=? and type='QQ'", new IntegerResultHandler(), user.getId()) > 0);
+                user.setBindWeibo(qr.query(connection, "select count(1) from " + TableNames.USER_THIRD + " where userId=? and type='WEIBO'", new IntegerResultHandler(), user.getId()) > 0);
+                user.setBindGithub(qr.query(connection, "select count(1) from " + TableNames.USER_THIRD + " where userId=? and type='GITHUB'", new IntegerResultHandler(), user.getId()) > 0);
                 return null;
             }
         });

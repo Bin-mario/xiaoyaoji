@@ -67,9 +67,10 @@
                     </li>
                 </c:if>
                 <c:if test="${docId != null && edit}">
-                    <li class="db-item "><a title="预览文档" v-on:click="viewpage"><i class="iconfont icon-eye"></i></a>
-                    </li>
+                    <li class="db-item "><a title="预览文档" v-on:click="viewpage"><i class="iconfont icon-eye"></i></a></li>
+                    <li class="db-item" uk-toggle="target: #save-modal"><a title="保存"><i class="iconfont icon-save"></i></a></li>
                 </c:if>
+
             </ul>
             <ul class="sidebar-o-op ta-c">
                 <li class="db-item "><a href="${ctx}/profile" title="个人中心"><i class="iconfont icon-user"></i></a></li>
@@ -125,6 +126,20 @@
         </div>
     </div>
 
+    <div id="save-modal" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <h2 class="uk-modal-title">保存文档</h2>
+            <p class="uk-margin"><textarea autofocus class="uk-textarea" rows="5" v-model="submitComment"
+                                           placeholder="可以在这儿输入一些备注"></textarea></p>
+            <p style="color: rgb(204, 204, 204);">提示:CTRL+S 可快速保存</p>
+            <p class="uk-text-right">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
+                <button class="uk-button uk-button-primary uk-modal-close" type="button" v-on:click="submit">
+                    保存
+                </button>
+            </p>
+        </div>
+    </div>
 </div>
 
 

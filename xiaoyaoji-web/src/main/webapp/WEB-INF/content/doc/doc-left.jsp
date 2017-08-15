@@ -110,10 +110,8 @@
             </li>
         </c:if>--%>
         <li class="line" v-if="menu.isFolder"></li>
-        <li>
-            <div class="dl-menu-name">移动</div>
-        </li>
-        <li>
+
+        <li v-on:click="copyDoc">
             <div class="dl-menu-name">复制</div>
         </li>
         <li v-on:click="updateName($event)" uk-toggle="target: #docCreateModal">
@@ -141,49 +139,10 @@
         </div>
     </div>
 
-    <div id="docCopyModal" v-cloak uk-modal>
-        <div class="uk-modal-dialog">
-            <button class="uk-modal-close-default" type="button" uk-close></button>
-
-            <div class="uk-modal-header">
-                <h2 class="uk-modal-title">复制文档</h2>
-            </div>
-
-            <div class="uk-modal-body" uk-overflow-auto>
-                <div class="uk-form-stacked">
-                    <div class="uk-margin">
-                        <label class="uk-form-label" for="form-stacked-select">选择项目</label>
-                        <div class="uk-form-controls">
-                            <select class="uk-select" id="form-stacked-select">
-                                <option>Option 01</option>
-                                <option>Option 02</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="uk-margin">
-                        <label class="uk-form-label" for="form-stacked-select">选择分类</label>
-                        <div class="uk-form-controls">
-                            <ul>
-                                <li></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="uk-modal-footer uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-                <button class="uk-button uk-button-primary" type="button">Save</button>
-            </div>
-
-        </div>
-    </div>
-
-
     <div class="dl-placehoder" v-cloak>
         本文档由<a href="http://www.xiaoyaoji.com.cn" target="_blank">小幺鸡</a>编辑
     </div>
 </div>
 <script>window._projectId_ = '${project.id}';
 window._edit_ = '${edit}'</script>
-<script src="${assets}/js/project/left.js"></script>
+<script src="${assets}/js/project/left.js?v=${v}"></script>

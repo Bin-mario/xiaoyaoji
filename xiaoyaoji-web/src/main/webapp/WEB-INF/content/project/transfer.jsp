@@ -28,7 +28,7 @@
                                 <li v-bind:class="{'active':userId=='${item.id}'}" v-on:click="chose('${item.id}')">
                                     <div class="dbv-user-icon">
                                         <c:if test="${item.avatar.length()>0}">
-                                            <img class="img" src="${fileAccess}${item.avatar}">
+                                            <img class="img" src="${item.avatar}">
                                         </c:if>
                                         <c:if test="${item.avatar.length()==0}">x
                                             <div class="img ta-c word">${item.nickname}</div>

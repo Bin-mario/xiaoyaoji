@@ -268,42 +268,7 @@ public class ServiceFactory {
     }
 
 
-    public void getDocIdsByParentId(Set<String> ids, String parentId) {
-        List<String> temp = ResultUtils.list(DataFactory.instance().getDocIdsByParentId(parentId));
-        ids.addAll(temp);
-        for (String id : temp) {
-            getDocIdsByParentId(ids, id);
-        }
-    }
 
-    public int deleteDoc(String id) {
-        //需要优化
-        Set<String> ids = new HashSet<>();
-        getDocIdsByParentId(ids, id);
-        ids.add(id);
-        //删除数据
-        int rs = deleteByIds(new ArrayList<>(ids));
-        for (String temp : ids) {
-            //删除附件
-            List<Attach> attaches = getAttachsByRelatedId(temp);
-            for (Attach attach : attaches) {
-                try {
-                    FileManager.getFileProvider().delete(attach.getUrl());
-                    delete(TableNames.ATTACH, attach.getId());
-                    rs++;
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-            //删除历史记录
-            DataFactory.instance().deleteDocHistoryByDocId(temp);
-        }
-        return rs;
-    }
-
-    private int deleteByIds(List<String> ids) {
-        return DataFactory.instance().deleteByIds(Doc.class, ids);
-    }
 
     public List<DocHistory> getDocHistorys(String docId) {
         return ResultUtils.list(DataFactory.instance().getDocHistorys(docId));

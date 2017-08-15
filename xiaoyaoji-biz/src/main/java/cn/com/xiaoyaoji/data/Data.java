@@ -109,4 +109,6 @@ public interface Data {
     List<String> getDocIdsByParentId(String parentId);
 
     int deleteByIds(Class<?> clazz, List<String> ids);
+
+    int copyDoc(String docId);
 }

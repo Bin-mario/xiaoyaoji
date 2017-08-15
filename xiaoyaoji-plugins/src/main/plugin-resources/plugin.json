@@ -6,7 +6,7 @@
     "description": "http 文档",
     "author": "zhoujingjie",
     "createTime": "2017/06/21",
-    "version": "2.0",
+    "version": "2.1",
     "event":"doc.ev",
     "icon":{
       "icon32x32":"/assets/http.png"
@@ -19,7 +19,7 @@
     "description": "websocket 文档",
     "author": "zhoujingjie",
     "createTime": "2017/06/21",
-    "version": "2.0",
+    "version": "2.1",
     "event":"doc.ev",
     "icon":{
       "icon32x32":"/assets/websocket.png"
@@ -45,7 +45,7 @@
     "description": "markdown文档",
     "author": "zhoujingjie",
     "createTime": "2017/06/21",
-    "version": "2.0",
+    "version": "2.1",
     "event":"doc.ev",
     "icon":{
       "icon32x32":"/assets/markdown.png"
@@ -71,7 +71,7 @@
     "description": "第三方链接",
     "author": "zhoujingjie",
     "createTime": "2017/06/21",
-    "version": "2.0",
+    "version": "2.1",
     "event":"doc.ev",
     "icon":{
       "icon32x32":"/assets/thirdparty.png"

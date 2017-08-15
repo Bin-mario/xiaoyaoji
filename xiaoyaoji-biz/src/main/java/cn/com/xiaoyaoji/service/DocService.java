@@ -6,11 +6,15 @@ import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.core.util.ResultUtils;
 import cn.com.xiaoyaoji.core.util.StringUtils;
 import cn.com.xiaoyaoji.data.DataFactory;
+import cn.com.xiaoyaoji.data.bean.Attach;
 import cn.com.xiaoyaoji.data.bean.Doc;
 import cn.com.xiaoyaoji.data.bean.DocHistory;
+import cn.com.xiaoyaoji.data.bean.TableNames;
+import cn.com.xiaoyaoji.integration.file.FileManager;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -116,5 +120,48 @@ public class DocService {
             }
         }
         return docMap.get("0");
+    }
+
+
+
+    public void getDocIdsByParentId(Set<String> ids, String parentId) {
+        List<String> temp = ResultUtils.list(DataFactory.instance().getDocIdsByParentId(parentId));
+        ids.addAll(temp);
+        for (String id : temp) {
+            getDocIdsByParentId(ids, id);
+        }
+    }
+
+    public int deleteDoc(String id) {
+        //需要优化
+        Set<String> ids = new HashSet<>();
+        getDocIdsByParentId(ids, id);
+        ids.add(id);
+        //删除数据
+        int rs = deleteByIds(new ArrayList<>(ids));
+        ServiceFactory serviceFactory = ServiceFactory.instance();
+        for (String temp : ids) {
+            //删除附件
+            List<Attach> attaches = serviceFactory.getAttachsByRelatedId(temp);
+            for (Attach attach : attaches) {
+                try {
+                    FileManager.getFileProvider().delete(attach.getUrl());
+                    serviceFactory.delete(TableNames.ATTACH, attach.getId());
+                    rs++;
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            //删除历史记录
+            DataFactory.instance().deleteDocHistoryByDocId(temp);
+        }
+        return rs;
+    }
+    private int deleteByIds(List<String> ids) {
+        return DataFactory.instance().deleteByIds(Doc.class, ids);
+    }
+
+    public int copyDoc(String docId) {
+        return DataFactory.instance().copyDoc(docId);
     }
 }

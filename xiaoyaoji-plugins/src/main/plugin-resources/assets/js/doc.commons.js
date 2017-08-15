@@ -67,7 +67,7 @@
                     var v = data[key];
                     var t = {children: []};
                     t.name = key;
-                    if (v !== undefined) {
+                    if (v !== undefined  && v!== null) {
                         if (v.constructor.name === 'Object') {
                             t.type = 'object';
                             parseImportData(v, t.children);
@@ -86,7 +86,7 @@
                             t.type = 'boolean'
                         }
                     } else {
-                        t.type = '';
+                        t.type = 'string';
                     }
                     t.require = 'true';
                     temp.push(t);
