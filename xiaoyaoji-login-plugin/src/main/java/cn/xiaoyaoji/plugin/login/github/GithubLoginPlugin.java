@@ -2,7 +2,6 @@ package cn.xiaoyaoji.plugin.login.github;
 
 import cn.com.xiaoyaoji.core.plugin.LoginPlugin;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
-import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.data.bean.Thirdparty;
 import cn.com.xiaoyaoji.data.bean.User;
 import cn.com.xiaoyaoji.service.ServiceFactory;
