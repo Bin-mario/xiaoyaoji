@@ -1,4 +1,4 @@
-package cn.com.xiaoyaoji.utils;
+package cn.com.xiaoyaoji.core.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;
