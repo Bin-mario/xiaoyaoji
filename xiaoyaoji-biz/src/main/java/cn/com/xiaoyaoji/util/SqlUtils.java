@@ -1,4 +1,4 @@
-package cn.com.xiaoyaoji.utils;
+package cn.com.xiaoyaoji.util;
 
 
 import cn.com.xiaoyaoji.core.annotations.Alias;

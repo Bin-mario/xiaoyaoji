@@ -10,7 +10,7 @@ import cn.com.xiaoyaoji.data.handler.IntegerResultHandler;
 import cn.com.xiaoyaoji.data.handler.StringResultHandler;
 import cn.com.xiaoyaoji.integration.file.FileManager;
 import cn.com.xiaoyaoji.util.JdbcUtils;
-import cn.com.xiaoyaoji.utils.SqlUtils;
+import cn.com.xiaoyaoji.util.SqlUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;

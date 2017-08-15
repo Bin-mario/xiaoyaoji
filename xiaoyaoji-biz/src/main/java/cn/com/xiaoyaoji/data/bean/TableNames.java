@@ -1,7 +1,7 @@
 package cn.com.xiaoyaoji.data.bean;
 
 
-import cn.com.xiaoyaoji.utils.SqlUtils;
+import cn.com.xiaoyaoji.util.SqlUtils;
 
 /**
  * @author: zhoujingjie

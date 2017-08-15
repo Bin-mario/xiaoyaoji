@@ -12,8 +12,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: zhoujingjie
@@ -82,5 +81,40 @@ public class DocService {
 
     public String getFirstDocId(String projectId) {
         return DataFactory.instance().getFirstDocId(projectId);
+    }
+
+
+    /**
+     * 获取属性菜单的文档
+     * @param projectId 项目id
+     * @return docs
+     */
+    public List<Doc> getProjectDocs(String projectId){
+        // 获取该项目下所有接口
+        List<Doc> docs = ResultUtils.list(ServiceFactory.instance().getDocsByProjectId(projectId));
+        return treeDocs(docs);
+    }
+
+    public List<Doc> getProjectDocs(String projectId, boolean full){
+        // 获取该项目下所有接口
+        List<Doc> docs = ResultUtils.list(ServiceFactory.instance().getDocsByProjectId(projectId, full));
+        return treeDocs(docs);
+    }
+
+    private List<Doc> treeDocs(List<Doc> docs ){
+        Map<String,List<Doc>> docMap = new LinkedHashMap<>();
+        //root
+        docMap.put("0",new ArrayList<Doc>());
+        //
+        for(Doc doc:docs){
+            docMap.put(doc.getId(),doc.getChildren());
+        }
+        for(Doc doc:docs){
+            List<Doc> temp = docMap.get(doc.getParentId());
+            if(temp!=null){
+                temp.add(doc);
+            }
+        }
+        return docMap.get("0");
     }
 }

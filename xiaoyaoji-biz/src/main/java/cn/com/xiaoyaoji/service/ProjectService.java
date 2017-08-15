@@ -28,13 +28,22 @@ public class ProjectService {
      * 获取属性菜单的文档
      * @param projectId 项目id
      * @return docs
+     * @see DocService#getProjectDocs(String)
      */
+    @Deprecated
     public List<Doc> getProjectDocs(String projectId){
         // 获取该项目下所有接口
         List<Doc> docs = ResultUtils.list(ServiceFactory.instance().getDocsByProjectId(projectId));
         return treeDocs(docs);
     }
 
+    /**
+     * @see DocService#getProjectDocs(String, boolean)
+     * @param projectId
+     * @param full
+     * @return
+     */
+    @Deprecated
     public List<Doc> getProjectDocs(String projectId, boolean full){
         // 获取该项目下所有接口
         List<Doc> docs = ResultUtils.list(ServiceFactory.instance().getDocsByProjectId(projectId, full));

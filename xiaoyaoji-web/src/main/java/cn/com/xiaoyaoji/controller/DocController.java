@@ -244,4 +244,17 @@ public class DocController {
         return new _HashMap<>()
                 .add("docs", docs);
     }
+
+    @GetMapping("/list/{projectId}")
+    public Object getDocs(@PathVariable("projectId")String projectId,User user){
+        ServiceTool.checkUserHasAccessPermission(projectId,user);
+        return DocService.instance().getProjectDocs(projectId);
+    }
+
+    @PostMapping("/copy")
+    public Object copy(@RequestParam("projectId")String projectId,
+                       @RequestParam("formId")String fromId,
+                       @RequestParam("toId") String toId){
+        return null;
+    }
 }
