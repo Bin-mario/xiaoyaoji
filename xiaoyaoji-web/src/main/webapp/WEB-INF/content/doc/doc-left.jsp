@@ -111,7 +111,7 @@
         </c:if>--%>
         <li class="line" v-if="menu.isFolder"></li>
 
-        <li v-on:click="copyDoc">
+        <li uk-toggle="target:#docCopyModal">
             <div class="dl-menu-name">复制</div>
         </li>
         <li v-on:click="updateName($event)" uk-toggle="target: #docCreateModal">
@@ -138,6 +138,30 @@
             </div>
         </div>
     </div>
+
+     <div uk-modal id="docCopyModal" v-cloak>
+        <div class="uk-modal-dialog">
+            <div class="uk-modal-body">
+                <form class="uk-form-stacked">
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-select">选择一个项目</label>
+                        <div class="uk-form-controls">
+                            <select class="uk-select" id="form-stacked-select" v-model="copiesProjectId">
+                                <option v-for="item in projects" v-bind:value="item.id">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="uk-modal-footer uk-text-right">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
+                <button class="uk-button uk-button-primary" v-on:click="copyDoc">复制</button>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="dl-placehoder" v-cloak>
         本文档由<a href="http://www.xiaoyaoji.com.cn" target="_blank">小幺鸡</a>编辑

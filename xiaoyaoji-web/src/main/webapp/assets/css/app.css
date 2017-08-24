@@ -483,12 +483,6 @@ ul[uk-tab]{
     margin-top: 10px;
     margin-bottom: 10px;
 }
-.uk-modal{
-    background-color: rgba(204,207,214,.45)!important;
-    box-shadow: 0 2px 15px 0 rgba(140,144,155,.5);
-    border:1px solid #cccfd6;
-    border-radius: 4px;
-}
 .uk-modal-dialog{
     margin-top: 80px!important;
 }

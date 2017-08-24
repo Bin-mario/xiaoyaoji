@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/css/http.css?v=${v}"/>
 <div class="content-section" id="docApp" style="padding: 0 10px;" v-cloak>
 
-<span class="doc-update-time">更新时间: <span id="api-update-time">{{doc.lastUpdateTime}}</span></span>
+    <span class="doc-update-time">更新时间: <span id="api-update-time">{{doc.lastUpdateTime}}</span></span>
     <div id="api-details" class="api-details">
         <p class="doc-item-section-title">基本信息</p>
         <div class="api-base-info api-edit-box doc-item-section">
@@ -133,7 +133,7 @@
                         v-bind:request-headers.sync="content.responseHeaders"></request-headers-vue>
             </div>
         </div>
-         <div v-if="content.responseArgs && content.responseArgs.length>0">
+        <div v-if="content.responseArgs && content.responseArgs.length>0">
             <p class="doc-item-section-title">响应数据</p>
             <div class="div-table">
                 <ul class="div-table-header div-table-line cb">
@@ -191,7 +191,7 @@
                         </div>
                         <div class="col-sm-2">
                             <div class="uk-inline">
-                                <span uk-icon="icon:triangle-down"></span>
+                                <span class="uk-icon" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" ratio="1"><polygon points="5 7 15 7 10 12"></polygon></svg></span>
                                 <div uk-dropdown>
                                     <ul class="uk-nav uk-dropdown-nav">
                                         <li v-for="a in algorithms" v-on:click="algorithmClick(index,a.fn,urlArgs)" ><a href="#">{{a.name}}</a></li>
@@ -214,7 +214,7 @@
                         </div>
                         <div class="col-sm-2">
                             <div class="uk-inline">
-                                <span uk-icon="icon: triangle-down"></span>
+                                <span class="uk-icon" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" ratio="1"><polygon points="5 7 15 7 10 12"></polygon></svg></span>
                                 <div uk-dropdown>
                                     <ul class="uk-nav uk-dropdown-nav">
                                         <li v-for="a in algorithms" v-on:click="algorithmClick(index,a.fn,formHeaders)" ><a href="#">{{a.name}}</a></li>
@@ -263,7 +263,7 @@
                                     </div>
                                     <div class="col-sm-2">
                                         <div class="uk-inline">
-                                            <span uk-icon="icon: triangle-down"></span>
+                                            <span class="uk-icon" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" ratio="1"><polygon points="5 7 15 7 10 12"></polygon></svg></span>
                                             <div uk-dropdown>
                                                 <ul class="uk-nav uk-dropdown-nav">
                                                     <li v-for="a in algorithms" v-on:click="algorithmClick(index,a.fn,formArgs)" ><a href="#">{{a.name}}</a></li>
@@ -307,9 +307,9 @@
                                        class="btn btn-primary" :value="apiLoading?'加载中':'直接运行'">
                             </div>
                             <div v-if="hasXyjPlugin">
-                            <input type="button" data-ignore v-on:click.stop="pluginSubmit"
-                                   class="btn btn-primary" :value="apiLoading?'加载中':'运行'">
-                                </div>
+                                <input type="button" data-ignore v-on:click.stop="pluginSubmit"
+                                       class="btn btn-primary" :value="apiLoading?'加载中':'运行'">
+                            </div>
                             <%--<input type="button" data-ignore v-on:click.stop="apiMock" v-show="content.responseArgs && content.responseArgs.length>0"
                                    class="btn btn-orange" value="mock">--%>
 

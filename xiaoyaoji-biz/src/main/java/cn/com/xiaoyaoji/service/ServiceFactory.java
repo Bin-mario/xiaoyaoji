@@ -241,8 +241,7 @@ public class ServiceFactory {
         if (shares.size() > 0) {
             for (Share s : shares) {
                 if (!Share.ShareAll.YES.equals(s.getShareAll())) {
-                    //todo
-                    //s.setShareModules(ResultUtils.list(DataFactory.instance().getModuleNameIdsInIds(s.getModuleIdsArray())));
+                    s.setDocNames(DataFactory.instance().getDocNamesFromIds(s.getDocIdsArray()));
                     return null;
                 }
             }

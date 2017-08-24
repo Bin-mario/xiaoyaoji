@@ -11,9 +11,12 @@ $(function(){
                     edit:_edit_
                 },
                 projects:[],
+                shareBox:null,
+                shares:null,
                 loading:{
                     project:null,
-                    history:null
+                    history:null,
+                    share:null
                 }
             },
             watch:{
@@ -93,7 +96,35 @@ $(function(){
                     utils.get('/project/list',{},function(rs){
                         self.loading.project=false;
                         self.projects = rs.data.projects;
+
+                        window.postMessage({type:'projects',data:rs.data.projects},'*')
                     });
+                },
+                loadShares:function(){
+                    this.loading.share=true;
+                    this.shareBox='list';
+                    var self = this;
+                    utils.get('/share/project/'+_projectId_,{},function(rs){
+                        self.loading.share=false;
+                        rs.data.shares.forEach(function(item){
+                            item.editing=false;
+                        });
+                        self.shares = rs.data.shares;
+
+                    });
+                },
+                deleteShare:function(item){
+                    UIkit.modal.confirm('是否确认删除?').then(function(){
+                        utils.delete('/share/'+item.id,function(){
+                            toastr.success('删除成功');
+                        })
+                    });
+                },
+                shareLockBlur:function(item){
+                    item.editing=false;
+                    utils.post('/share/'+item.id,{password:item.password},function(){
+                        toastr.success('修改成功');
+                    })
                 }
             }
         })

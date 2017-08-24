@@ -22,11 +22,16 @@ public class Share {
     private String username;
     private Date createTime;
     private String shareAll;
+    @Deprecated
     private String moduleIds;
+
+    //分享id
+    private String docIds;
     private String password;
     private String projectId;
     @Ignore
-    private List<Map<String,Object>> shareModules = new ArrayList<>();
+    private String docNames;
+
     public interface ShareAll{
         String YES="YES";
         String NO="NO";
@@ -81,6 +86,13 @@ public class Share {
         return new String[]{};
     }
 
+    public String[] getDocIdsArray(){
+        if(StringUtils.isNotBlank(docIds)){
+            return docIds.split(",");
+        }
+        return new String[]{};
+    }
+
     public void setModuleIds(String moduleIds) {
         this.moduleIds = moduleIds;
     }
@@ -109,11 +121,19 @@ public class Share {
         this.username = username;
     }
 
-    public List<Map<String, Object>> getShareModules() {
-        return shareModules;
+    public String getDocIds() {
+        return docIds;
     }
 
-    public void setShareModules(List<Map<String, Object>> shareModules) {
-        this.shareModules = shareModules;
+    public void setDocIds(String docIds) {
+        this.docIds = docIds;
+    }
+
+    public String getDocNames() {
+        return docNames;
+    }
+
+    public void setDocNames(String docNames) {
+        this.docNames = docNames;
     }
 }

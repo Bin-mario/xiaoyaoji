@@ -110,5 +110,8 @@ public interface Data {
 
     int deleteByIds(Class<?> clazz, List<String> ids);
 
-    int copyDoc(String docId);
+    int copyDoc(String docId,String toProjectId);
+
+    String getDocNamesFromIds(String[] docIdsArray);
+
 }

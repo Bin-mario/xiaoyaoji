@@ -27,7 +27,13 @@ $(function(){
                 loadDoc(location.pathname.substring(ctx.length));
             }
         });
-        new Vue({
+        window.addEventListener('message', function (e) {
+            console.log(e);
+            if(e.data && e.data.type==='projects'){
+                app.projects = e.data.data;
+            }
+        });
+        var app = new Vue({
             el:'#docLeft',
             data:{
                 ctx:ctx,
@@ -37,6 +43,8 @@ $(function(){
                     left:0,
                     isFolder:true
                 },
+                copiesProjectId:_projectId_, //复制的项目id
+                projects:[],
                 searchText:'',
                 showSearch:false,
                 edit:window._edit_,
@@ -122,13 +130,12 @@ $(function(){
                 copyDoc:function(){
                     if(this.target.id){
                         var self =this;
-                        UIkit.modal.confirm('是否确认复制?').then(function(){
-                            utils.post('/doc/copy',{
-                                docId:self.target.id,
-                                projectId:_projectId_
-                            },function(){
-                                location.reload();
-                            });
+                        utils.post('/doc/copy',{
+                            docId:self.target.id,
+                            projectId:_projectId_,
+                            toProjectId:self.copiesProjectId
+                        },function(){
+                            location.reload();
                         });
                     }else{
                         toastr.error('未选中文档');

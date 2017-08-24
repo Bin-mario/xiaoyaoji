@@ -11,11 +11,11 @@
     <title>${doc.name}-${project.name}</title>
     <meta charset="UTF-8">
     <%--<link rel="stylesheet" href="${assets}/css/style.css">--%>
-    <link rel="stylesheet" href="${assets}/css/doc.css">
-    <link rel="stylesheet" href="${assets}/css/icons.css">
-    <link rel="stylesheet" href="${assets}/css/app.css">
-    <link rel="stylesheet" href="${assets}/uikit/css/uikit-rtl.css">
-    <link rel="stylesheet" href="${assets}/uikit/css/uikit.css">
+    <link rel="stylesheet" href="${assets}/css/doc.css?v=${v}">
+    <link rel="stylesheet" href="${assets}/css/icons.css?v=${v}">
+    <link rel="stylesheet" href="${assets}/css/app.css?v=${v}">
+    <link rel="stylesheet" href="${assets}/uikit/css/uikit-rtl.css?v=${v}">
+    <link rel="stylesheet" href="${assets}/uikit/css/uikit.css?v=${v}">
     <link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.cn/"/>
     <meta name="keywords"
           content="小幺鸡,接口文档管理,接口平台,在线文档,api管理,api测试,接口文档工具,接口演示,rest,restful,rest api,接口测试,postman,文档管理,websocket在线测试"/>

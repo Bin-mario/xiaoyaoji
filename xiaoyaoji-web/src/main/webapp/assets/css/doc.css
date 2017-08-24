@@ -536,7 +536,7 @@ body.profile .dbl-projects{
     z-index: 999;
     left: 0;
     top: 0;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
 }
 .db-left-bar .logo img{
     width: 50px;
@@ -551,12 +551,24 @@ body.profile .dbl-projects{
 .db-left .db-left-bar .db-item a:hover,.db-left .db-left-bar .db-item a.active{
     color: #fff;
 }
-.dashboard .db-left-bar .db-item:hover{
+.db-left-bar .db-item:hover{
     background-color: inherit;
+}
+.db-left-bar .db-item:hover .sub-ul{
+    display: block;
 }
 .db-left .db-left-bar .db-item i{
     font-size: 30px;
     margin-right: inherit;
+}
+
+.db-left .db-item .sub-ul{
+    display: none;
+    width: 100px;
+    background-color: #2e2d2b;
+    position: absolute;
+    left: 60px;
+    border-left:1px solid #3a3939;
 }
 
 .db-left-search{
@@ -767,4 +779,28 @@ body.profile .dbl-projects{
     bottom: 50px;
 }
 
+.share-list li{margin-bottom: 10px;}
+.share-list .uk-input{
+    width: 136px;
+    position: absolute;
+    right: 30px;
+    height: 25px;
+    margin-top: -5px;
+    display: none;
+}
+.share-list li.editing .uk-input{
+    display: block;
+}
+
+.share-creation-box .uk-form-controls{
+    margin-right: auto!important;
+    margin-left: 115px!important;
+}
+.share-creation-box .uk-form-label{
+    width: 100px!important;
+}
+.share-creation-box .uk-form-label:first-child{
+    margin-top: 0!important;
+}
 /************* SIDEBAR END ***********/
+

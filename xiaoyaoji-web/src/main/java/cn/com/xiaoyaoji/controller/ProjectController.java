@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * //todo 权限验证
  * 项目
  *
  * @author zhoujingjie
@@ -307,7 +306,7 @@ public class ProjectController {
     public Object transfer(@PathVariable("id") String id, User user, @RequestParam String userId) {
 
         AssertUtils.isTrue(org.apache.commons.lang3.StringUtils.isNoneBlank(userId), "missing userId");
-        Project before = ServiceFactory.instance().getProject(id);
+        Project before = ProjectService.instance().getProject(id);
         ServiceTool.checkUserIsOwner(before, user);
         Project temp = new Project();
         temp.setId(id);

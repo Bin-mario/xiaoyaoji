@@ -161,7 +161,7 @@ public class DocService {
         return DataFactory.instance().deleteByIds(Doc.class, ids);
     }
 
-    public int copyDoc(String docId) {
-        return DataFactory.instance().copyDoc(docId);
+    public int copyDoc(String docId,String toProjectId) {
+        return DataFactory.instance().copyDoc(docId,toProjectId);
     }
 }

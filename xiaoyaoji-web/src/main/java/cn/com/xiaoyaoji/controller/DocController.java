@@ -262,9 +262,15 @@ public class DocController {
      */
     @PostMapping("/copy")
     public Object copy(@RequestParam("projectId")String projectId,
+                       @RequestParam(value = "toProjectId",required = false)String toProjectId,
                        @RequestParam("docId") String docId,User user){
         ServiceTool.checkUserHasEditPermission(projectId,user);
-        int rs = DocService.instance().copyDoc(docId);
+        if(org.apache.commons.lang3.StringUtils.isBlank(toProjectId) || projectId.equals(toProjectId)){
+            toProjectId = null;
+        }else{
+            ServiceTool.checkUserHasEditPermission(toProjectId,user);
+        }
+        int rs = DocService.instance().copyDoc(docId,toProjectId);
         AssertUtils.isTrue(rs>0,"操作失败");
         return rs;
     }

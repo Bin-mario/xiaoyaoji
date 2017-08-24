@@ -60,8 +60,17 @@
                 </li>
                 <li class="db-item "><a title="全局设置" href="${ctx}/project/global/${project.id}"><i
                         class="iconfont icon-global"></i></a></li>
-                <li class="db-item "><a href="${ctx}/project/${project.id}/info" title="项目设置"><i
-                        class="iconfont icon-dashboard"></i></a></li>
+                <li class="db-item ">
+                    <a  title="项目设置"><i class="iconfont icon-dashboard"></i></a>
+                    <ul class="sub-ul">
+                        <li class="db-item" v-on:click="loadShares" uk-toggle="target:#share-modal"><a>项目分享</a></li>
+                        <li class="db-item"><a href="${ctx}/project/${project.id}/info">项目信息</a></li>
+                        <li class="db-item"><a href="${ctx}/project/${project.id}/transfer">项目转让</a></li>
+                        <li class="db-item"><a href="${ctx}/project/${project.id}/member">项目成员</a></li>
+                        <li class="db-item"><a href="${ctx}/project/${project.id}/export">导出项目</a></li>
+                        <li class="db-item"><a href="${ctx}/project/${project.id}/quit">退出项目</a></li>
+                    </ul>
+                </li>
                 <c:if test="${!edit && editPermission}">
                     <li class="db-item "><a title="编辑文档" v-on:click="editpage"><i class="iconfont icon-edit"></i></a>
                     </li>
@@ -70,7 +79,6 @@
                     <li class="db-item "><a title="预览文档" v-on:click="viewpage"><i class="iconfont icon-eye"></i></a></li>
                     <li class="db-item" uk-toggle="target: #save-modal"><a title="保存"><i class="iconfont icon-save"></i></a></li>
                 </c:if>
-
             </ul>
             <ul class="sidebar-o-op ta-c">
                 <li class="db-item "><a href="${ctx}/profile" title="个人中心"><i class="iconfont icon-user"></i></a></li>
@@ -140,8 +148,92 @@
             </p>
         </div>
     </div>
+
+
+    <div id="share-modal" uk-modal v-cloak>
+        <div class="uk-modal-dialog">
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">{{shareBox=='list'?'分享列表':'创建新分享'}}</h2>
+            </div>
+
+            <div class="uk-modal-body" uk-overflow-auto>
+
+                <!-- 分享列表 begin -->
+                <div class="share-list-box " v-show="shareBox=='list'">
+                    <ul class="share-list">
+                        <div class="spinner" v-show="loading.share">
+                            <div class="double-bounce1"></div>
+                            <div class="double-bounce2"></div>
+                        </div>
+                        <li v-for="item in shares" v-bind:class="{editing:item.editing}">
+                            <div class="cb">
+                                <a class="share-name fl" v-bind:href="'${ctx}/share/'+item.id">[{{item.username}}] {{item.name}} </a>
+                                <div class="fr">
+                                    <i class="iconfont icon-lock" v-on:click="item.editing=true;"></i>
+                                    <i class="iconfont icon-close" v-on:click="deleteShare(item)"></i>
+                                </div>
+                                <input type="text" class="uk-input fr" v-bind:autofocus="item.editing" v-on:blur="shareLockBlur(item)" v-model="item.password" v-bind:value="item.password" placeholder="为空则表示不要密码">
+                            </div>
+                            <div class="cb">
+                                <div class="fl">{{item.shareAll=='YES'?'整个项目':item.docNames}}</div>
+                                <div class="fr">{{item.createTime}}</div>
+                            </div>
+                        </li>
+                    </ul>
+               </div>
+                <!-- 分享列表 end -->
+
+                <!-- 创建新的分享 begin -->
+                <div class="share-creation-box" v-show="shareBox=='creation'">
+                    <form class="uk-form-horizontal uk-margin-large">
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-all-project">整个项目</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-checkbox" id="form-all-project" type="checkbox">
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label">选择分类</label>
+                            <div class="uk-form-controls">
+                                <select class="uk-select">
+                                    <option>Option 01</option>
+                                    <option>Option 02</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">分享名称</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" type="text" placeholder="请输入分享名称">
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">阅读密码</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" type="text" placeholder="请输入阅读密码，为空表示不要密码">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- 创建新的分享 end -->
+            </div>
+
+            <div class="uk-modal-footer uk-text-right">
+                <div v-show="shareBox=='list'">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
+                    <button class="uk-button uk-button-primary" type="button" v-on:click="shareBox='creation'">创建新分享</button>
+                </div>
+                <div v-show="shareBox=='creation'">
+                    <button class="uk-button uk-button-default" v-on:click="shareBox='list'" type="button">返回</button>
+                    <button class="uk-button uk-button-primary" type="button">创建</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 
 
-<script src="${assets}/js/project/sidebar.js"></script>
+<script src="${assets}/js/project/sidebar.js?v=${v}"></script>

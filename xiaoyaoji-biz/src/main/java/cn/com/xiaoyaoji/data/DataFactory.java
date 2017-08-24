@@ -533,17 +533,18 @@ public class DataFactory implements Data {
      * 复制
      * @param parentDocId
      * @param newParentDocId
+     * @param projectId 项目id
      * @return
      */
-    private int copyDocs(String parentDocId, String newParentDocId){
+    private int copyDocs(String parentDocId, String newParentDocId,String projectId){
         //根据父级id查询自节点
         List<String> docIds = getDocIdsByParentId(parentDocId);
         int rs = 0;
         if(docIds!=null && docIds.size()>0){
             for(String docId:docIds){
                 String newDocId = StringUtils.id();
-                rs += copyDoc0(docId,newDocId,newParentDocId);
-                rs += copyDocs(docId,newDocId);
+                rs += copyDoc0(docId,newDocId,newParentDocId,projectId);
+                rs += copyDocs(docId,newDocId,projectId);
             }
         }
         return rs;
@@ -556,13 +557,16 @@ public class DataFactory implements Data {
      * @param parentId      父级ID
      * @return rs
      */
-    private int copyDoc0(String docId,String newDocId,String parentId){
+    private int copyDoc0(String docId,String newDocId,String parentId,String projectId){
         Doc doc = getById(Doc.class,docId);
         if(doc == null)
             return 0;
         doc.setCreateTime(new Date());
         doc.setLastUpdateTime(new Date());
         doc.setId(newDocId);
+        if(projectId != null){
+            doc.setProjectId(projectId);
+        }
         if(parentId != null) {
             doc.setParentId(parentId);
         }
@@ -572,14 +576,36 @@ public class DataFactory implements Data {
     /**
      * 复制文档
      * @param docId
+     * @param toProjectId   复制到某个项目.如果为空表示当前项目
      * @return
      */
     @Override
-    public int copyDoc(final String docId) {
+    public int copyDoc(final String docId,String toProjectId) {
         String newDocId = StringUtils.id();
-        int rs = copyDoc0(docId,newDocId,null);
-        rs += copyDocs(docId,newDocId);
+        //如果是复制到其他项目，则直接复制到根目录
+        String parentId = toProjectId==null?null:"0";
+        int rs = copyDoc0(docId,newDocId,parentId,toProjectId);
+        rs += copyDocs(docId,newDocId,toProjectId);
         return rs;
+    }
+
+    @Override
+    public String getDocNamesFromIds(final String[] docIdsArray) {
+        return process(new Handler<String>() {
+            @Override
+            public String handle(Connection connection, QueryRunner qr) throws SQLException {
+                StringBuilder sql = new StringBuilder();
+                sql.append("select group_concat(name) from doc where id in (");
+                if(docIdsArray.length==0)
+                    return "";
+                for(String id:docIdsArray){
+                    sql.append("?,");
+                }
+                sql = sql.delete(sql.length()-1,sql.length());
+                sql.append(")");
+                return qr.query(sql.toString(),new StringResultHandler(),docIdsArray);
+            }
+        });
     }
 
     @Override
