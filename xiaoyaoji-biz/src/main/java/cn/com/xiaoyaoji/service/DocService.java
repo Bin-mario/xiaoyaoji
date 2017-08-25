@@ -39,9 +39,6 @@ public class DocService {
         return DataFactory.instance().getById(Doc.class,id);
     }
 
-    public List<Doc> getDocs(String parentId) {
-        return ResultUtils.list(DataFactory.instance().getDocs(parentId));
-    }
 
     public Doc getByHistoryId(String historyId) {
         DocHistory history = DataFactory.instance().getById(DocHistory.class,historyId);
@@ -163,5 +160,9 @@ public class DocService {
 
     public int copyDoc(String docId,String toProjectId) {
         return DataFactory.instance().copyDoc(docId,toProjectId);
+    }
+
+    public List<Doc> getDocsByParentId(String projectId, String parentId) {
+        return ResultUtils.list(DataFactory.instance().getDocsByParentId(projectId,parentId));
     }
 }

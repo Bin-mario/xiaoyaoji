@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <c:if test="${!isXHR}">
     <jsp:include page="doc-header.jsp"/>
+    <jsp:include page="doc-sidebar.jsp"/>
     <jsp:include page="doc-left.jsp">
         <jsp:param name="view" value="true"/>
     </jsp:include>

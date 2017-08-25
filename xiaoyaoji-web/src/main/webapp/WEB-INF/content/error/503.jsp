@@ -5,9 +5,11 @@
     response.setStatus(503);
     String errorMsg = (String) request.getAttribute("errorMsg");
     if(exception != null){
-        Logger.getLogger("exception").error(exception);
         if(errorMsg == null && exception instanceof IllegalArgumentException){
             errorMsg = exception.getMessage();
+        }else{
+            Logger.getLogger("exception").error("",exception);
+            errorMsg="系统错误";
         }
     }
 

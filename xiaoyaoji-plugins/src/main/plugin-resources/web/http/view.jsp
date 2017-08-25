@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/css/http.css?v=${v}"/>
 <div class="content-section" id="docApp" style="padding: 0 10px;" v-cloak>
 
-    <span class="doc-update-time">更新时间: <span id="api-update-time">{{doc.lastUpdateTime}}</span></span>
+<span class="doc-update-time">更新时间: <span id="api-update-time">{{doc.lastUpdateTime}}</span></span>
     <div id="api-details" class="api-details">
         <p class="doc-item-section-title">基本信息</p>
         <div class="api-base-info api-edit-box doc-item-section">
@@ -133,7 +133,7 @@
                         v-bind:request-headers.sync="content.responseHeaders"></request-headers-vue>
             </div>
         </div>
-        <div v-if="content.responseArgs && content.responseArgs.length>0">
+         <div v-if="content.responseArgs && content.responseArgs.length>0">
             <p class="doc-item-section-title">响应数据</p>
             <div class="div-table">
                 <ul class="div-table-header div-table-line cb">
@@ -182,7 +182,7 @@
             <div class="form">
                 <div v-if="urlArgs.length>0">
                     <p class="doc-item-section-title second">地址参数</p>
-                    <div class="item" v-for="x(item,index) in urlArgs">
+                    <div class="item" v-for="(item,index) in urlArgs">
                         <div class="col-sm-2 label">{{item.name}}</div>
                         <div class="col-sm-8">
                             <input data-type="text" v-model="item.tempValue" type="text"
@@ -206,7 +206,7 @@
             <div v-if="formHeaders.length>0">
                 <form class="api-test form" id="header-form">
                     <p class="doc-item-section-title second">请求头</p>
-                    <div class="item" v-for="x(item,index) in formHeaders">
+                    <div class="item" v-for="(item,index) in formHeaders">
                         <div class="col-sm-2 label">{{item.name}}</div>
                         <div class="col-sm-8">
                             <input type="text" :name="item.name" v-model="item.tempValue"
@@ -241,7 +241,7 @@
                             </div>
                             <div v-else>
                                 <p class="doc-item-section-title second">请求参数</p>
-                                <div class="item"  v-for="x(item,index) in formArgs">
+                                <div class="item"  v-for="(item,index) in formArgs">
                                     <div class="col-sm-2 label">{{item.name}}</div>
                                     <div class="col-sm-8" v-bind:class="{'full-text':item.type=='file'}">
                                         <input :data-type="item.type"
@@ -307,9 +307,9 @@
                                        class="btn btn-primary" :value="apiLoading?'加载中':'直接运行'">
                             </div>
                             <div v-if="hasXyjPlugin">
-                                <input type="button" data-ignore v-on:click.stop="pluginSubmit"
-                                       class="btn btn-primary" :value="apiLoading?'加载中':'运行'">
-                            </div>
+                            <input type="button" data-ignore v-on:click.stop="pluginSubmit"
+                                   class="btn btn-primary" :value="apiLoading?'加载中':'运行'">
+                                </div>
                             <%--<input type="button" data-ignore v-on:click.stop="apiMock" v-show="content.responseArgs && content.responseArgs.length>0"
                                    class="btn btn-orange" value="mock">--%>
 

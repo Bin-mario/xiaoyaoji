@@ -21,7 +21,7 @@ public class TestCode {
 
     @Test
     public void testChp(){
-        Map map = new HashMap();
-        System.out.println(map.get(null));
+        System.out.println("2_0".compareTo("2_0_1"));
+        System.out.println("2_1".compareTo("2_0_1"));
     }
 }

@@ -326,7 +326,9 @@ public class ProjectController {
     @DeleteMapping("{id}")
     @ResponseBody
     public Object delete(@PathVariable("id") String id, User user) {
-        ServiceTool.checkUserHasEditPermission(id, user);
+        Project before = ProjectService.instance().getProject(id);
+        AssertUtils.notNull(before,"无效请求");
+        ServiceTool.checkUserIsOwner(before, user);
         Project temp = new Project();
         temp.setStatus(Project.Status.DELETED);
         temp.setLastUpdateTime(new Date());

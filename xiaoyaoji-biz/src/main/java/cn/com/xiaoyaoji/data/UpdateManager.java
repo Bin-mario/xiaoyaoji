@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -81,7 +82,7 @@ public class UpdateManager {
                 public boolean accept(File dir, String name) {
                     if (tempVersion == null)
                         return true;
-                    return name.compareTo(tempVersion) >= 0;
+                    return name.replace(".sql","").compareTo(tempVersion) > 0;
                 }
             });
             if (updateFolders == null) {
@@ -101,12 +102,17 @@ public class UpdateManager {
             for (File item : updateFolders) {
                 String sql = IOUtils.toString(new FileInputStream(item), Constants.UTF8.displayName());
                 result += executeSQL(connection, sql, queryRunner);
-                String fileVersion = item.getName().replace(".sql", "");
-                Method upgradeMethod = currentClass.getDeclaredMethod("update" + fileVersion, Connection.class, QueryRunner.class);
-                result += (int) upgradeMethod.invoke(instance, connection, queryRunner);
+                String fileVersion = item.getName().replace(".sql", "").replace(".","_");
+                try {
+                    Method upgradeMethod = currentClass.getDeclaredMethod("update" + fileVersion, Connection.class, QueryRunner.class);
+                    result += (int) upgradeMethod.invoke(instance, connection, queryRunner);
+                } catch (NoSuchMethodException e) {
+                    //ignore
+                    logger.info("NoSuchMethodException update"+fileVersion);
+                }
             }
             return result;
-        } catch (Exception e) {
+        }catch (Exception e) {
             throw new RuntimeException("升级失败;" + e.toString(),e);
         } finally {
             JdbcUtils.close(connection);

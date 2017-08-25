@@ -1,19 +1,13 @@
 require(['utils','vue', 'vueEx'], function (utils, Vue) {
     
 
-    function qqlogin(openId, accessToken) {
-        utils.post('/login/qq.json', {openId: openId, accessToken: accessToken}, function (rs) {
-            location.href = utils.config.ctx + '/dashboard';
-        });
-    }
-
-    new Vue({
+    var app = new Vue({
         el: '#login',
         data: {password: '', email: '', params: {}, remember: false,from:null},
         created: function () {
             if (location.search) {
                 this.params = utils.getQueryParams(location.search);
-                this.from = this.params['f'];
+                this.from = this.params['refer'];
                 switch (this.params['status']) {
                     case "expired":
                         toastr.warning('会话已过期');
@@ -31,7 +25,7 @@ require(['utils','vue', 'vueEx'], function (utils, Vue) {
                     utils.post('/login', {
                         email: self.email, password: self.password
                     }, function (rs) {
-                        utils.login.success(rs.data.token, rs.data.user, self.from);
+                        utils.login.success(self.from);
                     });
                 }).catch(function(){
                 })
@@ -47,7 +41,7 @@ require(['utils','vue', 'vueEx'], function (utils, Vue) {
                     var data = e.data;
                     data = JSON.parse(data);
                     utils.post('/login/plugin?pluginId=' + pluginId, data, function (rs) {
-                        utils.login.success(rs.data.token, rs.data.user, null);
+                        utils.login.success( null);
                     });
                 });
             }

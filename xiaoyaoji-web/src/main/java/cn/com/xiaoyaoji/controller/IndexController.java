@@ -4,10 +4,7 @@ import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.common.Constants;
 import cn.com.xiaoyaoji.util.CacheUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -73,4 +70,8 @@ public class IndexController {
         return new ModelAndView("/error");
     }
 
+    @RequestMapping("/error/{code}")
+    public Object errorWithCode(@PathVariable("code")String code){
+        return new ModelAndView("/error");
+    }
 }

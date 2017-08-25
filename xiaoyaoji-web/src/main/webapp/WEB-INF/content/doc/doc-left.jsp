@@ -4,9 +4,9 @@
 <%@ page import="cn.com.xiaoyaoji.core.plugin.PluginManager" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Doc" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Project" %>
-<%@ page import="cn.com.xiaoyaoji.service.ProjectService" %>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="java.util.List" %>
+<%@ page import="cn.com.xiaoyaoji.service.DocService" %>
 <%--
   User: zhoujingjie
   Date: 17/4/16
@@ -15,7 +15,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     Project project = (Project) request.getAttribute("project");
-    List<Doc> docs = ProjectService.instance().getProjectDocs(project.getId());
+    List<Doc> docs = DocService.instance().getProjectDocs(project.getId());
     request.setAttribute("docs", docs);
     String docId = (String) request.getAttribute("docId");
     if (StringUtils.isBlank(docId) && docs.size() > 0) {

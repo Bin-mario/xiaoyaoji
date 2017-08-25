@@ -242,7 +242,6 @@ public class ServiceFactory {
             for (Share s : shares) {
                 if (!Share.ShareAll.YES.equals(s.getShareAll())) {
                     s.setDocNames(DataFactory.instance().getDocNamesFromIds(s.getDocIdsArray()));
-                    return null;
                 }
             }
         }

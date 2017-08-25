@@ -105,12 +105,7 @@ public class HttpController {
                     os.close();
                     in.close();
                 }
-                int statusCode = connection.getResponseCode();
-                if(statusCode>=200 && statusCode<300){
-                    in = connection.getInputStream();
-                }else{
-                    in = connection.getErrorStream();
-                }
+                in = connection.getInputStream();
                 Map<String, List<String>> headerMap = connection.getHeaderFields();
                 if (headerMap != null) {
                     for (Map.Entry<String, List<String>> entry : connection.getHeaderFields().entrySet()) {
@@ -132,7 +127,9 @@ public class HttpController {
                     }
                 }
                 os = response.getOutputStream();
-                IOUtils.copy(in,os);
+                if(in != null) {
+                    IOUtils.copy(in, os);
+                }
                 response.setContentType(connection.getContentType());
                 response.setStatus(connection.getResponseCode());
                 response.setCharacterEncoding(connection.getContentEncoding());

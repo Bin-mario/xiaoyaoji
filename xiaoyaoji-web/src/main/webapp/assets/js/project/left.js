@@ -28,7 +28,6 @@ $(function(){
             }
         });
         window.addEventListener('message', function (e) {
-            console.log(e);
             if(e.data && e.data.type==='projects'){
                 app.projects = e.data.data;
             }

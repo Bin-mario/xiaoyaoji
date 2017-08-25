@@ -1,15 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="cn.com.xiaoyaoji.service.DocService" %>
 <%@ page import="cn.com.xiaoyaoji.data.bean.Doc" %>
-<%@ page import="java.util.List" %><%--
-  User: zhoujingjie
-  Date: 17/5/7
-  Time: 21:40
---%>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     Doc doc = (Doc) request.getAttribute("doc");
-    List<Doc> docs = DocService.instance().getDocs(doc.getId());
+    List<Doc> docs = DocService.instance().getDocsByParentId(doc.getProjectId(),doc.getId());
     request.setAttribute("docs",docs);
 %>
 <div id="folder">
@@ -23,4 +19,3 @@
         </c:if>
     </div>
 </div>
-<script>$('.doc-save-button').hide()</script>

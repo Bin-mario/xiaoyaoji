@@ -791,7 +791,12 @@ body.profile .dbl-projects{
 .share-list li.editing .uk-input{
     display: block;
 }
-
+.share-list .share-doc-names,.share-list .share-name{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 380px;
+}
 .share-creation-box .uk-form-controls{
     margin-right: auto!important;
     margin-left: 115px!important;

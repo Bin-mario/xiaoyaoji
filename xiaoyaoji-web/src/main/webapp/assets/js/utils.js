@@ -66,6 +66,16 @@
                     error: error
                 });
             },
+            put:function(url, data, success, error){
+                this.ajax({
+                    url: url,
+                    data: data,
+                    type: 'put',
+                    dataType: 'json',
+                    success: success,
+                    error: error
+                });
+            },
             fileloader: function (url, data, success, error) {
                 this.ajax({
                     url: url,
@@ -123,7 +133,7 @@
                         location.href = ctx + '/dashboard/';
                     });
                 },
-                success: function (token, user, href) {
+                success: function (href) {
                     if (href) {
                         location.href = href;
                     } else {

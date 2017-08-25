@@ -182,7 +182,7 @@ public class DocController {
         }
         AssertUtils.notNull(doc, "文档不可见或已删除");
         //获取project
-        Project project = ServiceFactory.instance().getProject(doc.getProjectId());
+        Project project = ProjectService.instance().getProject(doc.getProjectId());
         AssertUtils.notNull(project, "项目不存在或者无访问权限");
 
         if (org.apache.commons.lang3.StringUtils.isBlank(doc.getType())) {
@@ -195,6 +195,7 @@ public class DocController {
         if (user != null) {
             //访问权限
             editPermission = ServiceFactory.instance().checkUserHasProjectEditPermission(user.getId(), doc.getProjectId());
+            AssertUtils.isTrue(editPermission || (!editPermission && !editing),"无操作权限");
         }
 
         List<PluginInfo> pluginInfos = PluginManager.getInstance().getPlugins(Event.DOC_EV);
@@ -238,15 +239,17 @@ public class DocController {
     @GetMapping("/search")
     public Object search(@RequestParam String text, @RequestParam("projectId") String projectId, User user) {
         ServiceTool.checkUserHasAccessPermission(projectId, user);
-        if(text != null){
-            text = text.replace("%","/%");
-            text = text.replace("_","/_");
-        }
         List<Doc> docs = DocService.instance().searchDocs(text, projectId);
         return new _HashMap<>()
                 .add("docs", docs);
     }
 
+    /**
+     *
+     * @param projectId
+     * @param user
+     * @return
+     */
     @GetMapping("/list/{projectId}")
     public Object getDocs(@PathVariable("projectId")String projectId,User user){
         ServiceTool.checkUserHasAccessPermission(projectId,user);
@@ -273,5 +276,19 @@ public class DocController {
         int rs = DocService.instance().copyDoc(docId,toProjectId);
         AssertUtils.isTrue(rs>0,"操作失败");
         return rs;
+    }
+
+    /**
+     * 查询顶级doc
+     * @param projectId
+     * @param user
+     * @return
+     */
+    @GetMapping("/root/{projectId}")
+    public Object getRootDocs(@PathVariable("projectId")String projectId,User user){
+        ServiceTool.checkUserHasAccessPermission(projectId,user);
+        List<Doc> docs = DocService.instance().getDocsByParentId(projectId,"0");
+        return new _HashMap<>()
+                .add("docs",docs);
     }
 }

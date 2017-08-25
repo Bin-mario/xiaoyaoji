@@ -1,10 +1,10 @@
 $(function(){
     require(['utils','vue'],function(utils,Vue){
-        new Vue({
+        window.xx=new Vue({
             el:'#sidebar',
             data:{
                 submitComment:'',
-                projectName:_projectName_,
+                projectName:window._projectName_,
                 history:[],
                 g:{
                     ctx:ctx,
@@ -13,6 +13,15 @@ $(function(){
                 projects:[],
                 shareBox:null,
                 shares:null,
+                share:{
+                    name:null,
+                    shareAll:'YES',
+                    docIds:null,
+                    chosedIds:[],
+                    password:null,
+                    projectId:null
+                },
+                rootDocs:null,
                 loading:{
                     project:null,
                     history:null,
@@ -110,7 +119,11 @@ $(function(){
                             item.editing=false;
                         });
                         self.shares = rs.data.shares;
+                    });
 
+                    //查询根文档
+                    utils.get('/doc/root/'+_projectId_,{},function(rs){
+                        self.rootDocs = rs.data.docs;
                     });
                 },
                 deleteShare:function(item){
@@ -125,6 +138,16 @@ $(function(){
                     utils.post('/share/'+item.id,{password:item.password},function(){
                         toastr.success('修改成功');
                     })
+                },
+                createShare:function(){
+                    this.share.projectId=window._projectId_;
+                    if(this.share.chosedIds.length>0){
+                        this.share.docIds = this.share.chosedIds.toString();
+                    }
+                    utils.post('/share',this.share,function(){
+                        toastr.success('创建成功');
+                        UIkit.modal('#share-modal').hide();
+                    });
                 }
             }
         })

@@ -29,4 +29,4 @@
 <body>
 <div class="doc">
     <script>window._isGlobal_ = '${editProjectGlobal}'</script>
-    <jsp:include page="doc-sidebar.jsp"/>
+

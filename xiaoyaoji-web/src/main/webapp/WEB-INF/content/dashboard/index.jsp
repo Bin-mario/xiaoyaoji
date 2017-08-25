@@ -38,9 +38,10 @@
                 </div>
                 <c:forEach items="${projects}" var="item">
                     <div class="cb">
-                        <div class="col-sm-4"><a href="${ctx}/project/${item.id}/edit">&nbsp;${item.name} </a></div>
+                        <div class="col-sm-4"><a href="${ctx}/project/${item.id}">&nbsp;${item.name} </a></div>
                         <div class="col-sm-2">&nbsp;${user.nickname}</div>
                         <div class="col-sm-3">&nbsp;${item.createTime} </div>
+                        <c:if test="${item.userId== user.id}">
                         <div class="col-sm-3 p-actions" v-cloak>
                             <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
                                        ratio="1"><circle fill="none" stroke="#000" cx="9.997" cy="10" r="3.31"></circle><path
@@ -73,6 +74,7 @@
                                 </ul>
                             </div>
                         </div>
+                        </c:if>
                     </div>
                 </c:forEach>
             </div>

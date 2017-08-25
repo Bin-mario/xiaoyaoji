@@ -182,7 +182,7 @@
             <div class="form">
                 <div v-if="urlArgs.length>0">
                     <p class="doc-item-section-title second">地址参数</p>
-                    <div class="item" v-for="x(item,index) in urlArgs">
+                    <div class="item" v-for="(item,index) in urlArgs">
                         <div class="col-sm-2 label">{{item.name}}</div>
                         <div class="col-sm-8">
                             <input data-type="text" v-model="item.tempValue" type="text"
@@ -206,7 +206,7 @@
             <div v-if="formHeaders.length>0">
                 <form class="api-test form" id="header-form">
                     <p class="doc-item-section-title second">请求头</p>
-                    <div class="item" v-for="x(item,index) in formHeaders">
+                    <div class="item" v-for="(item,index) in formHeaders">
                         <div class="col-sm-2 label">{{item.name}}</div>
                         <div class="col-sm-8">
                             <input type="text" :name="item.name" v-model="item.tempValue"
@@ -241,7 +241,7 @@
                             </div>
                             <div v-else>
                                 <p class="doc-item-section-title second">请求参数</p>
-                                <div class="item"  v-for="x(item,index) in formArgs">
+                                <div class="item"  v-for="(item,index) in formArgs">
                                     <div class="col-sm-2 label">{{item.name}}</div>
                                     <div class="col-sm-8" v-bind:class="{'full-text':item.type=='file'}">
                                         <input :data-type="item.type"

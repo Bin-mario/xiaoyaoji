@@ -34,7 +34,6 @@ public interface Data {
 
     int bindUserWithThirdParty(Thirdparty thirdparty);
 
-    List<Doc> getDocs(String parentId);
 
     int deleteInterface(String parentId);
 
@@ -114,4 +113,5 @@ public interface Data {
 
     String getDocNamesFromIds(String[] docIdsArray);
 
+    List<Doc> getDocsByParentId(String projectId, String parentId);
 }
