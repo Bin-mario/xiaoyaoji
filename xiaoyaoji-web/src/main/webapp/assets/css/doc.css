@@ -282,7 +282,7 @@
 
 .doc-content {
     margin-left: 310px;
-    padding: 0 10px;
+    padding:10px;
     position: relative;
     overflow-x: hidden;
     transition: margin-left .5s;
@@ -433,7 +433,7 @@ body.modal-open{
 
 .api-modules-tab{
     position: fixed;
-    z-index: 2;
+    z-index: 1000;
     top:0;
     left: 45%;
     background:#fff;

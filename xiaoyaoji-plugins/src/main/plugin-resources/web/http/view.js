@@ -138,7 +138,9 @@ requirejs(['utils', 'vue',
                 localStorage.setItem(key, value);
             }
         }
-
+        if(!(url.indexOf('http://') || url.indexOf('https://'))){
+            url = 'http://'+url;
+        }
 
         var params = {
             url: url,
@@ -419,7 +421,13 @@ requirejs(['utils', 'vue',
 
             this.global = g;
             new Clipboard('.content-copy');
-            this.currentEnv = g.environment[0] || {};
+
+            var temp = localStorage.getItem(_projectId_+"_currentEnv");
+            if(temp){
+                this.currentEnv = JSON.parse(temp);
+            }else{
+                this.currentEnv = g.environment[0] || {};
+            }
 
             initUrlArgs.call(this);
             window.content =this.content;
@@ -505,6 +513,10 @@ requirejs(['utils', 'vue',
                 win.document.documentElement.innerHTML = '';
                 win.document.write(utils.unescape(this.result.content));
                 win.document.close();
+            },
+            changeEnv:function(item){
+                this.currentEnv=item;
+                localStorage.setItem(_projectId_+"_currentEnv",JSON.stringify(item))
             }
         }
     });

@@ -5,29 +5,26 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div style="display: none">
-    <script src="${assets}/jquery/jquery.min.1.11.js?v=${v}"></script>
-    <script src="${assets}/uikit/js/uikit.js?v=${v}"></script>
-    <script src="${assets}/uikit/js/uikit-icons.js?v=${v}"></script>
-    <script src="${assets}/toastr/toastr.min.js?v=${v}"></script>
-    <script src="${assets}/pace/pace.min.js?v=${v}"></script>
-    <script src="${assets}/requirejs/require.min.2.3.3.js?v=${v}"></script>
+    <script src="${cdn}/assets/jquery/jquery.min.1.11.js"></script>
+    <script src="${cdn}/assets/uikit/v3.0.0-beta.30/js/uikit.js"></script>
+    <script src="${cdn}/assets/uikit/v3.0.0-beta.30/js/uikit-icons.js"></script>
+    <script src="${cdn}/assets/toastr/toastr.min.js"></script>
+    <script src="${cdn}/assets/pace/pace.min.js"></script>
+    <script src="${cdn}/assets/requirejs/require.min.2.3.3.js"></script>
     <script>
         window.ctx='${ctx}';
+        window.x={v:'${v}',ctx:'${ctx}'};
         location.path='${ctx}';
-        toastr.options.escapeHtml = true;
-        toastr.options.closeButton = true;
-        toastr.options.positionClass = 'toast-top-center';
-        toastr.options.preventDuplicates=true;
+
         requirejs.config({
             baseUrl:'${assets}',
             urlArgs:'v=${v}',
             paths:{
-                'vue':'vue/vue.2.3.3',
-                'jquery':'jquery/jquery.min.1.11',
-                'vueValidator':'vue/vue-validator.min',
-                'veeValidate':'vue/vee-validate.min',
-                'vueResource':'vue/vue.resources',
-                'vueEx':'vue/vue.ex',
+                'vue':'${cdn}/assets/vue/vue.2.3.3',
+                'jquery':'${cdn}/assets/jquery/jquery.min.1.11',
+                'veeValidate':'${cdn}/assets/vue/vee-validate.min',
+                'vueResource':'${cdn}/assets/vue/vue.resources',
+                'vueEx':'${cdn}/assets/vue/vue.ex',
                 'utils':'js/utils'
             }
         });
@@ -43,13 +40,13 @@
         });
     </script>
 
-    <script>
-        var _hmt = _hmt || [];
+    <%--<script>
+        var _hmt = window._hmt || [];
         (function() {
             var hm = document.createElement("script");
             hm.src = "https://hm.baidu.com/hm.js?9bd56a6d0766b887592ee921aa94763f";
             var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
-    </script>
+    </script>--%>
 </div>

@@ -1,5 +1,6 @@
 package cn.com.xiaoyaoji.controller;
 
+import cn.com.xiaoyaoji.core.common._HashMap;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.data.DataFactory;
 import cn.com.xiaoyaoji.data.bean.Project;
@@ -19,16 +20,47 @@ import org.springframework.web.servlet.ModelAndView;
 public class ProjectGlobalController {
 
     @GetMapping("{projectId}")
-    public ModelAndView index(@PathVariable String projectId){
+    public ModelAndView index(@PathVariable String projectId,User user){
+        ServiceTool.checkUserHasAccessPermission(projectId,user);
         Project project =  ProjectService.instance().getProject(projectId);
         AssertUtils.notNull(project,"项目不存在或已删除");
         ProjectGlobal pg = ProjectService.instance().getProjectGlobal(projectId);
-        return new ModelAndView("/doc/edit").addObject("projectGlobal",pg)
+        //return new ModelAndView("/doc/edit")
+        return new ModelAndView("/project/global/project-global")
+                .addObject("projectGlobal",pg)
                 .addObject("project",project)
                 .addObject("editProjectGlobal",true)
                 .addObject("edit",true)
                 ;
     }
+
+    /**
+     * 查询环境变量
+     * @param projectId
+     * @param user
+     * @return
+     */
+    @GetMapping("{projectId}/environments")
+    public ModelAndView getEnvironments(@PathVariable String projectId,User user){
+        ModelAndView mav= index(projectId,user);
+        mav.setViewName("/project/global/project-global-environment");
+        return mav;
+    }
+
+    /**
+     * status
+     * @param projectId
+     * @param user
+     * @return
+     */
+    @GetMapping("{projectId}/status")
+    public ModelAndView getStatus(@PathVariable String projectId,User user){
+        ModelAndView mav= index(projectId,user);
+        mav.setViewName("/project/global/project-global-status");
+        return mav;
+    }
+
+
 
     @PostMapping("{projectId}")
     public int save(@PathVariable String projectId,ProjectGlobal pg,User user){

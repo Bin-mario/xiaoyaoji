@@ -171,7 +171,7 @@
                                 </button>
                                 <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
                                     <ul class="uk-nav uk-dropdown-nav">
-                                        <li v-for="item in global.environment" v-on:click="currentEnv=item" v-bind:class="{'uk-active':item.t == currentEnv.t}"><a href="#">{{item.name}}</a></li>
+                                        <li v-for="item in global.environment" v-on:click="changeEnv(item)" v-bind:class="{'uk-active':item.t == currentEnv.t}"><a href="#">{{item.name}}</a></li>
                                     </ul>
                                 </div>
                             </div>

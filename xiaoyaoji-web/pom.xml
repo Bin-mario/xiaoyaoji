@@ -71,13 +71,6 @@
             <artifactId>xiaoyaoji-biz</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>cn.com.xiaoyaoji</groupId>
-            <artifactId>xiaoyaoji-config</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-
-
 
     </dependencies>
 

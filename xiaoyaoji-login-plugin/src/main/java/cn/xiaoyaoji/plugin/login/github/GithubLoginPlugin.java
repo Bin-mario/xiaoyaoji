@@ -40,7 +40,7 @@ public class GithubLoginPlugin extends LoginPlugin {
     public String getOpenURL() {
         String clientid = getPluginInfo().getConfig().get("clientId");
         String redirectUri = getPluginInfo().getConfig().get("redirectUri");
-        return "https://github.com/login/oauth/authorize?client_id="+clientid+"&redirect_uri="+redirectUri+"/github&scope=user&state=login";
+        return "https://github.com/login/oauth/authorize?client_id="+clientid+"&redirect_uri="+redirectUri+"&scope=user&state=login";
     }
 
     @Override

@@ -269,7 +269,12 @@ requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
 
             this.global = g;
 
-            this.currentEnv = g.environment[0] || {};
+            var temp = localStorage.getItem(_projectId_+"_currentEnv");
+            if(temp){
+                this.currentEnv = JSON.parse(temp);
+            }else{
+                this.currentEnv = g.environment[0] || {};
+            }
             var urlArgs=[];
             var match = this.content.url.match(/(\{[a-zA-Z0-9_]+\})/g);
             if (match !== null && match.length > 0) {
@@ -373,6 +378,10 @@ requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
                 win.document.documentElement.innerHTML = '';
                 win.document.write(utils.unescape(this.result.content));
                 win.document.close();
+            },
+            changeEnv:function(item){
+                this.currentEnv=item;
+                localStorage.setItem(_projectId_+"_currentEnv",JSON.stringify(item))
             }
         }
     });

@@ -9,12 +9,10 @@
 <script>location.href = '../unsupport.html'</script>
 <![endif]-->
 <meta charset="UTF-8">
-
-<link rel="stylesheet" href="${assets}/uikit/css/uikit.min.css?v=${v}">
-<link rel="stylesheet" href="${assets}/uikit/css/uikit-rtl.min.css?v=${v}">
-<%--<link rel="stylesheet" href="${assets}/css/style.css?v=${v}">--%>
+<link rel="stylesheet" href="${cdn}/assets/uikit/v3.0.0-beta.30/css/uikit-rtl.min.css">
+<link rel="stylesheet" href="${cdn}/assets/uikit/v3.0.0-beta.30/css/uikit.min.css">
 <link rel="stylesheet" href="${assets}/css/app.css?v=${v}">
-<link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.com.cn/"/>
+<link rel="alternate" hreflang="zh-hans" href="//www.xiaoyaoji.cn/"/>
 <meta name="keywords"
       content="${site.keywords}"/>
 <meta name="description" content="简单好用的在线文档管理工具，支持restapi、websocket在线测试,支持markdown编辑器,提升开发效率降低接口错误率。"/>
@@ -22,3 +20,8 @@
 <link rel="shortcut icon" type="image/x-ico" href="${ctx}/favicon.ico">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 <meta name="renderer" content="webkit"/>
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />

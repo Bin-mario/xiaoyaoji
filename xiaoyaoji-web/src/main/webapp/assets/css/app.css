@@ -1,6 +1,6 @@
 @import "//at.alicdn.com/t/font_279250_rau2n6f2oyvcayvi.css";
-@import "../toastr/toastr.min.css";
-@import "../pace/pace.min.css";
+@import "//f1.xiaoyaoji.cn/assets/toastr/toastr.min.css";
+@import "//f1.xiaoyaoji.cn/assets/pace/pace.min.css";
 @import "button.css";
 .iconfont{
     margin: 0 4px;
@@ -15,6 +15,10 @@ body{
 [v-cloak] {
     display: none;
 }
+[class*=uk-modal-close-]{
+    left: auto!important;
+}
+
 *{
     margin: 0;
     padding: 0;

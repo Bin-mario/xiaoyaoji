@@ -16,61 +16,63 @@
         <div id="api-edit-details">
             <div id="api-edit-content" class="form">
                 <ul uk-tab><li class="uk-active"><a>基本信息</a></li></ul>
-                <div class="item uk-grid-small" uk-grid>
-                    <div class="uk-width-1-4">
-                        <div uk-grid>
-                            <label class="uk-form-label uk-width-1-2 uk-form-small">请求方法</label>
-                            <select v-model="content.requestMethod" class="uk-select uk-form-small uk-width-1-2">
-                                <option value="GET">GET</option>
-                                <option value="POST">POST</option>
-                                <option value="PUT">PUT</option>
-                                <option value="DELETE">DELETE</option>
-                                <option value="PATCH">PATCH</option>
-                                <option value="COPY">COPY</option>
-                                <option value="OPTIONS">OPTIONS</option>
-                            </select>
-                        </div>
+                <div class="item">
+                    <div class="col-sm-1 label">请求方法</div>
+                    <div class="col-sm-2">
+                        <select v-model="content.requestMethod" class="uk-select">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="PATCH">PATCH</option>
+                            <option value="COPY">COPY</option>
+                            <option value="OPTIONS">OPTIONS</option>
+                        </select>
                     </div>
-                    <div class="uk-width-1-4">
-                        <div class="uk-grid">
-                            <label class="uk-form-label uk-width-3-5 uk-form-small">请求数据类型</label>
-                            <select v-model="content.dataType" class="uk-select uk-form-small uk-width-2-5">
-                                <option value="X-WWW-FORM-URLENCODED">X-WWW-FORM-URLENCODED</option>
-                                <template v-if="content.requestMethod == 'POST'">
-                                    <option value="FORM-DATA">FORM-DATA</option>
-                                    <option value="BINARY">BINARY</option>
-                                </template>
-                                <option value="JSON">JSON</option>
-                                <option value="RAW">RAW</option>
-                                <option value="XML">XML</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="uk-width-1-4">
-                        <div class="uk-grid">
-                            <label class="uk-form-label uk-width-1-2 uk-form-small">响应类型</label>
-                            <select v-model="content.contentType" class="uk-select uk-form-small uk-width-1-2">
-                                <option value="JSON">JSON</option>
-                                <option value="JSONP">JSONP</option>
-                                <option value="TEXT">TEXT</option>
-                                <option value="XML">XML</option>
-                                <option value="HTML">HTML</option>
-                                <option value="IMAGE">IMAGE</option>
+                    <div class="col-sm-1 label">请求数据类型</div>
+                    <div class="col-sm-2">
+                        <select v-model="content.dataType" class="uk-select">
+                            <option value="X-WWW-FORM-URLENCODED">X-WWW-FORM-URLENCODED</option>
+                            <template v-if="content.requestMethod == 'POST'">
+                                <option value="FORM-DATA">FORM-DATA</option>
                                 <option value="BINARY">BINARY</option>
-                            </select>
-                        </div>
+                            </template>
+                            <option value="JSON">JSON</option>
+                            <option value="RAW">RAW</option>
+                            <option value="XML">XML</option>
+                        </select>
                     </div>
-                    <div v-if="global.status.length>0" class="uk-width-1-4">
-                        <div class="uk-grid">
-                            <label class="uk-form-label uk-width-1-2 uk-form-small">状态</label>
-                            <select v-model="content.status" class="uk-select uk-form-small uk-width-1-2">
-                                <option :value="item.name"  v-for="item in global.status" v-bind:selected="item.name==content.status">{{item.name}}</option>
-                            </select>
-                        </div>
+                    <div class="col-sm-1 label">响应类型</div>
+                    <div class="col-sm-2">
+                        <select v-model="content.contentType" class="uk-select">
+                            <option value="JSON">JSON</option>
+                            <option value="JSONP">JSONP</option>
+                            <option value="TEXT">TEXT</option>
+                            <option value="XML">XML</option>
+                            <option value="HTML">HTML</option>
+                            <option value="IMAGE">IMAGE</option>
+                            <option value="BINARY">BINARY</option>
+                        </select>
+                    </div>
 
-                        </div>
+                    <div class="col-sm-1 label" v-if="global.status.length>0" >状态</div>
+                    <div class="col-sm-2" v-if="global.status.length>0" >
+                        <select v-model="content.status" class="uk-select">
+                            <option :value="item.name"  v-for="item in global.status" v-bind:selected="item.name==content.status">{{item.name}}</option>
+                        </select>
+                    </div>
 
                 </div>
+
+
+                <div class="item">
+                    <div class="col-sm-1 label">接口名称</div>
+                    <div class="col-sm-11">
+                        <input type="text" class="uk-input" maxlength="30" placeholder="请输入接口名称"
+                               v-model="doc.name" :value="doc.name">
+                    </div>
+                </div>
+
                 <div class="item">
                     <div class="col-sm-1 label">接口名称</div>
                     <div class="col-sm-11">
@@ -209,7 +211,7 @@
                         </div>
                     </div>
                     <ul uk-tab><li class="uk-active"><a>示例数据</a></li></ul>
-                            <textarea class="api-example api-field uk-textarea" v-model="content.example"
+                            <textarea rows="5" class="api-example api-field uk-textarea" v-model="content.example"
                                       placeholder="请添加一些示例数据">{{content.example}}</textarea>
                     <ul uk-tab><li class="uk-active"><a>附件</a></li></ul>
                     <div class="doc-http-attach">

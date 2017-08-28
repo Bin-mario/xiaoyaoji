@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/editor.md/lib/codemirror/addon/fold/foldgutter.css?v=${pluginInfo.version}"/>
 <link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/editor.md/css/editormd.min.css?v=${pluginInfo.version}"/>
 <script>
-    $(function(){
+    (function(){
         requirejs.config({
             baseUrl:'${ctx}/proxy/${pluginInfo.id}/assets/',
             urlArgs:'v=${pluginInfo.version}',
@@ -57,7 +57,7 @@
             var editor = editormd('editormd', {
                 path: '${ctx}/proxy/${pluginInfo.id}/editor.md/lib/',
                 width: '100%',
-                height: $(window).height()-200,
+                height: $(window).height()-20,
                 flowChart: false,
                 sequenceDiagram: false,
                 markdown:(doc.content || ''),
@@ -96,7 +96,7 @@
             }
 
         })
-    });
+    })();
 
 
 </script>

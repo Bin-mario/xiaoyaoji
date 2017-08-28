@@ -290,7 +290,7 @@ public class DataFactory implements Data {
                         .append(" p left join user u on u.id = p.userId ")
                         .append(" left join project_user pu on pu.projectId = p.id ")
                         .append("  where ( pu.userId=?) and p.status=?")
-                        .append(" order by createTime asc");
+                        .append(" order by createTime desc");
                 return qr.query(connection, sql.toString(), new BeanListHandler<>(Project.class), pagination.getParams().get("userId"), status);
             }
         });
@@ -820,6 +820,25 @@ public class DataFactory implements Data {
             @Override
             public ProjectGlobal handle(Connection connection, QueryRunner qr) throws SQLException {
                 ProjectGlobal pg = qr.query(connection, "select * from " + TableNames.PROJECT_GLOBAL + " where projectId=?", new BeanHandler<>(ProjectGlobal.class), projectId);
+                if (pg == null) {
+                    //会有并发问题
+                    pg = generateProjectGlobal(projectId);
+                    SQLBuildResult sbr = SqlUtils.generateInsertSQL(pg);
+                    if (qr.update(connection, sbr.getSql(), sbr.getParams()) == 0) {
+                        throw new SystemErrorException("创建project_global失败");
+                    }
+                }
+                return pg;
+            }
+        });
+    }
+
+    @Override
+    public ProjectGlobal getProjectGlobal(final String projectId,final String column) {
+        return process(new Handler<ProjectGlobal>() {
+            @Override
+            public ProjectGlobal handle(Connection connection, QueryRunner qr) throws SQLException {
+                ProjectGlobal pg = qr.query(connection, "select "+column+" from " + TableNames.PROJECT_GLOBAL + " where projectId=?", new BeanHandler<>(ProjectGlobal.class), projectId);
                 if (pg == null) {
                     //会有并发问题
                     pg = generateProjectGlobal(projectId);

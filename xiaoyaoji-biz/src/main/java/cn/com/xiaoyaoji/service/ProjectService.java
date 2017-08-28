@@ -71,6 +71,15 @@ public class ProjectService {
         return DataFactory.instance().getProjectGlobal(projectId);
     }
 
+    public ProjectGlobal getProjectGlobalEnvironment(String projectId){
+        return DataFactory.instance().getProjectGlobal(projectId,"environment");
+    }
+    public ProjectGlobal getProjectGlobalStatus(String projectId){
+        return DataFactory.instance().getProjectGlobal(projectId,"status");
+    }
+
+
+
     /**
      * 修改最后更新时间
      * @param projectId

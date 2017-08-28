@@ -115,7 +115,7 @@
                     <ul uk-tab>
                         <li class="uk-active"><a>示例数据</a></li>
                     </ul>
-                            <textarea class="api-example api-field uk-textarea" v-model="content.example"
+                            <textarea rows="5" class="api-example api-field uk-textarea" v-model="content.example"
                                       placeholder="请添加一些示例数据">{{content.example}}</textarea>
                     <ul uk-tab>
                         <li class="uk-active"><a>附件</a></li>

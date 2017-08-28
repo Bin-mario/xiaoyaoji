@@ -24,17 +24,6 @@
                 if (data === undefined || data === null)
                     return data;
                 if (data.constructor.name === 'String') {
-                    //有bug,暂时去掉
-                    /*data=data.replace(/:\s*"([^"]*)"/g, function(match, p1) {
-                     return ': "' + p1.replace(/:/g, '@colon@') + '"';
-                     })
-                     .replace(/:\s*'([^']*)'/g, function(match, p1) {
-                     return ': "' + p1.replace(/:/g, '@colon@') + '"';
-                     })
-                     .replace(/(['"])?([a-z0-9A-Z_]+)(['"])?\s*:/g, '"$2": ')
-                     .replace(/@colon@/g, ':')
-                     ;
-                     data = data.replace(/\s/g, '');*/
                     return JSON.parse(data);
                 }
                 return data;
@@ -42,12 +31,13 @@
             ajax: function (params) {
                 var url = this.config.root + params.url;
                 params.url = ctx + url;
-                //params.xhrFields={withCredentials:true};
+                params.xhrFields={withCredentials:true};
                 $._ajax_(params);
             },
             get: function (url, params, success, complete, expired) {
                 this.ajax({
                     url: url,
+                    cache:false,
                     data: params,
                     type: 'get',
                     dataType: 'json',
@@ -130,14 +120,14 @@
                 submit: function (url, data) {
                     utils.post(url, data, function (rs) {
                         localStorage.clear();
-                        location.href = ctx + '/dashboard/';
+                        location.href = ctx + '/dashboard?v='+x.v;
                     });
                 },
                 success: function (href) {
                     if (href) {
                         location.href = href;
                     } else {
-                        location.href = ctx + '/dashboard/';
+                        location.href = ctx + '/dashboard?v='+x.v;
                     }
                 }
             },

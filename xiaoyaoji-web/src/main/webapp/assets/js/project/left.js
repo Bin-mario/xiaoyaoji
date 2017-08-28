@@ -13,8 +13,7 @@ $(function(){
             var $docContent =$('#doc-content');
             $docContent.html("");
             $('#loading').show();
-            $.get(window.ctx+url,function(rs){
-
+            $.get(window.ctx+url,{_t:Date.now()},function(rs){
                 $('#loading').hide();
                 $docContent.html(rs);
                 history.pushState('','',window.ctx+url);

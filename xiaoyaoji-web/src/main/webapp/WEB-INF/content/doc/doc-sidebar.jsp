@@ -60,8 +60,15 @@
                 <li class="db-item" v-on:click="loadHistory" uk-toggle="target: #history-modal">
                     <a title="历史版本"><i class="iconfont icon-history"></i></a>
                 </li>
-                <li class="db-item "><a title="全局设置" href="${ctx}/project/global/${project.id}"><i
-                        class="iconfont icon-global"></i></a></li>
+                <li class="db-item ">
+                    <a title="全局设置"><i
+                        class="iconfont icon-global"></i></a>
+                    <ul class="sub-ul">
+                        <li class="db-item" v-on:click="loadGlobal('http')" uk-toggle="target:#global-modal"><a>全局参数</a></li>
+                        <li class="db-item" v-on:click="loadGlobal('env')" uk-toggle="target:#global-modal"><a>环境变量</a></li>
+                        <li class="db-item" v-on:click="loadGlobal('status')" uk-toggle="target:#global-modal"><a>状态名称</a></li>
+                    </ul>
+                </li>
                 <li class="db-item ">
                     <a  title="项目设置"><i class="iconfont icon-dashboard"></i></a>
                     <ul class="sub-ul">
@@ -239,7 +246,36 @@
 
         </div>
     </div>
+
+    <div id="global-modal" class="uk-modal-container"  uk-modal v-cloak>
+        <div class="uk-modal-dialog">
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">{{global.typeName}}</h2>
+                <button type="button" class="uk-modal-close-default uk-icon" v-on:click="closeGlobalModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" ratio="1"><line fill="none" stroke="#000" stroke-width="1.1" x1="1" y1="1" x2="13" y2="13"></line><line fill="none" stroke="#000" stroke-width="1.1" x1="13" y1="1" x2="1" y2="13"></line></svg>
+                </button>
+            </div>
+
+            <div class="uk-modal-body" uk-overflow-auto>
+                <iframe width="100%" name="globalWindow" id="iframe" height="400px" marginwidth="0"
+                        marginheight="0" allowtransparency="true" v-bind:src="global.url"></iframe>
+            </div>
+
+            <div class="uk-modal-footer uk-text-right" v-if="global.typeName=='全局参数'">
+                <div>
+                    <button class="uk-button uk-button-default" v-on:click="closeGlobalModal" type="button">关闭</button>
+                    <button class="uk-button uk-button-primary" v-on:click="saveGlobalHttp" type="button">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
 </div>
+
 
 
 

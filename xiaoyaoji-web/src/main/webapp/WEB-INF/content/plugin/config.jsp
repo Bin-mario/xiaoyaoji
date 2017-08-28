@@ -10,12 +10,12 @@
     <title>插件配置页</title>
     <meta charset="UTF-8">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="${assets}/css/style.css">
-    <link rel="stylesheet" href="${assets}/css/doc.css">
-    <link rel="stylesheet" href="${assets}/css/icons.css">
-    <link rel="stylesheet" href="${assets}/css/app.css">
-    <link rel="stylesheet" href="${assets}/uikit/css/uikit-rtl.css">
-    <link rel="stylesheet" href="${assets}/uikit/css/uikit.css">
+    <link rel="stylesheet" href="${assets}/css/style.css?v=${v}">
+    <link rel="stylesheet" href="${assets}/css/doc.css?v=${v}">
+    <link rel="stylesheet" href="${assets}/css/icons.css?v=${v}">
+    <link rel="stylesheet" href="${assets}/css/app.css?v=${v}">
+    <link rel="stylesheet" href="${cdn}/assets/uikit/v3.0.0-beta.30/css/uikit-rtl.min.css">
+    <link rel="stylesheet" href="${cdn}/assets/uikit/v3.0.0-beta.30/css/uikit.min.css">
 </head>
 <body>
 <div class="cb mc" style="margin-top: 30px;">

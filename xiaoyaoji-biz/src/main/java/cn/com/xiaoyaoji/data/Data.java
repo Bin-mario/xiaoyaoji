@@ -91,6 +91,8 @@ public interface Data {
 
     ProjectGlobal getProjectGlobal(String projectId);
 
+    ProjectGlobal getProjectGlobal(String projectId,String column);
+
     List<Attach> getAttachsByRelatedId(String relatedId);
 
     List<DocHistory> getDocHistorys(String docId);

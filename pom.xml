@@ -24,7 +24,6 @@
     <modules>
         <module>xiaoyaoji-pdf</module>
         <module>xiaoyaoji-biz</module>
-        <module>xiaoyaoji-config</module>
         <module>xiaoyaoji-plugins</module>
         <module>xiaoyaoji-web</module>
         <module>xiaoyaoji-login-plugin</module>

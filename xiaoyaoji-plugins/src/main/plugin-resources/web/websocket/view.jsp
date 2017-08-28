@@ -4,7 +4,7 @@
 <div class="content-section" id="docApp" style="padding: 0 10px;">
 
 <span class="doc-update-time">更新时间: <span id="api-update-time">{{doc.lastUpdateTime}}</span></span>
-    <div id="api-details" class="api-details">
+    <div id="api-details" class="api-details" v-cloak>
         <p class="doc-item-section-title">基本信息</p>
         <div class="api-base-info api-edit-box doc-item-section">
             <div class="cb">
@@ -79,7 +79,7 @@
                                 <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
                                 <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
                                     <ul class="uk-nav uk-dropdown-nav">
-                                        <li v-for="item in global.environment" v-on:click="currentEnv=item" v-bind:class="{'uk-active':item.t == currentEnv.t}"><a href="#">{{item.name}}</a></li>
+                                        <li v-for="item in global.environment" v-on:click="changeEnv(item)" v-bind:class="{'uk-active':item.t == currentEnv.t}"><a href="#">{{item.name}}</a></li>
                                     </ul>
                                 </div>
                             </div>
