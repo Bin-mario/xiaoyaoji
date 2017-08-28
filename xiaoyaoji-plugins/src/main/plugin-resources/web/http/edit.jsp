@@ -74,13 +74,6 @@
                 </div>
 
                 <div class="item">
-                    <div class="col-sm-1 label">接口名称</div>
-                    <div class="col-sm-11">
-                        <input type="text" class="uk-input" maxlength="30" placeholder="请输入接口名称"
-                               v-model="doc.name" :value="doc.name">
-                    </div>
-                </div>
-                <div class="item">
                     <div class="col-sm-1 label">请求地址</div>
                     <div class="col-sm-11">
                         <input type="text" placeholder="如:/api/test" v-model="content.url" class="uk-input"
