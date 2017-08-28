@@ -6,10 +6,14 @@ $(function(){
             data:{
                 name:'',
                 description:'',
-                permission:'PUBLIC'
+                permission:'PUBLIC',
+                projects:[],
+                loading:{project:null},
+                userId:_userId_
             },
             mounted:function(){
                 $('button[uk-close]>svg').remove();
+                this.loadProjects(window.status);
             },
             methods:{
                 importFile:function(pluginId,e){
@@ -38,10 +42,19 @@ $(function(){
                         }
                     });
                 },
+                archiveProject:function(id){
+                    var self = this;
+                    UIkit.modal.confirm('是否确认操作?').then(function() {
+                        utils.post('/project/'+id+'/archive',{},function () {
+                            self.loadProjects();
+                        });
+                    });
+                },
                 deleteProject:function (id) {   //
+                    var self= this;
                     UIkit.modal.confirm('是否确认删除?').then(function() {
                         utils.delete('/project/'+id,function () {
-                            location.reload();
+                            self.loadProjects();
                         });
                     }, function () {
                     });
@@ -49,7 +62,7 @@ $(function(){
                 deleteActual:function (id) {  //彻底删除
                     UIkit.modal.confirm('是否确认删除,一旦删除无法恢复?').then(function() {
                         utils.delete('/project/'+id+"/actual",function () {
-                            location.reload();
+                            location.href='?_t='+Date.now();
                         });
                     }, function () {
                     });
@@ -57,6 +70,14 @@ $(function(){
                 restore:function(id){    //还原
                     utils.post('/project/'+id,{status:'VALID'},function(){
                         location.href=ctx+'/dashboard'
+                    });
+                },
+                loadProjects:function(status){
+                    var self = this;
+                    self.loading.project=true;
+                    utils.get('/project/list',{status:status },function(rs){
+                        self.loading.project=false;
+                        self.projects = rs.data.projects;
                     });
                 }
             }

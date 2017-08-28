@@ -53,6 +53,8 @@ public class Project {
         String INVALID="INVALID";
         //已删除
         String DELETED="DELETED";
+        //已归档
+        String ARCHIVE="ARCHIVE";
     }
 
     public interface Permission{

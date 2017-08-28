@@ -12,6 +12,7 @@ import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -20,6 +21,12 @@ import java.nio.charset.Charset;
  * @Date: 17/3/30
  */
 public class JsonMessageConverter extends FastJsonHttpMessageConverter {
+
+
+    @PostConstruct
+    public void xx(){
+        System.out.println("xxx:"+getFastJsonConfig().getSerializerFeatures().length);
+    }
 
     @Override
     protected void writeInternal(Object o, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {

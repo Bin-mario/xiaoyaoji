@@ -42,11 +42,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/project")
 public class ProjectController {
-    private static final String EXPORT_SUPPORTED_TYPE_PDF = "PDF";
-    private static final String EXPORT_SUPPORTED_TYPE_JSON = "JSON";
-    private static final String EXPORT_KEY_DOCS = "docs";
-    private static final String EXPORT_KEY_VER = "version";
-    private static final String IMPORT_KEY_DOC_CHILDREN = "children";
     private static Logger logger = Logger.getLogger(ProjectController.class);
 
     @GetMapping("/{id}/info")
@@ -180,8 +175,12 @@ public class ProjectController {
     @GetMapping("/list")
     public MultiView list(User user, @RequestParam(value = "status", required = false) String status) {
         List<Project> projects = new ArrayList<>();
+        if(org.apache.commons.lang3.StringUtils.isBlank(status)){
+            status = Project.Status.VALID;
+        }
         if(user != null){
-            Pagination p = Pagination.build(new _HashMap<String, String>().add("status", status).add("userId", user.getId()));
+            Pagination p = Pagination.build(new _HashMap<String, String>().add("status", status)
+                    .add("userId", user.getId()));
             projects = ServiceFactory.instance().getProjects(p);
         }
         return new MultiView("/dashboard/index")
@@ -492,6 +491,25 @@ public class ProjectController {
         AssertUtils.isTrue(!project.getUserId().equals(user.getId()), "项目所有人不能退出项目");
         int rs = ServiceFactory.instance().deleteProjectUser(id, user.getId());
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
+        return rs;
+    }
+
+    /**
+     * 项目归档
+     * @param id
+     * @param user
+     * @return
+     */
+    @PostMapping("/{id}/archive")
+    public int archive(@PathVariable("id") String id, User user ){
+        Project project = ProjectService.instance().getProject(id);
+        AssertUtils.notNull(project, "项目不存在");
+        AssertUtils.isTrue(project.getUserId().equals(user.getId()),"非项目所有者不能操作");
+        Project temp = new Project();
+        temp.setId(id);
+        temp.setStatus(Project.Status.ARCHIVE);
+        int rs= ServiceFactory.instance().update(temp);
+        AssertUtils.isTrue(rs>0,"操作失败");
         return rs;
     }
 }

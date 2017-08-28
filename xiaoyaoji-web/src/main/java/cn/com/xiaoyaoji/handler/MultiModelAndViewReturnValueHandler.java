@@ -1,8 +1,10 @@
 package cn.com.xiaoyaoji.handler;
 
+import cn.com.xiaoyaoji.converter.JsonMessageConverter;
 import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.view.MultiView;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -11,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ModelAndViewMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +24,18 @@ import java.util.List;
 public class MultiModelAndViewReturnValueHandler extends ModelAndViewMethodReturnValueHandler {
     private RequestResponseBodyMethodProcessor processor;
 
-    public MultiModelAndViewReturnValueHandler() {
+
+    public JsonMessageConverter jsonMessageConverter;
+
+    @PostConstruct
+    public void init(){
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
-        converters.add(new FastJsonHttpMessageConverter());
+        converters.add(jsonMessageConverter);
         processor = new RequestResponseBodyMethodProcessor(converters);
+    }
+
+    public void setJsonMessageConverter(JsonMessageConverter jsonMessageConverter) {
+        this.jsonMessageConverter = jsonMessageConverter;
     }
 
     @Override

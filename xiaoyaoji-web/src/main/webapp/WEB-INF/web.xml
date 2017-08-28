@@ -36,10 +36,6 @@
         <servlet-name>proxy</servlet-name>
         <url-pattern>/proxy/*</url-pattern>
     </servlet-mapping>
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:/spring/applicationContext.xml</param-value>
-    </context-param>
 
     <filter>
         <filter-name>httpPutFormFilter</filter-name>
@@ -136,8 +132,8 @@
         <filter-name>DruidWebStatFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <listener>
+    <!--<listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
+    </listener>-->
 
 </web-app>

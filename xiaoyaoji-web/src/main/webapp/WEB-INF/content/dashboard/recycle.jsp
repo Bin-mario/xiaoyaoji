@@ -16,31 +16,32 @@
 </head>
 <body class="home">
 <jsp:include page="header.jsp"/>
-<div class="home-body" id="appmain">
+<div class="home-body" id="appmain" v-cloak>
     <p class="ta-c" style="margin: 50px 0;color: #ccc;">提示：删除的文件保留30天，超过30天会自动删除</p>
-    <c:if test="${projects.size() > 0}">
-    <div class="mc home-projects">
+    <div class="spinner" v-show="loading.project">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+    <div class="mc home-projects" v-if="projects.length>0">
         <div class="cb home-p-title">
             <div class="col-sm-4">项目名称</div>
             <div class="col-sm-2">拥有者</div>
             <div class="col-sm-2">有效期</div>
             <div class="col-sm-4 p-actions">操作</div>
         </div>
-        <c:forEach items="${projects}" var="item">
-        <div class="cb">
-            <div class="col-sm-4"><a href="${ctx}/project/${item.id}">${item.name} </a></div>
+        <div class="cb" v-for="item in projects">
+            <div class="col-sm-4"><a :href="'${ctx}/project/'+item.id">{{item.name}}</a></div>
             <div class="col-sm-2">凉粉 </div>
-            <div class="col-sm-3">${item.expires} </div>
+            <div class="col-sm-3">{{item.expires}} </div>
             <div class="col-sm-3 p-actions">
-                <span uk-icon="icon: history" v-on:click="restore('${item.id}')"></span>
-                <span uk-icon="icon: trash" v-on:click="deleteActual('${item.id}')"></span>
+                <i class="iconfont icon-history" v-on:click="restore(item.id)"></i>
+                <i class="iconfont icon-delete" v-on:click="deleteActual(item.id)"></i>
             </div>
         </div>
-        </c:forEach>
     </div>
-    </c:if>
 </div>
 <jsp:include page="/WEB-INF/includes/js.jsp"/>
-<script src="${assets}/js/dashboard/home.js"></script>
+<script>_userId_='${user.id}',status='DELETED';</script>
+<script src="${assets}/js/dashboard/home.js?v=${v}"></script>
 </body>
 </html>

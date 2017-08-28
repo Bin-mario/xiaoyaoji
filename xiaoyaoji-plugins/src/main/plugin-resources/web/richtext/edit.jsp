@@ -10,7 +10,7 @@
 </div>
 <script>
 
-    var editJs = '${ctx}/proxy/${pluginInfo.id}/assets/wangeditor3/wangEditor.js';
+    var editJs = '${cdn}/assets/wangeditor3/wangEditor.js';
 
     (function () {
         function resizeHeight(f) {
@@ -36,6 +36,7 @@
                         // onchange 事件中更新数据
                         self.editorContent = editor.txt.html();
                     };
+                    editor.customConfig.zIndex=100;
                     editor.create();
 
                     resizeHeight(true);

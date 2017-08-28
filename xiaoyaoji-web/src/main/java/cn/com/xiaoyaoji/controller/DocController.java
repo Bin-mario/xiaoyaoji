@@ -184,7 +184,7 @@ public class DocController {
         //获取project
         Project project = ProjectService.instance().getProject(doc.getProjectId());
         AssertUtils.notNull(project, "项目不存在或者无访问权限");
-
+        AssertUtils.isTrue(Project.Status.VALID.equals(project.getStatus()),"项目状态无效");
         if (org.apache.commons.lang3.StringUtils.isBlank(doc.getType())) {
             doc.setType(DocType.SYS_DOC_RICH_TEXT.getTypeName());
         }

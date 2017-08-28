@@ -22,10 +22,10 @@ public class DashboardController {
 
     @GetMapping()
     public Object dashboard(User user) {
-        Pagination p = Pagination.build(new _HashMap<String, String>().add("status",null).add("userId",user.getId()));
-        List<Project> projects = ServiceFactory.instance().getProjects(p);
+        //Pagination p = Pagination.build(new _HashMap<String, String>().add("status",null).add("userId",user.getId()));
+        //List<Project> projects = ServiceFactory.instance().getProjects(p);
         return new ModelAndView("/dashboard/index")
-                .addObject("projects",projects)
+        //        .addObject("projects",projects)
                 .addObject("pageName","default")
                 ;
     }
@@ -38,6 +38,19 @@ public class DashboardController {
                 .addObject("pageName","recycle")
                 ;
     }
+
+    @GetMapping(value = "/archive")
+    public Object dashboardArchive(User user) {
+        Pagination p = Pagination.build(new _HashMap<String, String>().add("status",Project.Status.ARCHIVE)
+                .add("userId",user.getId()));
+        List<Project> projects = ServiceFactory.instance().getProjects(p);
+        return new ModelAndView("/dashboard/archive")
+                .addObject("projects",projects)
+                .addObject("pageName","archive")
+                ;
+    }
+
+
 
 
     @GetMapping(value = "/welcome")

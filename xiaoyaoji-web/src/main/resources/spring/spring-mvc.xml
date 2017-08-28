@@ -68,34 +68,36 @@
         </mvc:interceptor>
     </mvc:interceptors>
 
+    <bean id="jsonConverter" class="cn.com.xiaoyaoji.converter.JsonMessageConverter">
+        <property name="fastJsonConfig">
+            <bean class="com.alibaba.fastjson.support.config.FastJsonConfig">
+                <property name="serializerFeatures">
+                    <array>
+                        <value>WriteDateUseDateFormat</value>
+                        <value>WriteMapNullValue</value>
+                        <value>WriteNullStringAsEmpty</value>
+                    </array>
+                </property>
+            </bean>
+        </property>
+    </bean>
 
     <!-- 注解扫描 -->
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
         <mvc:message-converters>
-            <bean class="cn.com.xiaoyaoji.converter.JsonMessageConverter">
-                <property name="fastJsonConfig">
-                    <bean class="com.alibaba.fastjson.support.config.FastJsonConfig">
-                        <property name="serializerFeatures">
-                            <array>
-                                <value>WriteDateUseDateFormat</value>
-                                <value>WriteMapNullValue</value>
-                                <value>WriteNullStringAsEmpty</value>
-                            </array>
-                        </property>
-                    </bean>
-                </property>
-            </bean>
+            <ref bean="jsonConverter"/>
         </mvc:message-converters>
         <mvc:argument-resolvers>
             <bean class="cn.com.xiaoyaoji.resolver.UserArgumentsResolver"/>
         </mvc:argument-resolvers>
         <mvc:return-value-handlers>
-            <bean class="cn.com.xiaoyaoji.handler.MultiModelAndViewReturnValueHandler" primary="true"/>
+            <bean class="cn.com.xiaoyaoji.handler.MultiModelAndViewReturnValueHandler">
+                <property name="jsonMessageConverter" ref="jsonConverter"/>
+            </bean>
         </mvc:return-value-handlers>
     </mvc:annotation-driven>
     <!-- controller扫描 -->
     <context:component-scan base-package="cn.com.xiaoyaoji.controller" />
-    <context:component-scan base-package="cn.com.xiaoyaoji.plugins.*.controller" />
 
     <mvc:resources mapping="/assets/**" location="/assets/"/>
     <mvc:resources mapping="/test/**" location="/test/"/>

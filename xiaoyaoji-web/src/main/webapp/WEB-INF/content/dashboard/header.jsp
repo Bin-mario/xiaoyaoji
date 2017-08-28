@@ -10,6 +10,7 @@
         <span class="header-titles">
                 <a href="${ctx}/dashboard" class="${pageName=='default'?'active':''}">我的</a>
                 <a href="${ctx}/dashboard/recycle" class="${pageName=='recycle'?'active':''}">回收站</a>
+                <a href="${ctx}/dashboard/archive" class="${pageName=='archive'?'active':''}">归档项目</a>
                 <a href="${ctx}/help">常见问题</a>
             </span>
         <div class="user-account fr">
