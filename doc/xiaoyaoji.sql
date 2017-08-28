@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-08-14 18:04:24
+Date: 2017-08-28 17:47:13
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -68,7 +68,7 @@ CREATE TABLE `doc_history` (
   `userId` char(12) DEFAULT NULL,
   `docId` char(12) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for email_token
@@ -230,8 +230,9 @@ CREATE TABLE `share` (
   `userId` char(12) DEFAULT NULL,
   `shareAll` char(3) DEFAULT NULL,
   `password` varchar(20) DEFAULT NULL,
-  `moduleIds` varchar(500) DEFAULT NULL,
+  `moduleIds` varchar(2000) DEFAULT NULL,
   `projectId` char(12) DEFAULT NULL,
+  `docIds` varchar(2000) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
