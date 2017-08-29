@@ -306,7 +306,7 @@ body{
     width: 220px;
     margin-right: 10px;
     border:1px solid #E7E7E7;
-    padding: 10px 0;
+    padding: 30px 0;
     background-color: #fff;
 }
 .db-relation li i{
@@ -319,7 +319,10 @@ body{
 .db-relation li input{
     border-radius: 50px;
 }
-
+.db-relation li img{
+    width: 64px;
+    height: 64px;
+}
 
 
 /*************************/

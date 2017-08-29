@@ -35,6 +35,7 @@ public class Doc {
     private String parentId;
     @Ignore
     private List<Doc> children;
+
     public String getId() {
         return id;
     }

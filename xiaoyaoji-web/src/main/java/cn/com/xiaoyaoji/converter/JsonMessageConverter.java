@@ -23,11 +23,6 @@ import java.nio.charset.Charset;
 public class JsonMessageConverter extends FastJsonHttpMessageConverter {
 
 
-    @PostConstruct
-    public void xx(){
-        System.out.println("xxx:"+getFastJsonConfig().getSerializerFeatures().length);
-    }
-
     @Override
     protected void writeInternal(Object o, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         Result result;

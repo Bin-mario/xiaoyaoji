@@ -109,7 +109,7 @@
         </c:if>
     </div>
 
-    <div id="history-modal" uk-modal>
+    <div id="history-modal" uk-modal class="uk-modal-container">
         <div class="uk-modal-dialog">
             <div class="uk-modal-header">
                 <h2 class="uk-modal-title">历史版本</h2>

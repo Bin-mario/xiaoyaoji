@@ -4,7 +4,7 @@
   Time: 12:31
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div style="display: none">
+<div class="hide">
     <script src="${cdn}/assets/jquery/jquery.min.1.11.js"></script>
     <script src="${cdn}/assets/uikit/v3.0.0-beta.30/js/uikit.js"></script>
     <script src="${cdn}/assets/uikit/v3.0.0-beta.30/js/uikit-icons.js"></script>

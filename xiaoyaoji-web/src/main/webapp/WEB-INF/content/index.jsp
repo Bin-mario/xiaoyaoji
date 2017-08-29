@@ -54,7 +54,7 @@
     <ul class="cb mc">
         <li>
             <p><i class="iconfont icon-qqqun"></i></p>
-            <p>群:<a href="http://shang.qq.com/wpa/qunwpa?idkey=7e99bd0ada4c6586d8e4e609b28d997f86e07336124fca08ac7b02fbe9d07130">580084426</a> </p>
+            <p>群:<a href="//shang.qq.com/wpa/qunwpa?idkey=3ef7d12c9bd722026c6a61318335246216421cd6a6851b0e8e3916dac297b3e7">336075459</a> </p>
         </li>
         <li>
             <p><i class="iconfont icon-weibo"></i></p>

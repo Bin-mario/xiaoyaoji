@@ -14,6 +14,7 @@ import cn.com.xiaoyaoji.util.SqlUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.log4j.Logger;
 
@@ -608,6 +609,16 @@ public class DataFactory implements Data {
     }
 
     @Override
+    public List<String> getAllProjectValidIds() {
+        return process(new Handler<List<String>>() {
+            @Override
+            public List<String> handle(Connection connection, QueryRunner qr) throws SQLException {
+                return qr.query(connection,"select id from project where status='VALID' and permission='PUBLIC' order by createTime desc ",new ColumnListHandler<String>("id"));
+            }
+        });
+    }
+
+    @Override
     public String getUserIdByEmail(final String email) {
         return process(new Handler<String>() {
             @Override
@@ -651,9 +662,12 @@ public class DataFactory implements Data {
         process(new Handler<Object>() {
             @Override
             public Object handle(Connection connection, QueryRunner qr) throws SQLException {
-                user.setBindQQ(qr.query(connection, "select count(1) from " + TableNames.USER_THIRD + " where userId=? and type='QQ'", new IntegerResultHandler(), user.getId()) > 0);
-                user.setBindWeibo(qr.query(connection, "select count(1) from " + TableNames.USER_THIRD + " where userId=? and type='WEIBO'", new IntegerResultHandler(), user.getId()) > 0);
-                user.setBindGithub(qr.query(connection, "select count(1) from " + TableNames.USER_THIRD + " where userId=? and type='GITHUB'", new IntegerResultHandler(), user.getId()) > 0);
+                List<String> columns = qr.query(connection,"select type from user_third where userId = ?",new ColumnListHandler<String>("type"),user.getId());
+                if(columns!=null && columns.size()>0){
+                    for(String type:columns){
+                        user.getBindingMap().put(type,true);
+                    }
+                }
                 return null;
             }
         });

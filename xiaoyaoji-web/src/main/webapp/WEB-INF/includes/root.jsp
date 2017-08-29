@@ -12,7 +12,7 @@
     request.setAttribute("v", ConfigUtils.getProperty("xyj.version"));
     //暂时加成随机数,避免缓存
     if("true".equals(ConfigUtils.getProperty("xyj.debug"))) {
-        request.setAttribute("v",System.currentTimeMillis());
+        //request.setAttribute("v",System.currentTimeMillis());
     }
     request.setAttribute("site",new _HashMap<String,String>().add("name","小幺鸡")
             .add("keywords","小幺鸡,接口文档管理,接口平台,api,api管理,api测试,接口文档工具,接口演示,rest,restful,rest api,接口测试,postman,文档管理,websocket在线测试")

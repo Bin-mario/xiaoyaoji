@@ -33,7 +33,7 @@ public class WeiboLoginPlugin extends LoginPlugin {
         thirdparty.setId(weiboUser.getId());
         thirdparty.setLogo(weiboUser.getAvatar_large());
         thirdparty.setNickName(weiboUser.getScreen_name());
-        thirdparty.setType(Thirdparty.Type.WEIBO);
+        thirdparty.setType(getPluginInfo().getId());
         User user = ServiceFactory.instance().loginByThirdparty(thirdparty);
         AssertUtils.notNull(user,"该账户暂未绑定小幺鸡账户,请绑定后使用");
         return user;
@@ -55,12 +55,11 @@ public class WeiboLoginPlugin extends LoginPlugin {
             Weibo weibo = new Weibo();
             Map<String, String> config =  getPluginInfo().getConfig();
             cn.xiaoyaoji.plugin.login.weibo.AccessToken accessToken = weibo.getAccessToken(config.get("clientId"), config.get("secret"), code, config.get("redirectUri"));
-            request.setAttribute("uid",accessToken.getUid());
-            request.setAttribute("type","weibo");
+            request.setAttribute("thirdpartyId",accessToken.getUid());
             request.setAttribute("state",state);
+            request.setAttribute("type",getPluginInfo().getId());
             request.setAttribute("accessToken",accessToken.getAccess_token());
             request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+getPluginInfo().getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);
-
         }
     }
 }

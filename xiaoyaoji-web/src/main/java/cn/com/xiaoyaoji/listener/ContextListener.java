@@ -1,6 +1,8 @@
 package cn.com.xiaoyaoji.listener;
 
 import cn.com.xiaoyaoji.Application;
+import cn.com.xiaoyaoji.task.ScheduleManager;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -17,5 +19,6 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        ScheduleManager.shutdown();
     }
 }

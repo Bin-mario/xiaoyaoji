@@ -3,10 +3,9 @@ package cn.com.xiaoyaoji.controller;
 import cn.com.xiaoyaoji.core.annotations.Ignore;
 import cn.com.xiaoyaoji.core.util.ConfigUtils;
 import cn.com.xiaoyaoji.data.UpdateManager;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import cn.com.xiaoyaoji.data.bean.User;
+import cn.com.xiaoyaoji.task.SiteMapTask;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author: zhoujingjie
@@ -27,5 +26,15 @@ public class SysController {
     @GetMapping("/version")
     public String version(){
         return ConfigUtils.getProperty("xyj.version");
+    }
+
+    @Ignore
+    @PostMapping("/generateSiteMap")
+    public Object post(@RequestParam String key){
+        if(key.equals(ConfigUtils.getProperty("plugin.config.key"))){
+            SiteMapTask.manualRunTask();
+            return "success";
+        }
+        return "error";
     }
 }

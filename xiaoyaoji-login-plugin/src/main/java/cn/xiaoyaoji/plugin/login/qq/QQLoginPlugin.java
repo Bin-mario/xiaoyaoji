@@ -41,7 +41,7 @@ public class QQLoginPlugin extends LoginPlugin {
         thirdparty.setId(openId);
         thirdparty.setLogo(userInfo.getFigureurl_qq_2());
         thirdparty.setNickName(userInfo.getNickname());
-        thirdparty.setType(Thirdparty.Type.QQ);
+        thirdparty.setType(getPluginInfo().getId());
         cn.com.xiaoyaoji.data.bean.User user = ServiceFactory.instance().loginByThirdparty(thirdparty);
         AssertUtils.notNull(user,"该账户暂未绑定小幺鸡账户,请绑定后使用");
         return user;
@@ -63,9 +63,9 @@ public class QQLoginPlugin extends LoginPlugin {
             String redirectUri = getPluginInfo().getConfig().get("redirectUri");
             AccessToken accessToken = qq.getAccessToken(code, redirectUri);
             String openId = qq.getOpenid(accessToken.getAccess_token());
-            request.setAttribute("openId",openId);
-            request.setAttribute("type","qq");
+            request.setAttribute("thirdpartyId",openId);
             request.setAttribute("state",state);
+            request.setAttribute("type",getPluginInfo().getId());
             request.setAttribute("accessToken",accessToken.getAccess_token());
             request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+getPluginInfo().getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);
         }

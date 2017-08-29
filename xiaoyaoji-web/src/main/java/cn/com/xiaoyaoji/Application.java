@@ -1,8 +1,8 @@
 package cn.com.xiaoyaoji;
 
+import cn.com.xiaoyaoji.core.util.ConfigUtils;
+import cn.com.xiaoyaoji.task.SiteMapTask;
 import cn.com.xiaoyaoji.util.PluginUtils;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializeConfig;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.log4j.Logger;
@@ -17,12 +17,32 @@ import java.util.Date;
 public class Application {
     private static Logger logger = Logger.getLogger(Application.class);
 
+    //todo 清理回收站超过30天的项目
     public static void started(ServletContext servletContext) {
         //MessageBus.instance().register(new MessageNotify());
-        initBeanUtilsConfig();
-        //todo 清理回收站超过30天的项目
-        //todo 功能模块化
+        initializeBeanUtilsConfig();
 
+        initializePlugins(servletContext);
+
+        if("true".equals(ConfigUtils.getProperty("xyj.sitemap.enable"))) {
+            SiteMapTask.start(servletContext);
+        }
+    }
+
+    /**
+     * beanutils 日期格式化
+     */
+    private static void initializeBeanUtilsConfig(){
+        DateConverter converter = new DateConverter();
+        converter.setPattern("yyyy-MM-dd HH:mm:ss");
+        ConvertUtils.register(converter, Date.class);
+    }
+
+    /**
+     * 初始化插件
+     * @param servletContext
+     */
+    private static void initializePlugins(ServletContext servletContext){
         try {
             String outputURI =servletContext.getRealPath(PluginUtils.getPluginSourceDir());
 
@@ -35,15 +55,6 @@ public class Application {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
-    }
-
-    /**
-     * beanutils 日期格式化
-     */
-    private static void initBeanUtilsConfig(){
-        DateConverter converter = new DateConverter();
-        converter.setPattern("yyyy-MM-dd HH:mm:ss");
-        ConvertUtils.register(converter, Date.class);
     }
 
 

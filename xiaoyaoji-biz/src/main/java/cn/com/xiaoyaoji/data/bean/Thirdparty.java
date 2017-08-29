@@ -12,12 +12,6 @@ public class Thirdparty {
     private String type;
     private String email;
     private String userId;
-    public static class Type{
-        public static String QQ="QQ";
-        public static String WEIBO="WEIBO";
-        public static String GITHUB="GITHUB";
-    }
-
     public String getId() {
         return id;
     }

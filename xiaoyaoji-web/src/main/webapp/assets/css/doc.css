@@ -345,7 +345,10 @@
 }
 
 .doc-history-comment {
-    max-width: 400px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 300px;
 }
 
 #api-description {
@@ -433,7 +436,7 @@ body.modal-open{
 
 .api-modules-tab{
     position: fixed;
-    z-index: 1000;
+    z-index: 99;
     top:0;
     left: 45%;
     background:#fff;

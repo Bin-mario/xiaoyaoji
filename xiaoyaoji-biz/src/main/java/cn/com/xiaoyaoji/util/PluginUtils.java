@@ -1,6 +1,7 @@
 package cn.com.xiaoyaoji.util;
 
 import cn.com.xiaoyaoji.core.common.Constants;
+import cn.com.xiaoyaoji.core.plugin.Dependency;
 import cn.com.xiaoyaoji.core.plugin.Plugin;
 import cn.com.xiaoyaoji.core.plugin.PluginInfo;
 import cn.com.xiaoyaoji.core.plugin.PluginManager;
@@ -11,7 +12,8 @@ import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.*;
@@ -28,7 +30,7 @@ import java.util.Map;
  *         created on 2017/7/24
  */
 public class PluginUtils {
-    private static Logger logger = Logger.getLogger(PluginUtils.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(PluginUtils.class);
     private static Map<String,PluginClassLoader> classLoaderMap = new HashMap<>();
     public static String getPluginDir() {
         return ConfigUtils.getProperty("xyj.plugin.dir");
@@ -164,9 +166,22 @@ public class PluginUtils {
         try (InputStream in = new FileInputStream(file)) {
             String content = IOUtils.toString(in, Constants.UTF8.displayName());
             List<PluginInfo> pluginInfos = JSON.parseObject(content, new TypeReference<List<PluginInfo>>() {});
+            String currentVersion = ConfigUtils.getProperty("xyj.version");
             for (PluginInfo pluginInfo : pluginInfos) {
                 if(reloadId!=null){
                     if(!reloadId.equals(pluginInfo.getId())){
+                        continue;
+                    }
+                }
+                if(pluginInfo.getDependency()!=null){
+                    Dependency dependency = pluginInfo.getDependency();
+                    if(StringUtils.isNotBlank(dependency.getMin()) && dependency.getMin().compareTo(currentVersion)>0){
+                        logger.error("the plugin {} Minimum dependent version {}, current version {}",pluginInfo.getId(),dependency.getMin(),currentVersion);
+                        continue;
+                    }
+
+                    if(StringUtils.isNotBlank(dependency.getMax()) && dependency.getMax().compareTo(currentVersion)<0){
+                        logger.error("the plugin {} Maxmum dependent version {}, current version {}",pluginInfo.getId(),dependency.getMin(),currentVersion);
                         continue;
                     }
                 }
@@ -181,7 +196,7 @@ public class PluginUtils {
                 classLoaderMap.put(pluginInfo.getId(),classLoader);
             }
         } catch (Exception e) {
-            logger.error(file.getAbsoluteFile(), e);
+            logger.error(file.getAbsolutePath(), e);
         }
     }
 

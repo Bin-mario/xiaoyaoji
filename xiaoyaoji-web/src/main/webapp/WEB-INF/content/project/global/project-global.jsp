@@ -89,8 +89,7 @@
                             <li class="col-sm-1">操作</li>
                             <li class="col-sm-3">参数名称</li>
                             <li class="col-sm-2">是否必须</li>
-                            <li class="col-sm-2">默认值</li>
-                            <li class="col-sm-4">描述</li>
+                            <li class="col-sm-6">描述</li>
                         </ul>
                     </div>
                     <div class="div-table editing div-editing-table">

@@ -96,17 +96,7 @@ public class ServiceFactory {
             create(user);
             thirdparty.setUserId(user.getId());
             bindUserWithThirdParty(thirdparty);
-            switch (thirdparty.getType()) {
-                case "QQ":
-                    user.setBindQQ(true);
-                    break;
-                case "GITHUB":
-                    user.setBindGithub(true);
-                    break;
-                case "WEIBO":
-                    user.setBindWeibo(true);
-                    break;
-            }
+            user.getBindingMap().put(thirdparty.getId(),true);
         }
         return user;
     }
@@ -277,4 +267,7 @@ public class ServiceFactory {
     }
 
 
+    public List<String> getAllProjectValidIds() {
+        return ResultUtils.list(DataFactory.instance().getAllProjectValidIds());
+    }
 }

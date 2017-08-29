@@ -13,9 +13,7 @@
 <script>
     var data={
         'accessToken':'${accessToken}',
-        'openId':'${openId}',
-        'uid':'${uid}',
-        'gitid':'${gitid}',
+        'thirdpartyId':'${thirdpartyId}',
         'type':'${type}'
     };
     window.opener.postMessage(JSON.stringify(data),'*');

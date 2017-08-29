@@ -7,6 +7,8 @@ import cn.com.xiaoyaoji.util.AvatarUtils;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 用户
@@ -23,12 +25,7 @@ public class User implements Serializable {
     private String type;
     private String avatar;
     private String status;
-    @Ignore
-    private boolean bindQQ;
-    @Ignore
-    private boolean bindWeibo;
-    @Ignore
-    private boolean bindGithub;
+
     @Ignore
     private String editable;
 
@@ -41,7 +38,8 @@ public class User implements Serializable {
         String INVALID="INVALID";
         String PENDING="PENDING";
     }
-
+    @Ignore
+    private Map<String,Boolean> bindingMap;
 
     public String getId() {
         return id;
@@ -108,30 +106,6 @@ public class User implements Serializable {
         this.status = status;
     }
 
-    public boolean isBindQQ() {
-        return bindQQ;
-    }
-
-    public void setBindQQ(boolean bindQQ) {
-        this.bindQQ = bindQQ;
-    }
-
-    public boolean isBindWeibo() {
-        return bindWeibo;
-    }
-
-    public void setBindWeibo(boolean bindWeibo) {
-        this.bindWeibo = bindWeibo;
-    }
-
-    public boolean isBindGithub() {
-        return bindGithub;
-    }
-
-    public void setBindGithub(boolean bindGithub) {
-        this.bindGithub = bindGithub;
-    }
-
     public String getEditable() {
         return editable;
     }
@@ -143,5 +117,16 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return JsonUtils.toString(this);
+    }
+
+    public Map<String, Boolean> getBindingMap() {
+        if(bindingMap == null){
+            bindingMap = new HashMap<>();
+        }
+        return bindingMap;
+    }
+
+    public void setBindingMap(Map<String, Boolean> bindingMap) {
+        this.bindingMap = bindingMap;
     }
 }

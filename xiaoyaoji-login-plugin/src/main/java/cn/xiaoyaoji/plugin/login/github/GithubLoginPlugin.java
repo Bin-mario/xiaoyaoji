@@ -29,7 +29,7 @@ public class GithubLoginPlugin extends LoginPlugin {
         thirdparty.setId(user.getId());
         thirdparty.setLogo(user.getAvatar_url());
         thirdparty.setNickName(user.getName());
-        thirdparty.setType(Thirdparty.Type.WEIBO);
+        thirdparty.setType(getPluginInfo().getId());
         thirdparty.setEmail(user.getEmail());
         User loginUser = ServiceFactory.instance().loginByThirdparty(thirdparty);
         AssertUtils.notNull(loginUser,"该账户暂未绑定小幺鸡账户,请绑定后使用");
@@ -56,8 +56,8 @@ public class GithubLoginPlugin extends LoginPlugin {
             cn.xiaoyaoji.plugin.login.AccessToken accessToken = github.getAccessToken(clientId, secret, code, redirectUri);
             cn.xiaoyaoji.plugin.login.github.User user = github.getUser(accessToken.getAccess_token());
 
-            request.setAttribute("gitid",user.getId());
-            request.setAttribute("type","github");
+            request.setAttribute("thirdpartyId",user.getId());
+            request.setAttribute("type",getPluginInfo().getId());
             request.setAttribute("state",state);
             request.setAttribute("accessToken",accessToken.getAccess_token());
             request.getRequestDispatcher(PluginUtils.getPluginSourceDir()+getPluginInfo().getRuntimeFolder()+"/web/"+"third-party.jsp").forward(request,response);

@@ -20,6 +20,7 @@ public class PluginInfo<T extends Plugin>{
     private String event;
     private Icon icon;
     private T plugin;
+    private Dependency dependency;
     //运行时文件夹
     private String runtimeFolder;
 
@@ -147,6 +148,14 @@ public class PluginInfo<T extends Plugin>{
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    public Dependency getDependency() {
+        return dependency;
+    }
+
+    public void setDependency(Dependency dependency) {
+        this.dependency = dependency;
     }
 }
 

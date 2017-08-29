@@ -359,6 +359,9 @@ input,textarea{
     display: inline-block;
     padding-top: 10px;
 }
+.form .label-content{
+    padding-top: 10px;
+}
 .form .full-text{
     padding-top: 6px;
 }

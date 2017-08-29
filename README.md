@@ -1,6 +1,7 @@
 ![LOGO](http://www.xiaoyaoji.cn/assets/img/logo/full.png)
 # 小幺鸡文档管理工具，支持富文本、markdown、http、websocket 及其在线测试
 ## [在线演示地址demo](http://www.xiaoyaoji.cn/project/demo/view)
+#### 由于在线版本之前未做缓存控制，导致很多用户打开页面后出现各种问题。（临时解决办法是CTRL+F5）。 在后面会修复该问题
 
 
 ### [下载最新版本](http://git.oschina.net/zhoujingjie/apiManager/releases)
@@ -15,13 +16,13 @@
 ## module说明
 * xiaoyaoji-web : 小幺鸡web工程
 * xiaoyaoji-biz : 小幺鸡业务代码模块
-* xiaoyaoji-config: 配置模块
 * 其他： 插件目录
 
 
 
 ## bug
 如果大家发现了bug，可以在[Issues](http://git.oschina.net/zhoujingjie/apiManager/issues)里面提交，然后也可以直接修改bug然后提交代码
+提交bug时请尽量多提供一些信息，如截图
 
 
 

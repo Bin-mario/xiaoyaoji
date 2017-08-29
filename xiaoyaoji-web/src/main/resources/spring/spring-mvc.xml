@@ -45,7 +45,8 @@
     </bean>
 
 
-    <bean class="cn.com.xiaoyaoji.resolver.ExceptionResolver">
+    <bean class="cn.com.xiaoyaoji.resolver.ExceptionResolver" >
+        <property name="order" value="1"/>
         <property name="defaultErrorView" value="/error"/>
         <property name="exceptionAttribute" value="exception"/>
         <property name="statusCodes">

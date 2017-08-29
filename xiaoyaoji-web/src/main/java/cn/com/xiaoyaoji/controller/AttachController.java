@@ -13,6 +13,7 @@ import cn.com.xiaoyaoji.core.common.Result;
 import cn.com.xiaoyaoji.core.common._HashMap;
 import cn.com.xiaoyaoji.service.ServiceFactory;
 import cn.com.xiaoyaoji.service.ServiceTool;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,7 +58,7 @@ public class AttachController {
             temp.setSort(10);
             temp.setCreateTime(new Date());
             temp.setRelatedId(relateId);
-            temp.setFileName(file.getName());
+            temp.setFileName(StringEscapeUtils.escapeHtml4(file.getOriginalFilename()));
             temp.setProjectId(projectId);
             ServiceFactory.instance().create(temp);
         }

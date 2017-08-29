@@ -196,42 +196,24 @@ public class UserController {
     @PostMapping("bind")
     public Object bind(User user, @RequestParam String accessToken,
                        @RequestParam String type,
-                       @RequestParam(required = false) String openId,
-                       @RequestParam(required = false) String uid,
-                       @RequestParam(required = false) String gitid,
+                       @RequestParam String thirdpartyId,
                        @CookieValue(Constants.TOKEN_COOKIE_NAME)String token
     ) {
 
         Thirdparty thirdparty = new Thirdparty();
         thirdparty.setUserId(user.getId());
-        switch (type) {
-            case "qq":
-                AssertUtils.notNull(openId, "missing openId");
-                thirdparty.setId(openId);
-                thirdparty.setType(Thirdparty.Type.QQ);
-                break;
-            case "weibo":
-                AssertUtils.notNull(uid, "missing uid");
-                thirdparty.setId(uid);
-                thirdparty.setType(Thirdparty.Type.WEIBO);
-                break;
-            case "github":
-                AssertUtils.notNull(gitid, "missing gitid");
-                thirdparty.setId(gitid);
-                thirdparty.setType(Thirdparty.Type.GITHUB);
-                break;
-            default:
-                throw new IllegalArgumentException("invalid type ");
-        }
+        thirdparty.setType(type);
+        thirdparty.setId(thirdpartyId);
         int rs = ServiceFactory.instance().bindUserWithThirdParty(thirdparty);
+        user.getBindingMap().put(type,true);
         AssertUtils.isTrue(rs > 0, "操作失败");
-        CacheUtils.putUser(token,UserService.instance().getUser(user.getId()));
+        CacheUtils.putUser(token,user);
         return true;
     }
 
-    @PostMapping("unbind/{type}")
-    public Object unbind(User user, @PathVariable("type") String type,@CookieValue(Constants.TOKEN_COOKIE_NAME)String token) {
-        int rs = ServiceFactory.instance().unbindUserThirdPartyRelation(user.getId(), type);
+    @PostMapping("unbind/{pluginId}")
+    public Object unbind(User user, @PathVariable("pluginId") String pluginId,@CookieValue(Constants.TOKEN_COOKIE_NAME)String token) {
+        int rs = ServiceFactory.instance().unbindUserThirdPartyRelation(user.getId(), pluginId);
         AssertUtils.isTrue(rs > 0, "操作失败");
         CacheUtils.putUser(token,UserService.instance().getUser(user.getId()));
         return new _HashMap<>()

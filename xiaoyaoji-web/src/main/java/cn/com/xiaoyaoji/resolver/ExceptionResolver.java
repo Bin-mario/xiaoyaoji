@@ -54,7 +54,7 @@ public class ExceptionResolver extends SimpleMappingExceptionResolver {
         if(ex instanceof NotLoginException){
             String redirectURL = "redirect:/login";
             if(from!=null){
-                redirectURL +="?f="+from;
+                redirectURL +="?refer="+from;
             }
             return new ModelAndView(redirectURL);
         }

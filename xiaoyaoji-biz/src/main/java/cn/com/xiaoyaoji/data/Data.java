@@ -116,4 +116,7 @@ public interface Data {
     String getDocNamesFromIds(String[] docIdsArray);
 
     List<Doc> getDocsByParentId(String projectId, String parentId);
+
+    List<String> getAllProjectValidIds();
+
 }
