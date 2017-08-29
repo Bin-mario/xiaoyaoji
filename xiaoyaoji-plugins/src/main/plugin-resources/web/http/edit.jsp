@@ -64,15 +64,6 @@
 
                 </div>
 
-
-                <div class="item">
-                    <div class="col-sm-1 label">接口名称</div>
-                    <div class="col-sm-11">
-                        <input type="text" class="uk-input" maxlength="30" placeholder="请输入接口名称"
-                               v-model="doc.name" :value="doc.name">
-                    </div>
-                </div>
-
                 <div class="item">
                     <div class="col-sm-1 label">接口名称</div>
                     <div class="col-sm-11">
@@ -99,6 +90,27 @@
                         <div contenteditable="true" class="uk-textarea" id="api-description" v-html="content.description"></div>
                     </div>
                 </div>
+                <div class="item">
+                    <label class="col-sm-1 label" for="ignoreGHttpReqArgs">忽略全局请求参数</label>
+                    <div class="col-sm-1 label-content">
+                        <input type="checkbox" class="uk-checkbox" id="ignoreGHttpReqArgs" v-model="content.ignoreGHttpReqArgs">
+                    </div>
+                    <label class="col-sm-1 label" for="ignoreGHttpReqHeaders">忽略全局请求头</label>
+                    <div class="col-sm-1 label-content">
+                        <input type="checkbox" class="uk-checkbox" id="ignoreGHttpReqHeaders" v-model="content.ignoreGHttpReqHeaders">
+                    </div>
+                    <label class="col-sm-1 label" for="ignoreGHttpRespHeaders">忽略全局响应头</label>
+                    <div class="col-sm-1 label-content">
+                        <input type="checkbox" class="uk-checkbox" id="ignoreGHttpRespHeaders" v-model="content.ignoreGHttpRespHeaders">
+                    </div>
+                    <label class="col-sm-1 label" for="ignoreGHttpRespArgs">忽略全局响应参数</label>
+                    <div class="col-sm-1 label-content">
+                        <input type="checkbox" class="uk-checkbox" id="ignoreGHttpRespArgs" v-model="content.ignoreGHttpRespArgs">
+                    </div>
+
+                </div>
+
+
                 <div>
                     <ul uk-tab>
                         <li v-on:click="flag.tab='header'"><a>请求头(Header)</a></li>

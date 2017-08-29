@@ -33,7 +33,7 @@
             </div>
         </div>
         <%--</c:if>--%>
-        <div v-if="(global.http.requestHeaders&&global.http.requestHeaders.length>0)">
+        <div v-if="(global.http.requestHeaders&&global.http.requestHeaders.length>0 && !content.ignoreGHttpReqHeaders)">
             <p class="doc-item-section-title">全局请求头</p>
             <div class="div-table">
                 <ul class="div-table-header div-table-line cb">
@@ -46,7 +46,7 @@
                         v-bind:request-headers.sync="global.http.requestHeaders"></request-headers-vue>
             </div>
         </div>
-        <div v-if=" (global.http.requestArgs  && global.http.requestArgs.length>0)">
+        <div v-if=" (global.http.requestArgs  && global.http.requestArgs.length>0 && !content.ignoreGHttpReqArgs)">
             <p class="doc-item-section-title">全局请求参数</p>
             <div class="div-table">
                 <ul class="div-table-header div-table-line cb">
@@ -60,7 +60,7 @@
                         v-bind:request-args.sync="global.http.requestArgs"></request-args-vue>
             </div>
         </div>
-        <div v-if="(global.http.responseHeaders&&global.http.responseHeaders.length>0)">
+        <div v-if="(global.http.responseHeaders&&global.http.responseHeaders.length>0 && !content.ignoreGHttpRespHeaders)">
             <p class="doc-item-section-title">全局响应头</p>
             <div class="div-table">
                 <ul class="div-table-header div-table-line cb">
@@ -74,8 +74,8 @@
             </div>
         </div>
 
-        <div v-if="(global.http.responseArgs  && global.http.responseArgs.length>0)">
-            <p class="doc-item-section-title">全局响应数据</p>
+        <div v-if="(global.http.responseArgs  && global.http.responseArgs.length>0 && !content.ignoreGHttpRespArgs)">
+            <p class="doc-item-section-title">全局响应参数</p>
             <div class="div-table">
                 <ul class="div-table-header div-table-line cb">
                     <li class="col-sm-3">参数名称</li>

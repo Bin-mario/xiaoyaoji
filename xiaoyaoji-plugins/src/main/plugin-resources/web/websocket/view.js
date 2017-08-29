@@ -386,48 +386,4 @@ requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
         }
     });
 
-
-
-    function getRequestArgsObject(data){
-        var obj={};
-        data.forEach(function(d){
-            var name = d.name;
-            switch(d.type){
-                case 'string':
-                    obj[name] = d.testValue || d.defaultValue || '';
-                    break;
-                case 'number':
-                    obj[name] = d.testValue || d.defaultValue || 0;
-                    break;
-                case 'boolean':
-                    obj[name] = d.testValue || d.defaultValue || true;
-                    break;
-                case 'object':
-                    obj[name] = getRequestArgsObject(d.children);
-                    break;
-                case 'array':
-                    obj[name] = [];
-                    break;
-                case 'array[number]':
-                    obj[name] = [0,1];
-                    break;
-                case 'array[boolean]':
-                    obj[name] = [true];
-                    break;
-                case 'array[string]':
-                    obj[name] = [''];
-                    break;
-                case 'array[object]':
-                    obj[name] = [getRequestArgsObject({},d.children)];
-                    break;
-                case 'array[array]':
-                    obj[name] = [[]];
-                    break;
-                default:
-                    obj[name] = '';
-                    break;
-            }
-        });
-        return obj;
-    }
 });

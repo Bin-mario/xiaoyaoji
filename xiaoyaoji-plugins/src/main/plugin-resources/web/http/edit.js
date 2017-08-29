@@ -8,9 +8,6 @@
     ];
     requirejs(thirds,function(Vue,utils,commons){
 
-
-
-
         var docApp = new Vue({
             el:'#doc',
             data:{
@@ -40,6 +37,7 @@
                 }
 
                 var content = utils.toJSON(this.doc.content);
+
                 if(!content.requestMethod){
                     content.requestMethod = 'GET';
                 }

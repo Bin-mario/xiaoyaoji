@@ -67,8 +67,8 @@ requirejs(['utils', 'vue',
     function Result() {
         var jf = new JsonFormater({
             dom: '#api-result',
-            imgCollapsed: _pre+'path=/assets/jsonformat/images/Collapsed.gif',
-            imgExpanded: _pre+'path=/assets/jsonformat/images/Expanded.gif'
+            imgCollapsed: _pre+'/assets/jsonformat/images/Collapsed.gif',
+            imgExpanded: _pre+'/assets/jsonformat/images/Expanded.gif'
         });
         var fn = {
             JSON: function (data) {
@@ -106,6 +106,7 @@ requirejs(['utils', 'vue',
         }
     }
 
+    //发送请求
     function apiSubmit(runType) {
         var self = this;
         //var url = this.requestURL;
@@ -291,8 +292,10 @@ requirejs(['utils', 'vue',
         }
     }
 
+    //初始化参数
     function initFormArgs() {
-        var args = this.global.http.requestArgs.mergeArray(this.content.requestArgs);
+        //ignoreGlobalHttp 关闭全局请求参数
+        var args = this.content.ignoreGHttpReqArgs ? this.content.requestArgs : this.global.http.requestArgs.mergeArray(this.content.requestArgs);
         for (var key in args) {
             var temp = this.doc.id + ':args:' + args[key].name;
             var value = localStorage.getItem(temp);
@@ -308,8 +311,9 @@ requirejs(['utils', 'vue',
         this.formArgs = args;
     }
 
+    //初始化请求头
     function initFormHeaders() {
-        var headers = this.global.http.requestHeaders.mergeArray(this.content.requestHeaders);
+        var headers = this.content.ignoreGHttpReqHeaders?this.content.requestHeaders:this.global.http.requestHeaders.mergeArray(this.content.requestHeaders);
         for (var key in headers) {
             var temp = this.doc.id + ':headers:' + headers[key].name;
             var value = localStorage.getItem(temp);
@@ -556,12 +560,12 @@ requirejs(['utils', 'vue',
     }
 
     function getRequestArgsObject(data) {
+        if(!(data && data.forEach)){
+            return '';
+        }
         var obj = {};
         data.forEach(function (d) {
             var name = d.name;
-            if(d.children && d.children.length>0){
-                obj[name]=getRequestArgsObject(d.children);
-            }else{
                 switch (d.type) {
                     case 'string':
                         obj[name] = d.testValue || d.defaultValue || '';
@@ -588,7 +592,7 @@ requirejs(['utils', 'vue',
                         obj[name] = [''];
                         break;
                     case 'array[object]':
-                        obj[name] = [getRequestArgsObject({}, d.children)];
+                        obj[name] = [getRequestArgsObject(d.children)];
                         break;
                     case 'array[array]':
                         obj[name] = [[]];
@@ -597,7 +601,6 @@ requirejs(['utils', 'vue',
                         obj[name] = '';
                         break;
                 }
-            }
         });
         return obj;
     }
