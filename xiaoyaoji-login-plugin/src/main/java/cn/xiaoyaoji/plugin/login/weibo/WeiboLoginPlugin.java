@@ -23,12 +23,12 @@ public class WeiboLoginPlugin extends LoginPlugin {
     private static Logger logger = Logger.getLogger(WeiboLoginPlugin.class);
     @Override
     public User doRequest(HttpServletRequest request) {
-        String uid = request.getParameter("uid");
+        String thirdpartyId = request.getParameter("thirdpartyId");
         String accessToken = request.getParameter("accessToken");
         AssertUtils.notNull(accessToken, "missing accessToken");
-        AssertUtils.notNull(uid, "missing uid");
+        AssertUtils.notNull(thirdpartyId, "missing thirdpartyId");
         AssertUtils.notNull(accessToken, "missing accessToken");
-        cn.xiaoyaoji.plugin.login.weibo.User weiboUser = new Weibo().showUser(accessToken, uid);
+        cn.xiaoyaoji.plugin.login.weibo.User weiboUser = new Weibo().showUser(accessToken, thirdpartyId);
         Thirdparty thirdparty = new Thirdparty();
         thirdparty.setId(weiboUser.getId());
         thirdparty.setLogo(weiboUser.getAvatar_large());

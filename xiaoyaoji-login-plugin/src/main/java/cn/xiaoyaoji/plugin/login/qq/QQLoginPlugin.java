@@ -32,13 +32,13 @@ public class QQLoginPlugin extends LoginPlugin {
 
     @Override
     public User doRequest(HttpServletRequest request) {
-        String openId = request.getParameter("openId");
+        String thirdpartyId = request.getParameter("thirdpartyId");
         String accessToken = request.getParameter("accessToken");
-        AssertUtils.notNull(openId, "missing openId");
+        AssertUtils.notNull(thirdpartyId, "missing thirdpartyId");
         AssertUtils.notNull(accessToken, "missing accessToken");
-        UserInfo userInfo = qq.getUserInfo(openId, accessToken);
+        UserInfo userInfo = qq.getUserInfo(thirdpartyId, accessToken);
         Thirdparty thirdparty = new Thirdparty();
-        thirdparty.setId(openId);
+        thirdparty.setId(thirdpartyId);
         thirdparty.setLogo(userInfo.getFigureurl_qq_2());
         thirdparty.setNickName(userInfo.getNickname());
         thirdparty.setType(getPluginInfo().getId());

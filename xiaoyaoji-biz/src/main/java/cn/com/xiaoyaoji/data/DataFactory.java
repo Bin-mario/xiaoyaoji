@@ -1,6 +1,7 @@
 package cn.com.xiaoyaoji.data;
 
 import cn.com.xiaoyaoji.core.annotations.Ignore;
+import cn.com.xiaoyaoji.core.common.DocType;
 import cn.com.xiaoyaoji.core.common.Pagination;
 import cn.com.xiaoyaoji.core.exception.SystemErrorException;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
@@ -617,6 +618,8 @@ public class DataFactory implements Data {
             }
         });
     }
+
+
 
     @Override
     public String getUserIdByEmail(final String email) {
