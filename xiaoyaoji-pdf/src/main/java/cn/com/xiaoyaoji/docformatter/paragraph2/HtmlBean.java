@@ -8,7 +8,7 @@ public class HtmlBean {
     private String html;
 
     public HtmlBean(String html) {
-        this.html = html;
+        this.html = html == null ? "" : html;
     }
 
     public String getHtml() {

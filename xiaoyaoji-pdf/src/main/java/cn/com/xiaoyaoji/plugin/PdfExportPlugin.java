@@ -1,7 +1,6 @@
 package cn.com.xiaoyaoji.plugin;
 
 import cn.com.xiaoyaoji.core.common.DocType;
-import cn.com.xiaoyaoji.core.plugin.PluginInfo;
 import cn.com.xiaoyaoji.core.plugin.doc.DocExportPlugin;
 import cn.com.xiaoyaoji.core.util.AssertUtils;
 import cn.com.xiaoyaoji.data.bean.Doc;
@@ -16,12 +15,14 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.apache.commons.lang3.StringUtils;
 import org.pegdown.PegDownProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -35,7 +36,6 @@ public class PdfExportPlugin extends DocExportPlugin {
     private static final int TYPE_ROOT_DOC = 1;
 
     private static final String PLACEHOLDER_CHILDPARAM = "    ";
-
 
     @Override
     public void doExport(String projectId, HttpServletResponse response) throws IOException {
@@ -69,7 +69,7 @@ public class PdfExportPlugin extends DocExportPlugin {
         content.setAlignment(Element.ALIGN_RIGHT);
         Map<Object, Object> info = new HashMap<Object, Object>();
         info.put("作者", ServiceFactory.instance().getUserName(project.getUserId()));
-        info.put("更新时间", project.getLastUpdateTime());
+        info.put("更新时间", new SimpleDateFormat("yyyy-MM-dd").format(project.getLastUpdateTime()));
         content.addContent(info);
 //        content.add(Chunk.NEXTPAGE);
         document.add(content);
@@ -80,19 +80,22 @@ public class PdfExportPlugin extends DocExportPlugin {
 
         List<Doc> docs = ProjectService.instance().getProjectDocs(project.getId(), true);
         ProjectGlobal global = ProjectService.instance().getProjectGlobal(project.getId());
-        int order = printGlobleParam(0, global, document);
+        Object[] result = printGlobleParam(0, global, document);
+        int order = (int) result[0];
         order = printEnvironment(order, global, document);
         for (int i = 0; i < docs.size(); i++) {
-            printDoc(i + order, null, docs.get(i), document);
+            printDoc(i + order, null, docs.get(i), result, document);
         }
     }
 
-    private static int printGlobleParam(int order, ProjectGlobal global, Document document) throws DocumentException {
+    private static Object[] printGlobleParam(int order, ProjectGlobal global, Document document) throws DocumentException {
 
+        Object[] result = new Object[5];
         String params = global.getHttp();
         JSONObject json = JSONObject.parseObject(params);
         if (json == null || json.isEmpty()) {
-            return order;
+            result[0] = order;
+            return result;
         }
         Doc doc = new Doc();
         doc.setName("全局变量");
@@ -101,7 +104,8 @@ public class PdfExportPlugin extends DocExportPlugin {
 
         JSONArray requestHeaders = json.getJSONArray("requestHeaders");
         if (requestHeaders != null && !requestHeaders.isEmpty()) {
-            List<List<Object>> table = genReqArgs(null, requestHeaders);
+            List<List<Object>> table = genReqHeaders(null, requestHeaders);
+            result[1] = table;
             if (table != null) {
                 NormalSubTitle title3 = null;
                 if (title instanceof NormalTitle) {
@@ -118,7 +122,8 @@ public class PdfExportPlugin extends DocExportPlugin {
 
         JSONArray requestArgs = json.getJSONArray("requestArgs");
         if (requestArgs != null && !requestArgs.isEmpty()) {
-            List<List<Object>> table = genReqHeaders(null, requestArgs);
+            List<List<Object>> table = genReqArgs(null, requestArgs);
+            result[2] = table;
             if (table != null) {
                 NormalSubTitle title3 = null;
                 if (title instanceof NormalTitle) {
@@ -136,6 +141,7 @@ public class PdfExportPlugin extends DocExportPlugin {
         JSONArray responseHeaders = json.getJSONArray("responseHeaders");
         if (requestArgs != null && !requestArgs.isEmpty()) {
             List<List<Object>> table = genRspHeaders(null, responseHeaders);
+            result[3] = table;
             if (table != null) {
                 NormalSubTitle title3 = null;
                 if (title instanceof NormalTitle) {
@@ -153,6 +159,7 @@ public class PdfExportPlugin extends DocExportPlugin {
         JSONArray responseArgs = json.getJSONArray("responseArgs");
         if (requestArgs != null && !requestArgs.isEmpty()) {
             List<List<Object>> table = genRspArgs(null, responseArgs);
+            result[4] = table;
             if (table != null) {
                 NormalSubTitle title3 = null;
                 if (title instanceof NormalTitle) {
@@ -167,7 +174,8 @@ public class PdfExportPlugin extends DocExportPlugin {
             }
         }
         document.add(title);
-        return ++order;
+        result[0] = ++order;
+        return result;
     }
 
     private static int printEnvironment(int order, ProjectGlobal global, Document document) throws DocumentException {
@@ -180,7 +188,6 @@ public class PdfExportPlugin extends DocExportPlugin {
         Doc doc = new Doc();
         doc.setName("环境变量");
         Element title = printFolder(order, null, doc);
-        int index = 0;
 
         for (int i = 0; i < json.size(); i++) {
             JSONObject tmp = JSONObject.parseObject(json.getString(i));
@@ -191,7 +198,7 @@ public class PdfExportPlugin extends DocExportPlugin {
                 NormalContent content3 = new NormalContent();
                 Map<String, String> varsMap = new HashMap<>();
                 for (int j = 0; j < vars.size(); j++) {
-                    JSONObject kv = vars.getJSONObject(j);
+                    JSONObject kv = vars.getJSONObject(i);
                     varsMap.put(kv.getString("name"), kv.getString("value"));
                 }
                 content3.addContent(varsMap);
@@ -202,7 +209,7 @@ public class PdfExportPlugin extends DocExportPlugin {
         return ++order;
     }
 
-    private static void printDoc(int order, Object parent, Doc doc, Document document) throws DocumentException {
+    private static void printDoc(int order, Object parent, Doc doc, Object[] globalParams, Document document) throws DocumentException {
 
         boolean isFolder = false;
         Element title = null;
@@ -212,7 +219,7 @@ public class PdfExportPlugin extends DocExportPlugin {
                 isFolder = true;
                 break;
             case SYS_HTTP:
-                title = printHttp(order, parent, doc);
+                title = printHttp(order, parent, doc, globalParams);
                 break;
             case SYS_DOC_RICH_TEXT:
                 title = printRichText(order, parent, doc);
@@ -230,7 +237,7 @@ public class PdfExportPlugin extends DocExportPlugin {
         if (isFolder) {
             List<Doc> children = doc.getChildren();
             for (int i = 0; i < children.size(); i++) {
-                printDoc(i, title, children.get(i), document);
+                printDoc(i, title, children.get(i), globalParams, document);
             }
         }
         if (parent == null) {
@@ -264,7 +271,7 @@ public class PdfExportPlugin extends DocExportPlugin {
         }
     }
 
-    private static Element printHttp(int order, Object parent, Doc doc) throws DocumentException {
+    private static Element printHttp(int order, Object parent, Doc doc, Object[] globalParams) throws DocumentException {
 
         Element title = printFolder(order, parent, doc);
         JSONObject json = JSONObject.parseObject(doc.getContent());
@@ -291,71 +298,114 @@ public class PdfExportPlugin extends DocExportPlugin {
         content.addContent(data);
         title2.add(content);
 
-        JSONArray requestArgs = json.getJSONArray("requestArgs");
-        if (requestArgs != null && !requestArgs.isEmpty()) {
-            List<List<Object>> table = genReqArgs(null, requestArgs);
-            if (table != null) {
-                NormalSubTitle title3 = null;
-                if (title instanceof NormalTitle) {
-                    title3 = new NormalSubTitle((NormalTitle) title, "请求参数", ++index);
-                } else if (title instanceof NormalSubTitle) {
-                    title3 = new NormalSubTitle((NormalSubTitle) title, "请求参数", ++index);
-                }
-                title3.getFont().setSize(12F);
-                NormalContent content3 = new NormalContent();
-                content3.addTable(table);
-                title3.add(content3);
+        // print request headers
+        JSONArray requestHeaders = json.getJSONArray("requestHeaders");
+        boolean ignoreGlobal = json.getBooleanValue("ignoreGHttpReqHeaders") || globalParams[1] == null;
+        if (requestHeaders != null && !requestHeaders.isEmpty() || !ignoreGlobal) {
+            List<List<Object>> table = new ArrayList<>();
+            if (!ignoreGlobal) {
+                table.addAll((Collection<? extends List<Object>>) globalParams[1]);
             }
+            List<List<Object>> nodeData = genReqHeaders(null, requestHeaders);
+            if (!table.isEmpty() && !nodeData.isEmpty()) {
+                nodeData.remove(0);
+            }
+            table.addAll(nodeData);
+            NormalSubTitle title3 = null;
+            if (title instanceof NormalTitle) {
+                title3 = new NormalSubTitle((NormalTitle) title, "请求头", ++index);
+            } else if (title instanceof NormalSubTitle) {
+                title3 = new NormalSubTitle((NormalSubTitle) title, "请求头", ++index);
+            }
+            title3.getFont().setSize(12F);
+            NormalContent content3 = new NormalContent();
+            content3.addTable(table);
+            title3.add(content3);
         }
 
-        JSONArray requestHeaders = json.getJSONArray("requestHeaders");
-        if (requestHeaders != null && !requestHeaders.isEmpty()) {
-            List<List<Object>> table = genReqHeaders(null, requestHeaders);
-            if (table != null) {
-                NormalSubTitle title3 = null;
-                if (title instanceof NormalTitle) {
-                    title3 = new NormalSubTitle((NormalTitle) title, "请求头", ++index);
-                } else if (title instanceof NormalSubTitle) {
-                    title3 = new NormalSubTitle((NormalSubTitle) title, "请求头", ++index);
-                }
-                title3.getFont().setSize(12F);
-                NormalContent content3 = new NormalContent();
-                content3.addTable(table);
-                title3.add(content3);
+        JSONArray requestArgs = json.getJSONArray("requestArgs");
+        ignoreGlobal = json.getBooleanValue("ignoreGHttpReqArgs") || globalParams[2] == null;
+        if (requestArgs != null && !requestArgs.isEmpty() || !ignoreGlobal) {
+            List<List<Object>> table = new ArrayList<>();
+            if (!ignoreGlobal) {
+                table.addAll((Collection<? extends List<Object>>) globalParams[2]);
             }
+            List<List<Object>> nodeData = genReqArgs(null, requestArgs);
+            if (!table.isEmpty() && !nodeData.isEmpty()) {
+                nodeData.remove(0);
+            }
+            table.addAll(nodeData);
+            NormalSubTitle title3 = null;
+            if (title instanceof NormalTitle) {
+                title3 = new NormalSubTitle((NormalTitle) title, "请求参数", ++index);
+            } else if (title instanceof NormalSubTitle) {
+                title3 = new NormalSubTitle((NormalSubTitle) title, "请求参数", ++index);
+            }
+            title3.getFont().setSize(12F);
+            NormalContent content3 = new NormalContent();
+            content3.addTable(table);
+            title3.add(content3);
+        }
+
+        JSONArray responseHeaders = json.getJSONArray("responseHeaders");
+        ignoreGlobal = json.getBooleanValue("ignoreGHttpRespHeaders") || globalParams[3] == null;
+        if (responseHeaders != null && !responseHeaders.isEmpty() || !ignoreGlobal) {
+            List<List<Object>> table = new ArrayList<>();
+            if (!ignoreGlobal) {
+                table.addAll((Collection<? extends List<Object>>) globalParams[3]);
+            }
+            List<List<Object>> nodeData = genRspHeaders(null, responseHeaders);
+            if (!table.isEmpty() && !nodeData.isEmpty()) {
+                nodeData.remove(0);
+            }
+            table.addAll(nodeData);
+            NormalSubTitle title3 = null;
+            if (title instanceof NormalTitle) {
+                title3 = new NormalSubTitle((NormalTitle) title, "响应头", ++index);
+            } else if (title instanceof NormalSubTitle) {
+                title3 = new NormalSubTitle((NormalSubTitle) title, "响应头", ++index);
+            }
+            title3.getFont().setSize(12F);
+            NormalContent content3 = new NormalContent();
+            content3.addTable(table);
+            title3.add(content3);
         }
 
         JSONArray responseArgs = json.getJSONArray("responseArgs");
-        if (responseArgs != null && !responseArgs.isEmpty()) {
-            List<List<Object>> table = genRspArgs(null, responseArgs);
-            if (table != null) {
-                NormalSubTitle title3 = null;
-                if (title instanceof NormalTitle) {
-                    title3 = new NormalSubTitle((NormalTitle) title, "响应参数", ++index);
-                } else if (title instanceof NormalSubTitle) {
-                    title3 = new NormalSubTitle((NormalSubTitle) title, "响应参数", ++index);
-                }
-                title3.getFont().setSize(12F);
-                NormalContent content3 = new NormalContent();
-                content3.addTable(table);
-                title3.add(content3);
+        ignoreGlobal = json.getBooleanValue("ignoreGHttpRespArgs") || globalParams[4] == null;
+        if (responseArgs != null && !responseArgs.isEmpty() || !ignoreGlobal) {
+            List<List<Object>> table = new ArrayList<>();
+            if (!ignoreGlobal) {
+                table.addAll((Collection<? extends List<Object>>) globalParams[4]);
             }
+            List<List<Object>> nodeData = genRspArgs(null, responseArgs);
+            if (!table.isEmpty() && !nodeData.isEmpty()) {
+                nodeData.remove(0);
+            }
+            table.addAll(nodeData);
+            NormalSubTitle title3 = null;
+            if (title instanceof NormalTitle) {
+                title3 = new NormalSubTitle((NormalTitle) title, "响应参数", ++index);
+            } else if (title instanceof NormalSubTitle) {
+                title3 = new NormalSubTitle((NormalSubTitle) title, "响应参数", ++index);
+            }
+            title3.getFont().setSize(12F);
+            NormalContent content3 = new NormalContent();
+            content3.addTable(table);
+            title3.add(content3);
         }
-        JSONArray responseHeaders = json.getJSONArray("responseHeaders");
-        if (responseHeaders != null && !responseHeaders.isEmpty()) {
-            List<List<Object>> table = genRspHeaders(null, responseHeaders);
-            if (table != null) {
-                NormalSubTitle title3 = null;
-                if (title instanceof NormalTitle) {
-                    title3 = new NormalSubTitle((NormalTitle) title, "响应头", ++index);
-                } else if (title instanceof NormalSubTitle) {
-                    title3 = new NormalSubTitle((NormalSubTitle) title, "响应头", ++index);
-                }
-                title3.getFont().setSize(12F);
-                NormalContent content3 = new NormalContent();
-                content3.addTable(table);
-                title3.add(content3);
+
+        String example = json.getString("example");
+        if (!StringUtils.isEmpty(example)) {
+            NormalSubTitle subTitle = null;
+            if (title instanceof NormalTitle) {
+                subTitle = new NormalSubTitle((NormalTitle) title, "示例数据", ++index);
+            } else if (title instanceof NormalSubTitle) {
+                subTitle = new NormalSubTitle((NormalSubTitle) title, "示例数据", ++index);
             }
+            NormalContent exampleContent = new NormalContent();
+            exampleContent.addContent(example);
+            subTitle.add(exampleContent);
         }
         return title;
     }
@@ -363,17 +413,22 @@ public class PdfExportPlugin extends DocExportPlugin {
     private static List<List<Object>> genReqArgs(String parentKey, JSONArray jsonArray) {
 
         if (jsonArray == null || jsonArray.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         List<List<Object>> result = new ArrayList<>();
         if (parentKey == null) {
             Object[] header = new Object[]{"参数名称", "是否必须", "数据类型", "默认值", "描述"};
             result.add(Arrays.asList(header));
         }
+        if (parentKey != null) {
+            parentKey += PLACEHOLDER_CHILDPARAM;
+        }
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject entry = jsonArray.getJSONObject(i);
-            parentKey = parentKey == null ? "" : parentKey + PLACEHOLDER_CHILDPARAM;
-            String name = parentKey + entry.getString("name");
+            String name = entry.getString("name");
+            if (parentKey != null) {
+                name = parentKey + name;
+            }
             String require = entry.getString("require");
             String type = entry.getString("type");
             String defaultValue = entry.getString("defaultValue");
@@ -382,7 +437,8 @@ public class PdfExportPlugin extends DocExportPlugin {
             result.add(Arrays.asList(param));
             JSONArray children = entry.getJSONArray("children");
             if (children != null && !children.isEmpty()) {
-                result.addAll(genReqArgs(name, children));
+                parentKey = parentKey == null ? "" : parentKey;
+                result.addAll(genReqArgs(parentKey, children));
             }
         }
 
@@ -392,16 +448,22 @@ public class PdfExportPlugin extends DocExportPlugin {
     private static List<List<Object>> genReqHeaders(String parentKey, JSONArray jsonArray) {
 
         if (jsonArray == null || jsonArray.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         List<List<Object>> result = new ArrayList<>();
         if (parentKey == null) {
             Object[] header = new Object[]{"参数名称", "是否必须", "默认值", "描述"};
             result.add(Arrays.asList(header));
         }
+        if (parentKey != null) {
+            parentKey += PLACEHOLDER_CHILDPARAM;
+        }
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject entry = jsonArray.getJSONObject(i);
-            String name = (parentKey == null ? "" : ("    ")) + entry.getString("name");
+            String name = entry.getString("name");
+            if (parentKey != null) {
+                name = parentKey + name;
+            }
             String require = entry.getString("require");
             String defaultValue = entry.getString("defaultValue");
             String description = entry.getString("description");
@@ -409,7 +471,8 @@ public class PdfExportPlugin extends DocExportPlugin {
             result.add(Arrays.asList(param));
             JSONArray children = entry.getJSONArray("children");
             if (children != null && !children.isEmpty()) {
-                result.addAll(genReqHeaders(name, children));
+                parentKey = parentKey == null ? "" : parentKey;
+                result.addAll(genReqHeaders(parentKey, children));
             }
         }
 
@@ -419,16 +482,22 @@ public class PdfExportPlugin extends DocExportPlugin {
     private static List<List<Object>> genRspArgs(String parentKey, JSONArray jsonArray) {
 
         if (jsonArray == null || jsonArray.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         List<List<Object>> result = new ArrayList<>();
         if (parentKey == null) {
             Object[] header = new Object[]{"参数名称", "是否必须", "数据类型", "描述"};
             result.add(Arrays.asList(header));
         }
+        if (parentKey != null) {
+            parentKey += PLACEHOLDER_CHILDPARAM;
+        }
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject entry = jsonArray.getJSONObject(i);
-            String name = (parentKey == null ? "" : ("    ")) + entry.getString("name");
+            String name = entry.getString("name");
+            if (parentKey != null) {
+                name = parentKey + name;
+            }
             String require = entry.getString("require");
             String type = entry.getString("type");
             String description = entry.getString("description");
@@ -436,7 +505,8 @@ public class PdfExportPlugin extends DocExportPlugin {
             result.add(Arrays.asList(param));
             JSONArray children = entry.getJSONArray("children");
             if (children != null && !children.isEmpty()) {
-                result.addAll(genRspArgs(name, children));
+                parentKey = parentKey == null ? "" : parentKey;
+                result.addAll(genRspArgs(parentKey, children));
             }
         }
 
@@ -446,23 +516,30 @@ public class PdfExportPlugin extends DocExportPlugin {
     private static List<List<Object>> genRspHeaders(String parentKey, JSONArray jsonArray) {
 
         if (jsonArray == null || jsonArray.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         List<List<Object>> result = new ArrayList<>();
         if (parentKey == null) {
             Object[] header = new Object[]{"参数名称", "是否必须", "描述"};
             result.add(Arrays.asList(header));
         }
+        if (parentKey != null) {
+            parentKey += PLACEHOLDER_CHILDPARAM;
+        }
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject entry = jsonArray.getJSONObject(i);
-            String name = (parentKey == null ? "" : ("    ")) + entry.getString("name");
+            String name = entry.getString("name");
+            if (parentKey != null) {
+                name = parentKey + name;
+            }
             String require = entry.getString("require");
             String description = entry.getString("description");
             Object[] param = new Object[]{name, require, description};
             result.add(Arrays.asList(param));
             JSONArray children = entry.getJSONArray("children");
             if (children != null && !children.isEmpty()) {
-                result.addAll(genRspHeaders(name, children));
+                parentKey = parentKey == null ? "" : parentKey;
+                result.addAll(genRspHeaders(parentKey, children));
             }
         }
 
@@ -482,7 +559,8 @@ public class PdfExportPlugin extends DocExportPlugin {
 
         Element title = printFolder(order, parent, doc);
         PegDownProcessor processor = new PegDownProcessor(10 * 1000);
-        String html = processor.markdownToHtml(doc.getContent());
+        String data = doc.getContent();
+        String html = processor.markdownToHtml(data == null ? "" : data);
         NormalContent content = new NormalContent();
         content.addHtml(html);
         addContent(title, content);
