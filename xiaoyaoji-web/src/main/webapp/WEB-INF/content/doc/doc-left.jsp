@@ -144,7 +144,7 @@
             <div class="uk-modal-body">
                 <form class="uk-form-stacked">
                     <div class="uk-margin">
-                        <label class="uk-form-label" for="form-stacked-select">选择一个项目</label>
+                        <label class="uk-form-label" for="form-stacked-select">选择一个项目(destination)</label>
                         <div class="uk-form-controls">
                             <select class="uk-select" id="form-stacked-select" v-model="copiesProjectId">
                                 <option v-for="item in projects" v-bind:value="item.id">{{item.name}}</option>
