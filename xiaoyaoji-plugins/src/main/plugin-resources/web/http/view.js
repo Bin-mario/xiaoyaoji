@@ -5,7 +5,7 @@ requirejs(['utils', 'vue',
     x.cdn + '/assets/ace/src-min/ace.js',
     x.cdn + '/assets/xml2json/2json.js',
     x.cdn + '/assets/xml2json/2xml.js'
-], function (utils, Vue, x, Clipboard, Plugin) {
+], function (utils, Vue, xxx, Clipboard, Plugin) {
     var xml = new XML.ObjTree();
     //请求头
     function getRequestHeaders() {
@@ -60,8 +60,8 @@ requirejs(['utils', 'vue',
     function Result() {
         var jf = new JsonFormater({
             dom: '#api-result',
-            imgCollapsed: x.cdn+'/assets/jsonformat/images/Collapsed.gif',
-            imgExpanded: x.cdn+'/assets/jsonformat/images/Expanded.gif'
+            imgCollapsed: window.x.cdn+'/assets/jsonformat/images/Collapsed.gif',
+            imgExpanded: window.x.cdn+'/assets/jsonformat/images/Expanded.gif'
         });
         var fn = {
             JSON: function (data) {
