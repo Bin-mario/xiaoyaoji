@@ -10,7 +10,7 @@
 * 静态页系统暂时只兼容chrome，其他浏览器未测试。
 * 后端：jdk1.7 tomcat7  mariadb5.5
 
-## [离线部署配置说明](http://git.oschina.net/zhoujingjie/apiManager/wikis/Home)
+## [离线部署配置说明](http://www.xiaoyaoji.cn/doc/TxybXPTdx)
 
 
 ## module说明
