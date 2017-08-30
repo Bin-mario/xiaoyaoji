@@ -13,7 +13,7 @@
     <script src="${cdn}/assets/requirejs/require.min.2.3.3.js"></script>
     <script>
         window.ctx='${ctx}';
-        window.x={v:'${v}',ctx:'${ctx}'};
+        window.x={v:'${v}',ctx:'${ctx}',cdn:'http:${cdn}'};
         location.path='${ctx}';
 
         requirejs.config({

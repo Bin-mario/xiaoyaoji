@@ -70,7 +70,7 @@ public class DocService {
         doc.setProjectId(projectId);
         doc.setLastUpdateTime(new Date());
         doc.setParentId("0");
-        doc.setType(DocType.SYS_DOC_RICH_TEXT.getTypeName());
+        doc.setType(DocType.SYS_DOC_MD.getTypeName());
         int rs = ServiceFactory.instance().create(doc);
         AssertUtils.isTrue(rs > 0, Message.OPER_ERR);
         return doc;

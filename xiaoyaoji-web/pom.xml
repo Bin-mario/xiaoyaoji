@@ -11,6 +11,8 @@
     <packaging>war</packaging>
     <artifactId>xiaoyaoji-web</artifactId>
 
+
+
     <dependencies>
 
         <dependency>
@@ -70,12 +72,66 @@
             <groupId>cn.com.xiaoyaoji</groupId>
             <artifactId>xiaoyaoji-biz</artifactId>
         </dependency>
-
-
     </dependencies>
 
+    <profiles>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <xyj.version>2.1.4</xyj.version>
+                <druid.username>admin</druid.username>
+                <druid.password>123</druid.password>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                            <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                            <webResources>
+                                <resource>
+                                    <directory>configuration/includes</directory>
+                                    <targetPath>WEB-INF/includes</targetPath>
+                                    <filtering>true</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>src/main/webapp</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/web.xml</include>
+                                    </includes>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
-        <finalName>xiaoyaoji-${project.version}</finalName>
+        <finalName>xiaoyaoji-${xyj.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>config.bak.properties</exclude>
+                </excludes>
+            </resource>
+
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -103,23 +159,7 @@
                     <charset>UTF-8</charset>
                 </configuration>
             </plugin>
-            <!--<plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.14.v20151106</version>
-                <configuration>
-                    <reload>manual</reload>
-                    <scanIntervalSeconds>5</scanIntervalSeconds>
-                    <webApp>
-                        <contextPath>/</contextPath>
-                        <defaultsDescriptor>${project.basedir}/src/main/webapp/etc/webdefault.xml</defaultsDescriptor>
-                    </webApp>
-                    <httpConnector>
-                        <port>9999</port>
-                        <idleTimeout>600</idleTimeout>
-                    </httpConnector>
-                </configuration>
-            </plugin>-->
+
         </plugins>
     </build>
 </project>

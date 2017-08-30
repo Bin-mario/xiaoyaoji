@@ -368,7 +368,9 @@
 <jsp:include page="../includes/response-args.jsp"/>
 
 <script>
-    var doc = ${doc},projectGlobal=${projectGlobal},pluginId='${pluginInfo.id}';
+    var doc = ${doc},
+        projectGlobal=${projectGlobal},
+        pluginId='${pluginInfo.id}';
 </script>
-<link rel="stylesheet" type="text/css" href="${ctx}/proxy/${pluginInfo.id}/assets/jsonformat/jsonFormater.css"/>
+<link rel="stylesheet" type="text/css" href="${cdn}/assets/jsonformat/jsonFormater.css"/>
 <script src="${ctx}/proxy/${pluginInfo.id}/web/http/view.js?v=${pluginInfo.version}"></script>

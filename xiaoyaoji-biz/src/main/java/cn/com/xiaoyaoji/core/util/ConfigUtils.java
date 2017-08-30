@@ -15,10 +15,16 @@ public class ConfigUtils {
     private static Properties properties;
     static {
         properties = new Properties();
+        ClassLoader classLoader =Thread.currentThread().getContextClassLoader();
         try {
-            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
+            properties.load(classLoader.getResourceAsStream("config.properties"));
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
+        }
+        try {
+            properties.load(classLoader.getResourceAsStream("config.dev.properties"));
+        } catch (IOException e) {
+            logger.info("not found config.dev.properties");
         }
     }
     public static String getProperty(String key){

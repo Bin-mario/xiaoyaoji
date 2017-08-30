@@ -24,7 +24,7 @@
                     <i class="iconfont icon-my open" v-on:click="apiArgsColumnFold($event)"></i>
                 </template>
                 <div class="value">{{item.name}}</div>
-                <div class="hover">{{item.name}}</div>
+                <div class="hover name">{{item.name}}</div>
             </li>
             <li class="col-sm-1">&nbsp;{{item.require || 'false' }} </li>
             <li class="col-sm-2" :title="item.defaultValue">
@@ -33,7 +33,7 @@
             </li>
             <li class="col-sm-7 full-height" :title="item.description">
                 <div class="value">{{item.description}}</div>
-                <div class="hover">{{item.description}}</div>
+                <div class="hover description">{{item.description}}</div>
             </li>
         </ul>
         </div>

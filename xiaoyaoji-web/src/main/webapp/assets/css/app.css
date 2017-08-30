@@ -395,19 +395,27 @@ input,textarea{
 .div-table-line li .value{
     overflow: hidden;
     height: 20px;
+    text-overflow:ellipsis;
 }
 .div-table-line li .hover{
     display: none;
     word-break: break-all;
     z-index:10;
-    min-height: 35px;
+}
+.div-table-line li .hover.name{
+    left: 0;
+    background: #f0f0f0;
+}
+.div-table-line li .hover.description{
+    left: 0;
+    background: #f0f0f0;
+    padding-left: 10px;
 }
 .div-table-line li:hover{
     background: #f0f0f0;
 }
 .div-table-line li:hover .hover{
     position: absolute;
-    width: 100%;
     display: block;
 }
 .div-table-line li:hover .value{
@@ -430,6 +438,9 @@ input,textarea{
 }
 .div-table.editing .input .text{
     border-color: transparent;
+}
+.div-table.editing .in-text{
+
 }
 .div-table-line .name{
     padding-left: 10px;

@@ -1,11 +1,10 @@
-var _pre=ctx+'/proxy/'+pluginId;
 requirejs(['utils', 'vue',
-    _pre + '/assets/jsonformat/jsonFormater.js',
-    _pre + '/assets/clipboard/clipboard.min.js',
-    _pre + '/assets/js/chrome-extension.js',
-    _pre + '/assets/ace/src-min/ace.js',
-    _pre + '/assets/xml2json/2json.js',
-    _pre + '/assets/xml2json/2xml.js'
+    x.cdn + '/assets/jsonformat/jsonFormater.js',
+    x.cdn + '/assets/clipboard/clipboard.min.js',
+    ctx+'/proxy/'+pluginId + '/assets/js/chrome-extension.js',
+    x.cdn + '/assets/ace/src-min/ace.js',
+    x.cdn + '/assets/xml2json/2json.js',
+    x.cdn + '/assets/xml2json/2xml.js'
 ], function (utils, Vue, x, Clipboard, Plugin) {
     var xml = new XML.ObjTree();
     //请求头
@@ -19,12 +18,6 @@ requirejs(['utils', 'vue',
         return headers;
     }
 
-    /*  Vue.filter('html', function (value) {
-     if (value) {
-     return value.replace(/\n/g, '<br/>')
-     }
-     return '';
-     });*/
     Vue.filter('text', function (value) {
         if (value) {
             return value.replace(/\</g, '&lt;').replace(/\>/g, '&gt;')
@@ -67,8 +60,8 @@ requirejs(['utils', 'vue',
     function Result() {
         var jf = new JsonFormater({
             dom: '#api-result',
-            imgCollapsed: _pre+'/assets/jsonformat/images/Collapsed.gif',
-            imgExpanded: _pre+'/assets/jsonformat/images/Expanded.gif'
+            imgCollapsed: x.cdn+'/assets/jsonformat/images/Collapsed.gif',
+            imgExpanded: x.cdn+'/assets/jsonformat/images/Expanded.gif'
         });
         var fn = {
             JSON: function (data) {

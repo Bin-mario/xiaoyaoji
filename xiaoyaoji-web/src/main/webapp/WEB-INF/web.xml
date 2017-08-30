@@ -108,12 +108,12 @@
         <init-param>
             <!-- 用户名 -->
             <param-name>loginUsername</param-name>
-            <param-value>admin</param-value>
+            <param-value>${druid.username}</param-value>
         </init-param>
         <init-param>
             <!-- 密码 -->
             <param-name>loginPassword</param-name>
-            <param-value>123456</param-value>
+            <param-value>${druid.password}</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

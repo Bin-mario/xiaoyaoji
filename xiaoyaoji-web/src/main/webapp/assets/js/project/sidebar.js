@@ -58,7 +58,7 @@ $(function () {
                     }
                 });
 
-                //this.loadProjects();
+                this.loadProjects();
             },
             methods: {
                 loadHistory: function () {

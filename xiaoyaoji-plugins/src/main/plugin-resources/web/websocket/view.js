@@ -1,4 +1,4 @@
-requirejs(['utils','vue'],function(utils,Vue,x,Clipboard){
+requirejs(['utils','vue'],function(utils,Vue){
 
     Vue.filter('html', function (value) {
         if (value) {

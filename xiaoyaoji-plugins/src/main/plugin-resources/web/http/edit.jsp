@@ -95,15 +95,15 @@
                     <div class="col-sm-1 label-content">
                         <input type="checkbox" class="uk-checkbox" id="ignoreGHttpReqArgs" v-model="content.ignoreGHttpReqArgs">
                     </div>
-                    <label class="col-sm-1 label" for="ignoreGHttpReqHeaders">忽略全局请求头</label>
+                    <label class="col-sm-2 label" for="ignoreGHttpReqHeaders">忽略全局请求头</label>
                     <div class="col-sm-1 label-content">
                         <input type="checkbox" class="uk-checkbox" id="ignoreGHttpReqHeaders" v-model="content.ignoreGHttpReqHeaders">
                     </div>
-                    <label class="col-sm-1 label" for="ignoreGHttpRespHeaders">忽略全局响应头</label>
+                    <label class="col-sm-2 label" for="ignoreGHttpRespHeaders">忽略全局响应头</label>
                     <div class="col-sm-1 label-content">
                         <input type="checkbox" class="uk-checkbox" id="ignoreGHttpRespHeaders" v-model="content.ignoreGHttpRespHeaders">
                     </div>
-                    <label class="col-sm-1 label" for="ignoreGHttpRespArgs">忽略全局响应参数</label>
+                    <label class="col-sm-2 label" for="ignoreGHttpRespArgs">忽略全局响应参数</label>
                     <div class="col-sm-1 label-content">
                         <input type="checkbox" class="uk-checkbox" id="ignoreGHttpRespArgs" v-model="content.ignoreGHttpRespArgs">
                     </div>
