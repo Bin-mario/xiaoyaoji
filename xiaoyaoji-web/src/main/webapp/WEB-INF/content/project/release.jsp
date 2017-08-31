@@ -76,7 +76,7 @@
                     if (this.oriName == this.projectName) {
                         utils.delete('/project/' + id + '.json', function (rs) {
                             toastr.success('删除成功');
-                            location.href = ctx + '/dashboard';
+                            location.href = x.ctx + '/dashboard';
                         })
                     } else {
                         this.isOk = true;

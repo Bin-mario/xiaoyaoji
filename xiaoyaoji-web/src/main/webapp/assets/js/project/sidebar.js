@@ -7,7 +7,7 @@ $(function () {
                 projectName: window._projectName_,
                 history: [],
                 g: {
-                    ctx: ctx,
+                    ctx: x.ctx,
                     edit: _edit_
                 },
                 projects: [],
@@ -82,16 +82,16 @@ $(function () {
 
                 },
                 editpage: function () {
-                    location.href = window.ctx + '/doc/' + window._docId_ + '/edit';
+                    location.href = x.ctx + '/doc/' + window._docId_ + '/edit';
                 },
                 viewpage: function () {
-                    location.href = window.ctx + '/doc/' + window._docId_;
+                    location.href = x.ctx + '/doc/' + window._docId_;
                 },
                 historyURL: function (docId, isEdit, historyId) {
                     if (isEdit) {
-                        return location.path + '/doc/' + docId + '/edit?docHistoryId=' + historyId;
+                        return x.ctx + '/doc/' + docId + '/edit?docHistoryId=' + historyId;
                     }
-                    return location.path + '/doc/' + docId + '?docHistoryId=' + historyId;
+                    return x.ctx + '/doc/' + docId + '?docHistoryId=' + historyId;
                 },
                 showProject: function () {
                     $('#sidebar').addClass('layer');

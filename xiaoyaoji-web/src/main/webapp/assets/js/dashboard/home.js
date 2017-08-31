@@ -32,7 +32,7 @@ $(function(){
                 },
                 newProject:function(){
                     utils.post('/project',{name:this.name,description:this.description,permission:this.permission},function(rs){
-                        location.href=ctx+'/doc/'+rs.data.docId+'/edit';
+                        location.href=x.ctx+'/doc/'+rs.data.docId+'/edit';
                     });
                 },
                 rename:function(id,name){
@@ -69,7 +69,7 @@ $(function(){
                 },
                 restore:function(id){    //还原
                     utils.post('/project/'+id,{status:'VALID'},function(){
-                        location.href=ctx+'/dashboard'
+                        location.href=x.ctx+'/dashboard'
                     });
                 },
                 loadProjects:function(status){

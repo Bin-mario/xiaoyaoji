@@ -5,7 +5,7 @@
  */
 
 (function(){
-    requirejs(['vue','utils',ctx+'/assets/js/project/doc/doc.commons.js'],function(Vue,utils,commons){
+    requirejs(['vue','utils',x.ctx+'/assets/js/project/doc/doc.commons.js'],function(Vue,utils,commons){
 
         window.submitProjectGlobal = function(){
             var environment = JSON.stringify(app.global.environment);

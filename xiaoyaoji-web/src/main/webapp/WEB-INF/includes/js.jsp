@@ -14,7 +14,6 @@
     <script>
         window.ctx='${ctx}';
         window.x={v:'${v}',ctx:'${ctx}',cdn:'http:${cdn}'};
-        location.path='${ctx}';
 
         requirejs.config({
             baseUrl:'${assets}',

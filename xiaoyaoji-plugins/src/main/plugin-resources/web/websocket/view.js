@@ -35,7 +35,7 @@ requirejs(['utils','vue'],function(utils,Vue){
         var headers = getRequestHeaders();
         if(proxy){
             headers['url']=url;
-            url = ctx+'/plugin/http/proxy';
+            url = x.ctx+'/plugin/http/proxy';
         }
         for (var name in headers) {
             var key = self.doc.id + ':headers:' + name;

@@ -37,7 +37,7 @@
                             toastr.success('操作成功');
 
                             setTimeout(function(){
-                                location.href=ctx+'/dashboard';
+                                location.href=x.ctx+'/dashboard';
                             },1000);
                         })
                     });

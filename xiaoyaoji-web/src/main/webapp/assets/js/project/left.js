@@ -1,5 +1,5 @@
 $(function(){
-    requirejs(['vue','utils',ctx+'/assets/html5sortable/html.sortable.min.js'],function(Vue,utils,sortable){
+    requirejs(['vue','utils',x.ctx+'/assets/html5sortable/html.sortable.min.js'],function(Vue,utils,sortable){
 
         function setDocContentHeight(){
             var $d=$('#doc-names');
@@ -13,17 +13,17 @@ $(function(){
             var $docContent =$('#doc-content');
             $docContent.html("");
             $('#loading').show();
-            $.get(window.ctx+url,{_t:Date.now()},function(rs){
+            $.get(x.ctx+url,{_t:Date.now()},function(rs){
                 $('#loading').hide();
                 $docContent.html(rs);
-                history.pushState('','',window.ctx+url);
+                history.pushState('','',x.ctx+url);
             });
         }
 
         $(window).on({
             resize:setDocContentHeight,
             popstate:function(){
-                loadDoc(location.pathname.substring(ctx.length));
+                loadDoc(location.pathname.substring(x.ctx.length));
             }
         });
         window.addEventListener('message', function (e) {
@@ -34,7 +34,7 @@ $(function(){
         var app = new Vue({
             el:'#docLeft',
             data:{
-                ctx:ctx,
+                ctx:x.ctx,
                 menu:{
                     show:false,
                     top:0,
@@ -153,7 +153,7 @@ $(function(){
                     }else{
                         //新增
                         utils.post('/doc/',{name:this.createModal.value,parentId:this.target.id,projectId:window._projectId_,type:this.target.type},function(rs){
-                            location.href=ctx+"/doc/"+rs.data+"/edit";
+                            location.href=x.ctx+"/doc/"+rs.data+"/edit";
                         });
                     }
                 },
@@ -194,7 +194,7 @@ $(function(){
                     var self=this;
                     UIkit.modal.confirm('是否确认删除?一旦删除不可恢复').then(function(){
                         utils.delete('/doc/'+self.target.id,function(){
-                            location.href=ctx+'/project/'+window._projectId_+"/edit";
+                            location.href=x.ctx+'/project/'+window._projectId_+"/edit";
                         })
                     });
                 },

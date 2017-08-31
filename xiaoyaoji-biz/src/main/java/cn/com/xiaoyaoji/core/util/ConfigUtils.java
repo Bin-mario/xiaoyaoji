@@ -23,7 +23,7 @@ public class ConfigUtils {
         }
         try {
             properties.load(classLoader.getResourceAsStream("config.dev.properties"));
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.info("not found config.dev.properties");
         }
     }

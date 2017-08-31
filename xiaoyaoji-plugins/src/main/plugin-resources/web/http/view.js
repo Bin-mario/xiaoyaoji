@@ -1,7 +1,7 @@
 requirejs(['utils', 'vue',
     x.cdn + '/assets/jsonformat/jsonFormater.js',
     x.cdn + '/assets/clipboard/clipboard.min.js',
-    ctx+'/proxy/'+pluginId + '/assets/js/chrome-extension.js',
+    x.ctx+'/proxy/'+pluginId + '/assets/js/chrome-extension.js',
     x.cdn + '/assets/ace/src-min/ace.js',
     x.cdn + '/assets/xml2json/2json.js',
     x.cdn + '/assets/xml2json/2xml.js'
@@ -123,7 +123,7 @@ requirejs(['utils', 'vue',
         var headers = getRequestHeaders();
         if (runType === 'proxy') {
             headers['url'] = url;
-            url = location.path + '/http/proxy';
+            url = x.ctx + '/http/proxy';
         }
         for (var name in headers) {
             var key = self.doc.id + ':headers:' + name;
