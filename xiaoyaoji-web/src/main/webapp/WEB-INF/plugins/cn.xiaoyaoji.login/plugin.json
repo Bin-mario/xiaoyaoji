@@ -1,0 +1,68 @@
+[
+  {
+    "id": "cn.xiaoyaoji.login.qq",
+    "name": "QQ",
+    "clazz": "cn.xiaoyaoji.plugin.login.qq.QQLoginPlugin",
+    "description": "QQ登录",
+    "author": "zhoujingjie",
+    "createTime": "2017/07/24",
+    "version": "2.1.3",
+    "event": "login",
+    "icon": {
+      "icon32x32": "/assets/qq.png",
+      "icon128x128": "/assets/qq128.png"
+    },
+    "config":{
+      "clientId":"",
+      "secret":"",
+      "redirectUri":"http://www.xiaoyaoji.cn/login/callback/cn.xiaoyaoji.login.qq/login"
+    },
+    "dependency":{
+      "min":"2.1.3"
+    }
+  },
+  {
+    "id": "cn.xiaoyaoji.login.weibo",
+    "name": "微博",
+    "clazz": "cn.xiaoyaoji.plugin.login.weibo.WeiboLoginPlugin",
+    "description": "微博登录",
+    "author": "zhoujingjie",
+    "createTime": "2017/07/24",
+    "version": "2.1.3",
+    "event": "login",
+    "icon": {
+      "icon32x32": "/assets/weibo.png",
+      "icon128x128": "/assets/weibo128.png"
+    },
+    "config":{
+      "clientId":"",
+      "secret":"",
+      "redirectUri":"http://www.xiaoyaoji.cn/login/callback/cn.xiaoyaoji.login.weibo/login"
+    },
+    "dependency":{
+      "min":"2.1.3"
+    }
+  },
+  {
+    "id": "cn.xiaoyaoji.login.github",
+    "name": "Github",
+    "clazz": "cn.xiaoyaoji.plugin.login.github.GithubLoginPlugin",
+    "description": "Github登录",
+    "author": "zhoujingjie",
+    "createTime": "2017/07/24",
+    "version": "2.1.3",
+    "event": "login",
+    "icon": {
+      "icon32x32": "/assets/github.png",
+      "icon128x128": "/assets/github128.png"
+    },
+    "config":{
+      "clientId":"",
+      "secret":"",
+      "redirectUri":"http://www.xiaoyaoji.cn/login/callback/cn.xiaoyaoji.login.github/login"
+    },
+    "dependency":{
+      "min":"2.1.3"
+    }
+  }
+]

@@ -1,3 +1,15 @@
+/************* header start *******/
+
+.xd-header{
+    padding-left: 310px;
+    height: 50px;
+    line-height: 50px;
+}
+
+
+/************* header end *******/
+
+
 /*******DOC start*********/
 .doc-full-width .doc-content {
     margin-left: 0;
@@ -90,8 +102,8 @@
 
 .doc-left .doc-search {
     width: 100%;
-    height: 38px;
-    line-height: 38px;
+    height: 50px;
+    line-height: 50px;
     background: #fff;
     padding-left: 14px;
     font-size: 14px;
@@ -811,4 +823,5 @@ body.profile .dbl-projects{
     margin-top: 0!important;
 }
 /************* SIDEBAR END ***********/
+
 

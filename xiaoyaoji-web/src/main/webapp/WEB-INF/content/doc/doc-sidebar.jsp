@@ -100,7 +100,7 @@
         <div class="db-left-layer hide" onclick="$('#sidebar').removeClass('layer')"></div>
     </div>
 
-    <div class="api-modules-tab ta-c">
+   <%-- <div class="api-modules-tab ta-c">
         <c:if test="${docId != null && editPermission}">
             <a class="api-module api-module-item ${edit?'active':''}" v-on:click="editpage">编辑模式</a>
         </c:if>
@@ -108,7 +108,7 @@
             <a class="api-module api-module-item ${!edit?'active':''}" v-on:click="viewpage">浏览模式</a>
         </c:if>
     </div>
-
+--%>
     <div id="history-modal" uk-modal class="uk-modal-container">
         <div class="uk-modal-dialog">
             <div class="uk-modal-header">

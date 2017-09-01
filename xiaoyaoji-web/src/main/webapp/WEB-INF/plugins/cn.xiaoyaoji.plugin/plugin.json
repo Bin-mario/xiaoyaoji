@@ -1,0 +1,127 @@
+[
+  {
+    "id":"sys.http",
+    "name": "http文档",
+    "clazz": "cn.xiaoyaoji.plugin.doc.HttpDocPlugin",
+    "description": "http 文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.1.4",
+    "event":"doc.ev",
+    "icon":{
+      "icon32x32":"/assets/http.png"
+    },
+    "dependency":{
+      "min":"2.1.4"
+    }
+  },
+  {
+    "id":"sys.websocket",
+    "name": "websocket文档",
+    "clazz": "cn.xiaoyaoji.plugin.doc.WebsocketDocPlugin",
+    "description": "websocket 文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.1.4",
+    "event":"doc.ev",
+    "icon":{
+      "icon32x32":"/assets/websocket.png"
+    },
+    "dependency":{
+      "min":"2.1.4"
+    }
+  },
+  {
+    "id": "sys.doc.richtext",
+    "name": "富文本",
+    "clazz": "cn.xiaoyaoji.plugin.doc.RichtextDocPlugin",
+    "description": "富文本文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.1.4",
+    "event":"doc.ev",
+    "icon":{
+      "icon32x32":"/assets/richtext.png"
+    },
+    "dependency":{
+      "min":"2.1.4"
+    }
+  },
+  {
+    "id": "sys.doc.md",
+    "name": "markdown",
+    "clazz": "cn.xiaoyaoji.plugin.doc.MarkdownDocPlugin",
+    "description": "markdown文档",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.1.4",
+    "event":"doc.ev",
+    "icon":{
+      "icon32x32":"/assets/markdown.png"
+    },
+    "dependency":{
+      "min":"2.1.4"
+    }
+  },
+  {
+    "id": "sys.folder",
+    "name": "文件夹",
+    "clazz": "cn.xiaoyaoji.plugin.doc.FolderDocPlugin",
+    "description": "文件夹",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.1.4",
+    "event":"doc.ev",
+    "icon":{
+      "icon32x32":"/assets/folder.png"
+    },
+    "dependency":{
+      "min":"2.1.3"
+    }
+  },
+  {
+    "id":"sys.thirdparty",
+    "name": "第三方链接",
+    "clazz": "cn.xiaoyaoji.plugin.doc.ThirdpartyDocPlugin",
+    "description": "第三方链接",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.1.4",
+    "event":"doc.ev",
+    "icon":{
+      "icon32x32":"/assets/thirdparty.png"
+    },
+    "dependency":{
+      "min":"2.1.3"
+    }
+  },
+  {
+    "id":"cn.xiaoyaoji.export.mjson",
+    "name": "导出mJSON",
+    "clazz": "cn.xiaoyaoji.plugin.export.JsonExportPlugin",
+    "description": "导出mJSON",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.1.4",
+    "event":"doc.export",
+    "icon":{
+      "icon32x32":"/assets/json.png"
+    },
+    "dependency":{
+      "min":"2.1.4"
+    }
+  },
+  {
+    "id":"cn.xiaoyaoji.import.mjson",
+    "name": "导入mJSON",
+    "clazz": "cn.xiaoyaoji.plugin.imports.JsonImportPlugin",
+    "description": "导入mJSON",
+    "author": "zhoujingjie",
+    "createTime": "2017/06/21",
+    "version": "2.1.4",
+    "event":"doc.import",
+    "icon":{
+      "icon32x32":"/assets/json.png"
+    }
+  }
+]

@@ -17,9 +17,10 @@
 
         requirejs.config({
             baseUrl:'${assets}',
-            urlArgs:'v=${v}',
+            urlArgs:'v=1',
             paths:{
                 'vue':'${cdn}/assets/vue/vue.2.3.3',
+                'doc-common':'${assets}/js/doc/doc-common',
                 'jquery':'${cdn}/assets/jquery/jquery.min.1.11',
                 'veeValidate':'${cdn}/assets/vue/vee-validate.min',
                 'vueResource':'${cdn}/assets/vue/vue.resources',

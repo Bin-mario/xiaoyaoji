@@ -559,3 +559,29 @@ ul[uk-tab]{
     color: #9e9e9e;
 }
 /*************** 登录、注册、忘记密码、找回密码 end*******************/
+
+
+/****** component *******/
+.x-ul{}
+.x-ul li{
+    position: relative;
+}
+.x-ul .x-li{
+    padding: 0 10px;
+}
+.x-ul.horiz:after{
+    clear: both;
+    content: ' ';
+    display: block;
+}
+.x-ul.horiz>li{
+    float:left;
+}
+.x-ul ul{
+    /*display: none;*/
+    position: absolute;
+    line-height: initial;
+}
+.x-ul li:hover ul{
+    display: block;
+}
