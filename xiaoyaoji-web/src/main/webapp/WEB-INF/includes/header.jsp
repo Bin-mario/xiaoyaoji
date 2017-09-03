@@ -29,9 +29,9 @@
             <ul class="cb">
                 <li><a href="${ctx}/">主页</a> </li>
                 <li><a href="http://www.xiaoyaoji.cn/project/demo" target="_blank">在线演示</a> </li>
+                <li><a href="http://www.xiaoyaoji.cn/donate">捐赠支持</a></li>
                 <li><a href="http://git.oschina.net/zhoujingjie/apiManager" rel="nofollow" target="_blank">下载源码</a></li>
-                <li><a href="http://git.oschina.net/zhoujingjie/apiManager/releases" rel="nofollow" target="_blank">离线部署</a></li>
-                <li><a href="${ctx}/help">在线帮助</a> </li>
+                <li><a href="${ctx}/help">帮助&amp;说明</a> </li>
             </ul>
         </nav>
     </div>

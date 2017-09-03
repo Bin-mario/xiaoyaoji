@@ -57,37 +57,32 @@
                 <%--<li class="db-item"><a href="#!/add"><i class="iconfont icon-add-circle" style="font-weight: bold;"></i></a>
                 </li>--%>
 
-                <li class="db-item" v-on:click="loadHistory" uk-toggle="target: #history-modal">
+                <li class="db-item" v-on:click="loadHistory">
                     <a title="历史版本"><i class="iconfont icon-history"></i></a>
                 </li>
                 <li class="db-item ">
                     <a title="全局设置"><i
                         class="iconfont icon-global"></i></a>
                     <ul class="sub-ul">
-                        <li class="db-item" v-on:click="loadGlobal('http')" uk-toggle="target:#global-modal"><a>全局参数</a></li>
-                        <li class="db-item" v-on:click="loadGlobal('env')" uk-toggle="target:#global-modal"><a>环境变量</a></li>
-                        <li class="db-item" v-on:click="loadGlobal('status')" uk-toggle="target:#global-modal"><a>状态名称</a></li>
+                        <li class="db-item" v-on:click="loadGlobal('http')" ><a>全局参数</a></li>
+                        <li class="db-item" v-on:click="loadGlobal('env')" ><a>环境变量</a></li>
+                        <li class="db-item" v-on:click="loadGlobal('status')"><a>状态名称</a></li>
                     </ul>
                 </li>
                 <li class="db-item ">
                     <a  title="项目设置"><i class="iconfont icon-dashboard"></i></a>
                     <ul class="sub-ul">
-                        <li class="db-item" v-on:click="loadShares" uk-toggle="target:#share-modal"><a>项目分享</a></li>
+                        <li class="db-item" v-on:click="loadShares"><a>项目分享</a></li>
                         <c:if test="${editPermission}">
-                        <li class="db-item"><a href="${ctx}/project/${project.id}/info">项目信息</a></li>
-                        <li class="db-item"><a href="${ctx}/project/${project.id}/transfer">项目转让</a></li>
+                            <li class="db-item"><a href="${ctx}/project/${project.id}/info">项目信息</a></li>
+                            <li class="db-item"><a href="${ctx}/project/${project.id}/transfer">项目转让</a></li>
                         </c:if>
                         <li class="db-item"><a href="${ctx}/project/${project.id}/member">项目成员</a></li>
                         <li class="db-item"><a href="${ctx}/project/${project.id}/export">导出项目</a></li>
                         <li class="db-item"><a href="${ctx}/project/${project.id}/quit">退出项目</a></li>
                     </ul>
                 </li>
-                <c:if test="${!edit && editPermission}">
-                    <li class="db-item "><a title="编辑文档" v-on:click="editpage"><i class="iconfont icon-edit"></i></a>
-                    </li>
-                </c:if>
                 <c:if test="${docId != null && edit}">
-                    <li class="db-item "><a title="预览文档" v-on:click="viewpage"><i class="iconfont icon-eye"></i></a></li>
                     <li class="db-item" uk-toggle="target: #save-modal"><a title="保存"><i class="iconfont icon-save"></i></a></li>
                 </c:if>
             </ul></c:if>

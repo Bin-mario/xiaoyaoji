@@ -15,7 +15,7 @@
     <jsp:include page="doc-header.jsp"/>
     <jsp:include page="doc-sidebar.jsp"/>
     <jsp:include page="doc-left.jsp"/>
-    <div class="doc-content" >
+    <div class="doc-content doc" >
     <div class="hide" id="loading">
         <div class="spinner">
             <div class="double-bounce1"></div>
@@ -45,7 +45,7 @@
 <c:if test="${!isXHR}">
     </div>
     </div>
-    </div>
+    <%--</div>--%>
 
     </body>
     </html>

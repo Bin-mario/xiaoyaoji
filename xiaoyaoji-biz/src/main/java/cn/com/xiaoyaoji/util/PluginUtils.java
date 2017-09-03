@@ -67,16 +67,17 @@ public class PluginUtils {
         for (File pluginZip : pluginZips) {
             try {
                 if (pluginZip.getName().endsWith(".zip")) {
-                    String pluginFolderName = pluginZip.getName().replace(".zip", "");
+                    String pluginFolderName = FilenameUtils.getBaseName(pluginZip.getName());
+
+                    String pluginSourceFolder = output + File.separator + pluginFolderName;
                     //判断该目录是否存在该文件夹，如果存在则不解压
-                    File temp = new File(pluginZip.getParent() + File.separator + pluginFolderName);
-                    String pluginSourceFolder = output + File.separator + FilenameUtils.getBaseName(pluginZip.getName());
+                    File temp = new File(pluginSourceFolder);
                     if (temp.exists() && temp.isDirectory() && temp.canRead()) {
-                        loadPlugin(new File(pluginSourceFolder));
+                        loadPlugin(temp);
                         continue;
                     }
                     extractPlugin(pluginZip,pluginSourceFolder);
-                    loadPlugin(new File(pluginSourceFolder));
+                    loadPlugin(temp);
                 } else {
                     logger.info("ignore " + pluginZip.getName());
                 }

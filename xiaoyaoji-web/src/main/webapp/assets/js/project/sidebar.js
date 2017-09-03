@@ -1,6 +1,15 @@
 $(function () {
     require(['utils', 'vue'], function (utils, Vue) {
-        new Vue({
+
+        window.addEventListener('message',function(e){
+            if(e.data && e.data.type==='event'){
+                app[e.data.method].apply(app,e.data.args);
+            }
+        });
+
+
+
+        var app = new Vue({
             el: '#sidebar',
             data: {
                 submitComment: '',
@@ -69,6 +78,7 @@ $(function () {
                             self.loading.history = false;
                             self.history = rs.data;
                         });
+                        UIkit.modal('#history-modal').show();
                     }
                 },
                 switchCommonly: function (item) {
@@ -138,6 +148,8 @@ $(function () {
                     utils.get('/doc/root/' + _projectId_, {}, function (rs) {
                         self.rootDocs = rs.data.docs;
                     });
+
+                    UIkit.modal('#share-modal').show();
                 },
                 deleteShare: function (item) {
                     UIkit.modal.confirm('是否确认删除?').then(function () {
@@ -176,6 +188,7 @@ $(function () {
                         this.global.url = this.global.url = x.ctx + '/project/global/' + _projectId_ + '/status';
                         this.global.typeName = '全局状态';
                     }
+                    UIkit.modal('#global-modal').show()
                 },
                 loadGlobalEnvironment: function () {
                     this.loading.env = true;

@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="${ctx}/proxy/${pluginInfo.id}/assets/css/http.css?v=${v}"/>
 <div id="doc" v-cloak>
     <div v-cloak>
-
         <datalist id="headerlist">
             <option v-for="item in flag.headers" :value="item">
         </datalist>
@@ -242,6 +241,15 @@
             </div>
         </div>
     </div>
+
+<%--
+    <div class="doc-rightbar" style="position: absolute;right: 0;top: 100px;">
+        <ul class="uk-list">
+            <li>增加请求参数</li>
+            <li>增加请求参数</li>
+            <li>增加请求参数</li>
+        </ul>
+    </div>--%>
     <div class="modal" v-cloak v-if="importModal">
         <div class="modal-header">
             <i class="iconfont icon-close modal-close" v-on:click="importModal=false"></i>

@@ -36,7 +36,7 @@
                         // onchange 事件中更新数据
                         self.editorContent = editor.txt.html();
                     };
-                    editor.customConfig.zIndex=98;
+                    editor.customConfig.zIndex=66;
                     editor.create();
 
                     resizeHeight(true);

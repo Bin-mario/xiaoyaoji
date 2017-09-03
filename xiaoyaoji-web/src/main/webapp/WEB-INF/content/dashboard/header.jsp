@@ -14,7 +14,7 @@
                 <a href="${ctx}/help">常见问题</a>
             </span>
         <div class="user-account fr">
-            <a href=""><img src="${sessionScope.user.avatar}" class="user-account-logo" alt=""><span>${user.nickname}</span></a>
+            <a href=""><img src="${sessionScope.user.avatar}" class="user-account-logo" alt=""><span>${sessionScope.user.nickname}</span></a>
         </div>
         <div v-cloak uk-dropdown="pos: top-right" style="text-align: left">
             <ul class="uk-nav uk-dropdown-nav">
@@ -23,9 +23,9 @@
                 <li><a href="${ctx}/profile">个人中心</a></li>
                 <li><a href="${ctx}/profile/security">安全设置</a></li>
                 <li><a href="${ctx}/help">帮助中心</a></li>
-                <li><a href="http://git.oschina.net/zhoujingjie/apiManager" target="_blank">请作者喝咖啡</a></li>
+                <li><a href="http://www.xiaoyaoji.cn/donate" target="_blank">请作者喝咖啡</a></li>
                 <li class="uk-nav-divider"></li>
-                <li><a href="${ctx}/logout?t=<%=System.currentTimeMillis()%>">退出登录</a></li>
+                <li><a href="${ctx}/logout">退出登录</a></li>
             </ul>
         </div>
     </div>

@@ -65,6 +65,13 @@ public class IndexController {
         return new ModelAndView("/unsupport");
     }
 
+
+    @GetMapping(value = "/donate")
+    public Object donate() {
+        return new ModelAndView("/donate");
+    }
+
+
     @RequestMapping("/error")
     public Object error(){
         return new ModelAndView("/error");

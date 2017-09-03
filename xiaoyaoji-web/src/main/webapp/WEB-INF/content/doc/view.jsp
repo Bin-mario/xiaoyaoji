@@ -12,7 +12,7 @@
     <jsp:include page="doc-left.jsp">
         <jsp:param name="view" value="true"/>
     </jsp:include>
-<div class="doc-content">
+<div class="doc doc-content">
     <div class="hide" id="loading">
         <div class="spinner">
             <div class="double-bounce1"></div>
@@ -49,7 +49,7 @@
 <c:if test="${!isXHR}">
     </div>
     </div>
-    </div>
+    <%--</div>--%>
     <!-- loading end -->
     </body>
     </html>

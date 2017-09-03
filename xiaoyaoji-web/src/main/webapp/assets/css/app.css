@@ -1,4 +1,4 @@
-@import "//at.alicdn.com/t/font_279250_rau2n6f2oyvcayvi.css";
+@import "//at.alicdn.com/t/font_279250_9l70obut9hfwp14i.css";
 @import "//f1.xiaoyaoji.cn/assets/toastr/toastr.min.css";
 @import "//f1.xiaoyaoji.cn/assets/pace/pace.min.css";
 @import "button.css";
@@ -563,11 +563,9 @@ ul[uk-tab]{
 
 /****** component *******/
 .x-ul{}
-.x-ul li{
-    position: relative;
-}
 .x-ul .x-li{
-    padding: 0 10px;
+    padding: 0 15px;
+    white-space:nowrap;
 }
 .x-ul.horiz:after{
     clear: both;
@@ -576,12 +574,27 @@ ul[uk-tab]{
 }
 .x-ul.horiz>li{
     float:left;
+    position: relative;
 }
-.x-ul ul{
-    /*display: none;*/
+.x-ul .x-sub-ul{
+    display: none;
     position: absolute;
-    line-height: initial;
+    line-height: 30px;
+    z-index: 10;
+    background-color: #fff;
+    box-shadow: 2px 2px 4px #ccc;
 }
-.x-ul li:hover ul{
+.x-ul .x-sub-ul .x-li:hover{
+    background-color: #f0f0f0;
+}
+
+.x-ul li:hover .x-sub-ul{
     display: block;
+}
+
+/****/
+.user-account-logo{
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
 }

@@ -9,6 +9,9 @@
     body{
         min-width:inherit;
     }
+    .xd-header,.xd-header-placeholder{
+        display: none;
+    }
 </style>
 <div id="global">
 
