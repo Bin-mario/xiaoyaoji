@@ -5,7 +5,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <link rel="stylesheet" type="text/css" href="${cdn}/assets/simplemd/simplemde.min.css?v=${pluginInfo.version}"/>
-<br/><br/>
 <textarea class="hide" id="md-edit">${doc.content}</textarea>
 <script>
     (function(){

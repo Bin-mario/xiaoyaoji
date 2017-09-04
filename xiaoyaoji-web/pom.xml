@@ -79,7 +79,7 @@
         <profile>
             <id>prod</id>
             <properties>
-                <xyj.version>2.1.4</xyj.version>
+                <xyj.version>2.1.5</xyj.version>
                 <druid.username>admin</druid.username>
                 <druid.password>123</druid.password>
             </properties>

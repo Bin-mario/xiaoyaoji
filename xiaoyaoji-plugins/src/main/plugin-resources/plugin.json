@@ -102,13 +102,13 @@
     "description": "导出mJSON",
     "author": "zhoujingjie",
     "createTime": "2017/06/21",
-    "version": "2.1.4",
+    "version": "2.1.5",
     "event":"doc.export",
     "icon":{
       "icon32x32":"/assets/json.png"
     },
     "dependency":{
-      "min":"2.1.4"
+      "min":"2.1.5"
     }
   },
   {
@@ -118,10 +118,13 @@
     "description": "导入mJSON",
     "author": "zhoujingjie",
     "createTime": "2017/06/21",
-    "version": "2.1.4",
+    "version": "2.1.5",
     "event":"doc.import",
     "icon":{
       "icon32x32":"/assets/json.png"
+    },
+    "dependency":{
+      "min":"2.1.5"
     }
   }
 ]

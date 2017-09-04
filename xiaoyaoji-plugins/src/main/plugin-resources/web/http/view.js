@@ -1,7 +1,7 @@
 requirejs(['utils', 'vue',
     x.cdn + '/assets/jsonformat/jsonFormater.js',
     x.cdn + '/assets/clipboard/clipboard.min.js',
-    x.ctx+'/proxy/'+pluginId + '/assets/js/chrome-extension.js',
+    ctx+'/proxy/'+pluginId + '/assets/js/chrome-extension.js',
     x.cdn + '/assets/ace/src-min/ace.js',
     x.cdn + '/assets/xml2json/2json.js',
     x.cdn + '/assets/xml2json/2xml.js'
@@ -60,8 +60,8 @@ requirejs(['utils', 'vue',
     function Result() {
         var jf = new JsonFormater({
             dom: '#api-result',
-            imgCollapsed: window.x.cdn+'/assets/jsonformat/images/Collapsed.gif',
-            imgExpanded: window.x.cdn+'/assets/jsonformat/images/Expanded.gif'
+            imgCollapsed: x.cdn+'/assets/jsonformat/images/Collapsed.gif',
+            imgExpanded: x.cdn+'/assets/jsonformat/images/Expanded.gif'
         });
         var fn = {
             JSON: function (data) {
@@ -123,7 +123,7 @@ requirejs(['utils', 'vue',
         var headers = getRequestHeaders();
         if (runType === 'proxy') {
             headers['url'] = url;
-            url = x.ctx + '/http/proxy';
+            url = location.path + '/http/proxy';
         }
         for (var name in headers) {
             var key = self.doc.id + ':headers:' + name;

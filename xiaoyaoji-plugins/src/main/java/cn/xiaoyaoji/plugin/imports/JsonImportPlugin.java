@@ -25,6 +25,7 @@ public class JsonImportPlugin extends DocImportPlugin {
     private static final String EXPORT_KEY_DOCS = "docs";
     private static final String EXPORT_KEY_VER = "version";
     private static final String IMPORT_KEY_DOC_CHILDREN = "children";
+    private static final String GLOBAL = "global";
     private static final String DEFAULT_PARENT_ID = "0";
     @Override
     public void doImport(String fileName, InputStream file, String userId, String projectId, String parentId) throws IOException {
@@ -73,7 +74,14 @@ public class JsonImportPlugin extends DocImportPlugin {
         project.setCreateTime(new Date());
         project.setLastUpdateTime(new Date());
         ProjectService.instance().createProject(project);
-        importDoc(project.getId(), DEFAULT_PARENT_ID, obj.getJSONArray(EXPORT_KEY_DOCS));
+        ProjectGlobal global = obj.getObject(GLOBAL,ProjectGlobal.class);
+        if(global!=null){
+            global.setId(StringUtils.id());
+            global.setProjectId(project.getId());
+            ServiceFactory.instance().create(global);
+        }
+        importDoc(project.getId(), DEFAULT_PARENT_ID,
+                obj.getJSONArray(EXPORT_KEY_DOCS));
     }
 
     /**

@@ -15,7 +15,9 @@
     <jsp:include page="/WEB-INF/includes/js.jsp"/>
 </head>
 <body>
+
 <div class="xd-header cb" id="xd-header">
+    <c:if test="${sessionScope.user != null && editPermission}">
     <div class="fl">
         <ul class="x-ul horiz">
             <li>
@@ -63,11 +65,13 @@
             </c:if>
         </ul>
     </div>
+    </c:if>
     <div class="fr">
         <ul class="x-ul horiz">
             <li><div class="x-li"><a href="${ctx}/">主页</a></div></li>
             <li><div class="x-li"><a href="${ctx}/dashboard">控制台</a></div></li>
             <li><div class="x-li"><a href="http://www.xiaoyaoji.cn/donate" target="_blank">赞助作者</a></div></li>
+            <c:if test="${sessionScope.user != null}">
             <li>
                 <div class="x-li"><a><img src="${sessionScope.user.avatar}" class="user-account-logo">&nbsp;${sessionScope.user.nickname}</a></div>
                 <div class="x-sub-ul" style="right:0px;">
@@ -81,6 +85,11 @@
                     </ul>
                 </div>
             </li>
+            </c:if>
+            <c:if test="${sessionScope.user == null}">
+                <li><div class="x-li"><a href="${ctx}/login">登录</a></div></li>
+                <li><div class="x-li"><a href="${ctx}/register">注册</a></div></li>
+            </c:if>
         </ul>
     </div>
 </div>

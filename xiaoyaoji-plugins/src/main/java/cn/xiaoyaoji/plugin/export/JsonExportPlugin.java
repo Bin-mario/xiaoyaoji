@@ -26,6 +26,7 @@ import java.util.List;
 public class JsonExportPlugin extends DocExportPlugin {
     private static final String EXPORT_KEY_DOCS = "docs";
     private static final String EXPORT_KEY_VER = "version";
+    private static final String GLOBAL = "global";
 
     @Override
     public void doExport(String projectId, HttpServletResponse response) throws IOException {
@@ -35,6 +36,7 @@ public class JsonExportPlugin extends DocExportPlugin {
         List<Doc> docs = ProjectService.instance().getProjectDocs(projectId, true);
         json.put(EXPORT_KEY_DOCS, docs);
         json.put(EXPORT_KEY_VER, getPluginInfo().getVersion());
+        json.put(GLOBAL,ProjectService.instance().getProjectGlobal(projectId));
         String jsonStr = JsonUtils.toString(json);
         String encoding = Constants.UTF8.displayName();
         response.setCharacterEncoding(encoding);
