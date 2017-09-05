@@ -67,6 +67,9 @@ public class UpdateManager {
             } catch (SQLException e) {
                 //ignore
             }
+            if(currentVersion == null){
+                currentVersion ="2.0";
+            }
 
             String upgradeFolder = "META-INF/upgrade/";
             File file = new File(this.getClass().getClassLoader().getResource(upgradeFolder).getFile());
@@ -110,6 +113,7 @@ public class UpdateManager {
                     //ignore
                     logger.info("NoSuchMethodException update"+fileVersion);
                 }
+                result += qr.update(connection, "insert into sys values('"+fileVersion.replace("_",".")+"')");
             }
             return result;
         }catch (Exception e) {
