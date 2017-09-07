@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost_3306
-Source Server Version : 50717
-Source Host           : localhost:3306
+Source Server         : 47.94.211.245-xyj
+Source Server Version : 50716
+Source Host           : 47.94.211.245:3306
 Source Database       : xiaoyaoji
 
 Target Server Type    : MYSQL
-Target Server Version : 50717
+Target Server Version : 50716
 File Encoding         : 65001
 
-Date: 2017-08-28 17:47:13
+Date: 2017-09-07 11:16:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -64,11 +64,11 @@ CREATE TABLE `doc_history` (
   `createTime` datetime DEFAULT NULL,
   `parentId` char(12) DEFAULT NULL,
   `projectId` char(12) DEFAULT NULL,
-  `comment` text,
+  `comment` varchar(1000) DEFAULT NULL,
   `userId` char(12) DEFAULT NULL,
   `docId` char(12) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=51473 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for email_token
@@ -295,6 +295,41 @@ DROP TABLE IF EXISTS `user_third`;
 CREATE TABLE `user_third` (
   `id` varchar(60) NOT NULL,
   `userid` char(12) NOT NULL,
-  `type` char(10) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `type` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Procedure structure for trans_module
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `trans_module`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `trans_module`()
+begin
+DECLARE done INT DEFAULT FALSE;
+declare id varchar(100);
+declare name,host,projectId varchar(100);
+declare lastUpdateTime,createTime datetime;
+declare description MEDIUMTEXT;
+
+declare cur1 cursor for select id from module limit 100;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+open cur1;
+read_loop: LOOP
+
+FETCH  cur1 into id;
+
+if done
+	then  leave read_loop;
+end if;
+
+select id;
+
+end LOOP;
+close cur1;
+
+end
+;;
+DELIMITER ;
