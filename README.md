@@ -4,7 +4,7 @@
 #### 由于在线版本之前未做缓存控制，导致很多用户打开页面后出现各种问题。（临时解决办法是CTRL+F5）。 在后面会修复该问题
 
 
-### [下载最新版本](http://git.oschina.net/zhoujingjie/apiManager/releases)
+### [下载最新版本](https://github.com/zhoujingjie/xiaoyaoji/releases)
 
 ## 兼容性
 * 静态页系统暂时只兼容chrome，其他浏览器未测试。
@@ -21,7 +21,7 @@
 
 
 ## bug
-如果大家发现了bug，可以在[Issues](http://git.oschina.net/zhoujingjie/apiManager/issues)里面提交，然后也可以直接修改bug然后提交代码
+如果大家发现了bug，可以在[Issues](https://github.com/zhoujingjie/xiaoyaoji/issues)里面提交，然后也可以直接修改bug然后提交代码
 提交bug时请尽量多提供一些信息，如截图
 
 
