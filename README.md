@@ -1,6 +1,6 @@
 ![LOGO](http://www.xiaoyaoji.cn/assets/img/logo/full.png)
 # 小幺鸡文档管理工具，支持富文本、markdown、http、websocket 及其在线测试
-## [在线演示地址demo](http://www.xiaoyaoji.cn/project/demo/view)
+## [在线演示地址demo](http://www.xiaoyaoji.cn/project/demo)
 #### 由于在线版本之前未做缓存控制，导致很多用户打开页面后出现各种问题。（临时解决办法是CTRL+F5）。 在后面会修复该问题
 
 
