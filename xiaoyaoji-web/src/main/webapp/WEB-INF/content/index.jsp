@@ -62,7 +62,7 @@
         </li>
         <li>
             <p><i class="iconfont icon-email"></i></p>
-            <p><a href="mailto:cn_bboy@163.com">cn_bboy@163.com</a> </p>
+            <p><a href="mailto:xiaoyaoji@zhoujingjie.cn">xiaoyaoji@zhoujingjie.cn</a> </p>
         </li>
 
     </ul>
