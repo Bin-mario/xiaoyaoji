@@ -6,7 +6,7 @@
     "description": "导出PDF文档 ",
     "author": "luofei",
     "createTime": "2017/06/21",
-    "version": "2.1.5",
+    "version": "2.1.5.1",
     "event":"doc.export",
     "icon":{
       "icon32x32":"/assets/pdf.png"
