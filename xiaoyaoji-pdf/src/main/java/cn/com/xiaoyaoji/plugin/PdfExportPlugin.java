@@ -198,7 +198,7 @@ public class PdfExportPlugin extends DocExportPlugin {
                 NormalContent content3 = new NormalContent();
                 Map<String, String> varsMap = new HashMap<>();
                 for (int j = 0; j < vars.size(); j++) {
-                    JSONObject kv = vars.getJSONObject(i);
+                    JSONObject kv = vars.getJSONObject(j);
                     varsMap.put(kv.getString("name"), kv.getString("value"));
                 }
                 content3.addContent(varsMap);
