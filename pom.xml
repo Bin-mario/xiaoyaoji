@@ -72,7 +72,7 @@
         <repository>
             <id>ali</id>
             <name>ali nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+            <url>https://maven.aliyun.com/nexus/content/groups/public</url>
         </repository>
         <repository>
             <id>psiegman-repo</id>
